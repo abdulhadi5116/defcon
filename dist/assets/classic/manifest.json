@@ -1,0 +1,703 @@
+{
+  "version": "DEFCON v1.43",
+  "source": "User-provided ~/Downloads/defcon-win32-v143.exe",
+  "installer_sha256": "33d2edb954d2a3ba9a8f42ee33090f7be783444f875ff88fc7e4d6a790903e55",
+  "units": {
+    "battleship": {
+      "original": "data/graphics/battleship.bmp",
+      "original_sha256": "8f14d50f68a1d10630caafe619cb03c10ae20a74d2e38ad1ad406c444791f195",
+      "path": "assets/classic/units/battleship.png",
+      "sha256": "2974437fc1c570b75c3a573c1fef6148b1358cf205c33e468da51bea216ea0d6",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "carrier": {
+      "original": "data/graphics/carrier.bmp",
+      "original_sha256": "44d70f456ad406722872c648e67296756ce5da11b6825f67980755edd0ddfada",
+      "path": "assets/classic/units/carrier.png",
+      "sha256": "32780138dd6f8cdcc38df3f5055a3ef3998507bbc7d0f98ae0c069e90bf5b0d9",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "sub": {
+      "original": "data/graphics/sub.bmp",
+      "original_sha256": "c600a2e5a2fe534b0ad908485ec59701e839aac4691f97e0a2f4ed76ef3cc9a5",
+      "path": "assets/classic/units/sub.png",
+      "sha256": "c2b76701ee13df9c0d68d53cb07b855fe238ee7eb6a38daf6b01e2d7a320a90f",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "sub_surfaced": {
+      "original": "data/graphics/sub_surfaced.bmp",
+      "original_sha256": "07aef7b249ea85e923e9504da8540388d1c6e4989c8ab988debf630052cb7690",
+      "path": "assets/classic/units/sub_surfaced.png",
+      "sha256": "289fdac14a8efc2349a001c8e396ebeba0b38dd931d6a759b762a4c57f6ac45d",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "fighter": {
+      "original": "data/graphics/fighter.bmp",
+      "original_sha256": "d7a3b0dd68784fd96580121bac0d0bbfde083b7079de7381e78e65677e9ec70a",
+      "path": "assets/classic/units/fighter.png",
+      "sha256": "f11f6d6aa4f35a2e6175a0c3a2bded219e5088561088de4cb0d9c95ad4da91cf",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "bomber": {
+      "original": "data/graphics/bomber.bmp",
+      "original_sha256": "5b060c8bfc6a4d3e19b874eafa9946c43502a247f6789cce963b5a6149be1f7f",
+      "path": "assets/classic/units/bomber.png",
+      "sha256": "a670f13d6a64b0982d3df0f96e8a15b031c2770ad09d01746d3a820de0940288",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "silo": {
+      "original": "data/graphics/silo.bmp",
+      "original_sha256": "a2864719a323dceb809767ba2efa2e5c481de7d3d91da2659a2f13886c792a46",
+      "path": "assets/classic/units/silo.png",
+      "sha256": "e0993bd40227ead97ec75b931bcd2fd77037c483d25602395eec79730c0d3c97",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "airbase": {
+      "original": "data/graphics/airbase.bmp",
+      "original_sha256": "ef06bb4c623f59cb8ecf4ad73b0c9ec7ecee0629e2f97aad3f23b74cb6614cd9",
+      "path": "assets/classic/units/airbase.png",
+      "sha256": "8a05b4ac2b6bfc40871567b66e566dfae3063d76e2bea633d384df53f282d5fb",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "radarstation": {
+      "original": "data/graphics/radarstation.bmp",
+      "original_sha256": "12516a373258578b47bca281c7d2317245619da10be9494c93b5e324a304be4f",
+      "path": "assets/classic/units/radarstation.png",
+      "sha256": "f72483c4699fe68cbb54bb51c842d766c2d43b791cee0c3bc248f7a10d85b049",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "nuke": {
+      "original": "data/graphics/nuke.bmp",
+      "original_sha256": "d11a4e71e09fd3e1a2e50854ef4fd8fe9ff48d97025d09a47c1914a23d60ed81",
+      "path": "assets/classic/units/nuke.png",
+      "sha256": "f199161fb4d7cc06d9f9c5ad7515d106e3823cc9c5328abfe806fa8c487d6b16",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "sam": {
+      "original": "data/graphics/sam.bmp",
+      "original_sha256": "3c5bb7c709ca25f93d7057fbfbd79db96aa042c6cccb5914bedf35813c924df1",
+      "path": "assets/classic/units/sam.png",
+      "sha256": "8804fddee9aa40b27867f78e1dc54934723e51afc58f4556301171f928df1a49",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "smallnuke": {
+      "original": "data/graphics/smallnuke.bmp",
+      "original_sha256": "124c7c6bac0f9b722a59429e9f7a6edbe352940b4824f8a9640017acf714ff7d",
+      "path": "assets/classic/units/smallnuke.png",
+      "sha256": "c6d84a7a11c48d001a7940718d85c2cd92dd47e813ca723964917a9e12e7d2de",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "smallfighter": {
+      "original": "data/graphics/smallfighter.bmp",
+      "original_sha256": "edd895c13a84b35d710885cb85fd56f1ec2017da7f0e8d8b2cb389d6b4812e45",
+      "path": "assets/classic/units/smallfighter.png",
+      "sha256": "f18fc14fc4e6a9b976763d0697a57913f91101e91a287355c6986c47ca371fa0",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "smallbomber": {
+      "original": "data/graphics/smallbomber.bmp",
+      "original_sha256": "871a3b29231a6d44ec297eaa3ce922bf872f6df98bcca5b6f1bd9a924cb65c0c",
+      "path": "assets/classic/units/smallbomber.png",
+      "sha256": "91921a491aeda8cd55b4858f682c2a007b7bd186a5a599ba39ccb92a981234f9",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "explosion": {
+      "original": "data/graphics/explosion.bmp",
+      "original_sha256": "e21bdd6e33b9afdab1087818dadf64d2531c6474d76c406d04387301add703c8",
+      "path": "assets/classic/units/explosion.png",
+      "sha256": "99087ab512ccb964593ec5957e650401062fab939c636222a71172335c727c8f",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "city": {
+      "original": "data/graphics/city.bmp",
+      "original_sha256": "dabee1d58d0d593c02b497dc3958588f3e84e329e6de9704345fd283ef7d66b2",
+      "path": "assets/classic/units/city.png",
+      "sha256": "2b6b3fafed211a9e658129b9b97303efd416aa6d660c2ddcf6caf374e5e79e0b",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    },
+    "fleet": {
+      "original": "data/graphics/fleet.bmp",
+      "original_sha256": "512f030650ae52ff4444e25834bb704a0a0ad3a815324a563addf6830838ec57",
+      "path": "assets/classic/units/fleet.png",
+      "sha256": "b704b1500d5b248ff97a32a3cb666012922a0b59c9a03d145731b2a45d52bcd8",
+      "conversion": "RGB luminance to alpha; original pixels and dimensions retained"
+    }
+  },
+  "audio": {
+    "alarm1": {
+      "path": "assets/classic/audio/alarm1.ogg",
+      "sha256": "504467b226791018fc7bbeb7c796ecfb921e80cc1145bd14947bd46fbfb9b02a",
+      "bytes": 22543
+    },
+    "alarm2": {
+      "path": "assets/classic/audio/alarm2.ogg",
+      "sha256": "ab1d4f18df3402bf7574d10dc387ea8e00a4e87b4c5a1e08e5884ac2a790ff01",
+      "bytes": 53771
+    },
+    "beep_harsh_malfunction": {
+      "path": "assets/classic/audio/beep_harsh_malfunction.ogg",
+      "sha256": "3ce72cfc4a140bec9169ef6fa618c15fae90323223d1e2137d3b37149fa29956",
+      "bytes": 14592
+    },
+    "boots_verb": {
+      "path": "assets/classic/audio/boots_verb.ogg",
+      "sha256": "aba9c81c2503f04e90d0a1acb7a8b3bd85ca7fd24ab7c9f7d223a8a7a932ed2a",
+      "bytes": 258600
+    },
+    "bunker1": {
+      "path": "assets/classic/audio/bunker1.ogg",
+      "sha256": "1e0d79bf0b212c97fdecbebc0f29226887bf3e2145acb0182b0a503b19994781",
+      "bytes": 944467
+    },
+    "bunker6": {
+      "path": "assets/classic/audio/bunker6.ogg",
+      "sha256": "7b987944a04286747f28407799896af423f5d9f23475c911ad75aa13c7f179a1",
+      "bytes": 814693
+    },
+    "bunker7": {
+      "path": "assets/classic/audio/bunker7.ogg",
+      "sha256": "0da074999312f70a584c1c97e2fd32da77935bf1faeaea2f267e2dc1a14ed0a5",
+      "bytes": 926027
+    },
+    "bunker8": {
+      "path": "assets/classic/audio/bunker8.ogg",
+      "sha256": "77544021c9e57a3d7953a6a5c786e1e409cbfbbc65c4996e696de6a9cbc660d1",
+      "bytes": 965394
+    },
+    "chat": {
+      "path": "assets/classic/audio/chat.ogg",
+      "sha256": "83443ead50fa740e65d6bf2c48ed5f5c61e11c2cf39eb491f076ce9715a1e201",
+      "bytes": 4588
+    },
+    "chat2": {
+      "path": "assets/classic/audio/chat2.ogg",
+      "sha256": "ee1fc12ddaa5a482fcbea09c59bc68bdda97e1129e12042ffcf971290590bf30",
+      "bytes": 13539
+    },
+    "defcon5a": {
+      "path": "assets/classic/audio/defcon5a.ogg",
+      "sha256": "23e3f684d47f1f2d8cc5d8890f6a3709178c160e0e5b388e66009a79d4d996d0",
+      "bytes": 783450
+    },
+    "defcon5b": {
+      "path": "assets/classic/audio/defcon5b.ogg",
+      "sha256": "50c93634c119b1bccbd03e214f250ffc703bc1fe2863cc8890d569957b6177e1",
+      "bytes": 441992
+    },
+    "defcon5c": {
+      "path": "assets/classic/audio/defcon5c.ogg",
+      "sha256": "0d999acc5656118e60b2832545939b3887b02ea092d48e45170b66fe3218ef35",
+      "bytes": 755870
+    },
+    "defcon5d": {
+      "path": "assets/classic/audio/defcon5d.ogg",
+      "sha256": "d1beaf020e389101d6d58158dd731c874a6b5efb203cff5a6cc2287a50e27323",
+      "bytes": 776880
+    },
+    "defcon5e": {
+      "path": "assets/classic/audio/defcon5e.ogg",
+      "sha256": "17a3b7483ea87f0c9e2cc1b3b2eb5757bf61ebd3349845509acba8dddc26c793",
+      "bytes": 536177
+    },
+    "defcon6a": {
+      "path": "assets/classic/audio/defcon6a.ogg",
+      "sha256": "6198c9f938f4f612520835e86eb08023b7b398875cdf99f5ccc082c2afecf007",
+      "bytes": 3344810
+    },
+    "defcon6b": {
+      "path": "assets/classic/audio/defcon6b.ogg",
+      "sha256": "e34811df5b595f4b6d1cee2d38e589e7c16007951f66c567575e196afa110e17",
+      "bytes": 2576372
+    },
+    "defcon6c": {
+      "path": "assets/classic/audio/defcon6c.ogg",
+      "sha256": "1aee3275fc5064ee3c41eda29f2c778891d691170b46795a30b7323be31ae7b3",
+      "bytes": 4344558
+    },
+    "defconmus1a": {
+      "path": "assets/classic/audio/defconmus1a.ogg",
+      "sha256": "39f3e9983eea77dbb04ddaea729d8b9520ef79c1730383910cbfdd72b6c57c37",
+      "bytes": 1326504
+    },
+    "defconmus1b": {
+      "path": "assets/classic/audio/defconmus1b.ogg",
+      "sha256": "e0796a981a4b78e9c6e2e9dc6d3a287f560d9169efbb6962dc88d4bc65039c68",
+      "bytes": 1510426
+    },
+    "defconmus1c": {
+      "path": "assets/classic/audio/defconmus1c.ogg",
+      "sha256": "b6495d97d5d2e252b4d514f0ceb21e2581349a78337414132bb6bfcbc951f590",
+      "bytes": 1437409
+    },
+    "defconmus1d": {
+      "path": "assets/classic/audio/defconmus1d.ogg",
+      "sha256": "02cd646d3c4dd06395ee2ea537f3f40cad5fbe95bfef2d554d243e1b879e8757",
+      "bytes": 1256020
+    },
+    "defconmus1e": {
+      "path": "assets/classic/audio/defconmus1e.ogg",
+      "sha256": "384a9868b095963a6279abe8416268b7f98896bc3eba7e709d12a2c0dcbb110d",
+      "bytes": 1290442
+    },
+    "defconmus1f": {
+      "path": "assets/classic/audio/defconmus1f.ogg",
+      "sha256": "22eee40eff37c6d8da9f8cba80ceb25595e555584c0f88b3818c5f1d657607a8",
+      "bytes": 1300289
+    },
+    "defconmus1g": {
+      "path": "assets/classic/audio/defconmus1g.ogg",
+      "sha256": "6403e2acb804b6bae2e12df88adb3bcc12dbead90c8920c0e14bb370b8785b7b",
+      "bytes": 1257413
+    },
+    "defconmus2a": {
+      "path": "assets/classic/audio/defconmus2a.ogg",
+      "sha256": "3db2b94833da2be60cc0913c1a0c5de881b3f71b3b472186aa239d989ef29976",
+      "bytes": 1219629
+    },
+    "defconmus2b": {
+      "path": "assets/classic/audio/defconmus2b.ogg",
+      "sha256": "3827862607d14011906829c301479451edaf852c0a73c73628a9819c34365df9",
+      "bytes": 395722
+    },
+    "defconmus2c": {
+      "path": "assets/classic/audio/defconmus2c.ogg",
+      "sha256": "096cdd87b70bbea1246b1ee1aab0e63af26181595c6fe74eae4fd304e7c28393",
+      "bytes": 655024
+    },
+    "defconmus2d": {
+      "path": "assets/classic/audio/defconmus2d.ogg",
+      "sha256": "f4f0d064fb2192c36b620854a23b070810e53724416676ae82b6c3aebe411b23",
+      "bytes": 877545
+    },
+    "defconmus2e": {
+      "path": "assets/classic/audio/defconmus2e.ogg",
+      "sha256": "c453bf13592cd97c643ddf61e96da28ec2e7604b96913841923a8bd71b23d2df",
+      "bytes": 900602
+    },
+    "defconmus2f": {
+      "path": "assets/classic/audio/defconmus2f.ogg",
+      "sha256": "2ebf6558e8416b68458a27cee45a5ded33414bc4b67cecff4c57a5ea255d84a9",
+      "bytes": 1129913
+    },
+    "defconmus3a": {
+      "path": "assets/classic/audio/defconmus3a.ogg",
+      "sha256": "9ad9caf328c41c886a601c50310df401b04110bf9929ee12bd4479a6f46f2657",
+      "bytes": 2632770
+    },
+    "defconmus3b": {
+      "path": "assets/classic/audio/defconmus3b.ogg",
+      "sha256": "f7595d78e302409ea530219c9318446c143f8c566d088dc39b6b0af51e32c89a",
+      "bytes": 1773710
+    },
+    "defconmus3c": {
+      "path": "assets/classic/audio/defconmus3c.ogg",
+      "sha256": "53aca30b9d6d71f9a671eb8605766fec2fadc3680e9fa52e825c66b6b325dac4",
+      "bytes": 1956667
+    },
+    "defconmus3d": {
+      "path": "assets/classic/audio/defconmus3d.ogg",
+      "sha256": "6a78ae6d0880a099b780d0dc54742a739da8588073e923c96a6cd63a27b3876e",
+      "bytes": 3719440
+    },
+    "defconmus4a": {
+      "path": "assets/classic/audio/defconmus4a.ogg",
+      "sha256": "1f2dbcb1321b4ce5f9ca8aa31862e42c67a27272321018cdf8ddce9995db63df",
+      "bytes": 3085781
+    },
+    "defconmus4b": {
+      "path": "assets/classic/audio/defconmus4b.ogg",
+      "sha256": "5e68171bd8837a0d57a6cf20446113c823313d47f66a9a7d7e5150abea6cfb94",
+      "bytes": 2907041
+    },
+    "defconmus4c": {
+      "path": "assets/classic/audio/defconmus4c.ogg",
+      "sha256": "b92384a02280ae59423265832705a5d1f0dcc61ed8fb2defebf0ad476e0cbbc5",
+      "bytes": 4161123
+    },
+    "defconstage": {
+      "path": "assets/classic/audio/defconstage.ogg",
+      "sha256": "96073d0e8e52794922955384f8bf045c671860b31e1f3858ed9e78a5e9a4aff0",
+      "bytes": 75730
+    },
+    "depthcharge": {
+      "path": "assets/classic/audio/depthcharge.ogg",
+      "sha256": "7e866c73cd211c36be4968066ba8d960743729651094b938b18fe351e08ed515",
+      "bytes": 94632
+    },
+    "depthcharge2": {
+      "path": "assets/classic/audio/depthcharge2.ogg",
+      "sha256": "3f769f52fcec6340c4f50025921cdd03c9d6be84f747d8d811fd551934f4ea53",
+      "bytes": 93498
+    },
+    "depthcharge3": {
+      "path": "assets/classic/audio/depthcharge3.ogg",
+      "sha256": "2f93f76d46c4d176aa518fe3df3bd573895403a4600e9a38b0bd3f52997906be",
+      "bytes": 93647
+    },
+    "depthcharge4": {
+      "path": "assets/classic/audio/depthcharge4.ogg",
+      "sha256": "e85ddda91a7cd596cdad0bd0e5e46be48d4523741f5aec7aabfa27bb20d6c0a8",
+      "bytes": 102799
+    },
+    "depthcharge5": {
+      "path": "assets/classic/audio/depthcharge5.ogg",
+      "sha256": "f06260812a764aaebcc621cf5804c6c196d111ca3984b8385d300d612753dbee",
+      "bytes": 118755
+    },
+    "depthcharge6": {
+      "path": "assets/classic/audio/depthcharge6.ogg",
+      "sha256": "25bad6eff1c637904b29e1223ef3863516524844caf78221d912edd06e70b12d",
+      "bytes": 84230
+    },
+    "depthcharge7": {
+      "path": "assets/classic/audio/depthcharge7.ogg",
+      "sha256": "bfda0b53085da65e1180fcc372c760736e82ca15ccdd21403bf0c636fbf4b3b5",
+      "bytes": 88514
+    },
+    "door_closeverb": {
+      "path": "assets/classic/audio/door_closeverb.ogg",
+      "sha256": "b8ac20f4132342c170a9449b6d06e036090fbc76c4f98e7d244586b3ab98c0b7",
+      "bytes": 41908
+    },
+    "door_openverb": {
+      "path": "assets/classic/audio/door_openverb.ogg",
+      "sha256": "e4f162930f65ea93fcb78db923ec111ccaf14ba575293b0eba14a849c272b85d",
+      "bytes": 31609
+    },
+    "emp": {
+      "path": "assets/classic/audio/emp.ogg",
+      "sha256": "fbf17cf8019639440ce137c4665a2444e1f1f3fed8967af9163960f85bdc151d",
+      "bytes": 134220
+    },
+    "emp2": {
+      "path": "assets/classic/audio/emp2.ogg",
+      "sha256": "4f3be4733c3616d706f99e0cf30deef14f915afc4e11f4e8aca30df589498a87",
+      "bytes": 110371
+    },
+    "emp3": {
+      "path": "assets/classic/audio/emp3.ogg",
+      "sha256": "77aa77bc980cd7edbfd0f2d75b358213352bedd981ef565059b93497094e8a74",
+      "bytes": 118180
+    },
+    "emp4": {
+      "path": "assets/classic/audio/emp4.ogg",
+      "sha256": "563cd76ef71fddcd1eaed059947bdd8cd222aa4025fe93e0d52cd41bdea6eb86",
+      "bytes": 117315
+    },
+    "emp5": {
+      "path": "assets/classic/audio/emp5.ogg",
+      "sha256": "923f9c0d82ea97b3f442a05e87dc5196a00637ba1f2c3b5c9c0f663a5a0cac3d",
+      "bytes": 122610
+    },
+    "enemylaunch2": {
+      "path": "assets/classic/audio/enemylaunch2.ogg",
+      "sha256": "c71e3a8a3abaddd638d39491613ab48abaed5ee0d9744b69ec7beeae69ee1119",
+      "bytes": 83403
+    },
+    "fallout": {
+      "path": "assets/classic/audio/fallout.ogg",
+      "sha256": "b05208f130a8531681e5f5c41ab85e5ee1c19d563cd6c0c1a27004a3f8453f1a",
+      "bytes": 134772
+    },
+    "fallout10": {
+      "path": "assets/classic/audio/fallout10.ogg",
+      "sha256": "bde52df0f2504018b5790a780bd7819d7886b321c7d039adffe50c533cdf6693",
+      "bytes": 107315
+    },
+    "fallout11": {
+      "path": "assets/classic/audio/fallout11.ogg",
+      "sha256": "9b0df316d181b455660ad6859bcc669503ad789afa3a5c8cdfdf7a37aff410f2",
+      "bytes": 122317
+    },
+    "fallout12": {
+      "path": "assets/classic/audio/fallout12.ogg",
+      "sha256": "feca1a5579d6eff9720377529d150eab103c1f5cf7ea958304e5a7dd863cc1da",
+      "bytes": 111577
+    },
+    "fallout13": {
+      "path": "assets/classic/audio/fallout13.ogg",
+      "sha256": "14ca003b361d0104de1a272b6bdc11a47b38da3b6802381a6a9630f2ffff856e",
+      "bytes": 109399
+    },
+    "fallout2": {
+      "path": "assets/classic/audio/fallout2.ogg",
+      "sha256": "c7b03e6c78893f0f0fc556828b6fac67adb4e71a9613d9f9bc696160a2978920",
+      "bytes": 154356
+    },
+    "fallout3": {
+      "path": "assets/classic/audio/fallout3.ogg",
+      "sha256": "2c67bd43471448b6ab59320bd15f44109a2297c30c02f4355d1442077744faf9",
+      "bytes": 150924
+    },
+    "fallout4": {
+      "path": "assets/classic/audio/fallout4.ogg",
+      "sha256": "ca52c2bb1092c2d7d02a50d7dc73b487f021300f8f2ba6581db982c80c9613f4",
+      "bytes": 147586
+    },
+    "fallout5": {
+      "path": "assets/classic/audio/fallout5.ogg",
+      "sha256": "09a6f685b3bcc5ceb273b763b4e79073cd305f3fb6951ac089cc9bff708bf23d",
+      "bytes": 108264
+    },
+    "fallout7": {
+      "path": "assets/classic/audio/fallout7.ogg",
+      "sha256": "43395b567c2ede1b8786a9465bccca56c57f933316c2f0ec08c01d0db8593eb5",
+      "bytes": 107347
+    },
+    "fallout8": {
+      "path": "assets/classic/audio/fallout8.ogg",
+      "sha256": "75ec39f87d46223673ce02174a4de67b79686ec0b433217c3ff84ea3f4159c8f",
+      "bytes": 112744
+    },
+    "fallout9": {
+      "path": "assets/classic/audio/fallout9.ogg",
+      "sha256": "85795619a4e547959f5fa0ad4fb2dbc7f85d40a5b6c1c4ff71e487014efa804e",
+      "bytes": 122982
+    },
+    "gameover": {
+      "path": "assets/classic/audio/gameover.ogg",
+      "sha256": "610155f779e150ca938a53ce61c2a8492ef40a103662ef023773ac4638eb6ca1",
+      "bytes": 97159
+    },
+    "gasmask_verb": {
+      "path": "assets/classic/audio/gasmask_verb.ogg",
+      "sha256": "3ebcc6590a0768364ff89e8001e9c3aeb2163bb1426cc3681f0b73a4e5317b3c",
+      "bytes": 222004
+    },
+    "hilite1": {
+      "path": "assets/classic/audio/hilite1.ogg",
+      "sha256": "ed413d7e82448a423e25e2e20bfae62d415dc1b56bac6dfe7ccb234d6cee0b14",
+      "bytes": 7249
+    },
+    "hilite1alt": {
+      "path": "assets/classic/audio/hilite1alt.ogg",
+      "sha256": "cf617f84cb081633bf49e43b949e872fea1b125226d116a179ec0673ecd3e9d6",
+      "bytes": 27367
+    },
+    "launchdetecetd": {
+      "path": "assets/classic/audio/launchdetecetd.ogg",
+      "sha256": "3168fd46ed27f93938bf96fbfba3639f9aec2165e6067927065d46461259d79c",
+      "bytes": 44014
+    },
+    "lords_prayer": {
+      "path": "assets/classic/audio/lords_prayer.ogg",
+      "sha256": "433d4cac329d404edf570f6aea029b6af0cfb8a23316721f30019bfba7b4a4ca",
+      "bytes": 569764
+    },
+    "mancough_verb": {
+      "path": "assets/classic/audio/mancough_verb.ogg",
+      "sha256": "88a2c04f847163a90c922a7473889a8cd8c974c3bb57e305145f8db16849e769",
+      "bytes": 85034
+    },
+    "mouseclick1": {
+      "path": "assets/classic/audio/mouseclick1.ogg",
+      "sha256": "36674612fc220c67c8f0f4a16587134855053b2ee177d59c7f33f723f6874345",
+      "bytes": 5142
+    },
+    "nuke_rumble1": {
+      "path": "assets/classic/audio/nuke_rumble1.ogg",
+      "sha256": "c7bd314cba634ff0b71a68f53412e0c5fcb677dffe23caba8228faa3caec41b4",
+      "bytes": 196949
+    },
+    "nuke_rumble2": {
+      "path": "assets/classic/audio/nuke_rumble2.ogg",
+      "sha256": "c29fed862f191f8aa4ec4bd600c130a02503b5da1ddf0345bad3bf68bbd76bbb",
+      "bytes": 196260
+    },
+    "nuke_rumble3": {
+      "path": "assets/classic/audio/nuke_rumble3.ogg",
+      "sha256": "352c3a136881dfd0e24dc76383952b52e820870c8aeed277c16f8da52b864317",
+      "bytes": 208792
+    },
+    "paper_rustle_verb": {
+      "path": "assets/classic/audio/paper_rustle_verb.ogg",
+      "sha256": "9e088a107352f544edae77254d3c35d4d06104257447d9b7710dfeaa2e099f47",
+      "bytes": 159235
+    },
+    "printer_verb": {
+      "path": "assets/classic/audio/printer_verb.ogg",
+      "sha256": "93830cd2634631944ea6b841f0d19a6678a47480d33a186409d7b956e8d54b99",
+      "bytes": 176899
+    },
+    "radio_tuningverb": {
+      "path": "assets/classic/audio/radio_tuningverb.ogg",
+      "sha256": "5afe6209e95d21405d8650db045dfea0ac20e95f643eff43213e80ab6648fe21",
+      "bytes": 404706
+    },
+    "rollover1a": {
+      "path": "assets/classic/audio/rollover1a.ogg",
+      "sha256": "3a17931abde2e4a1de46dc90e52d2445ea437f86a208a748ac05ff48c72e4259",
+      "bytes": 4148
+    },
+    "rollover1a_wet": {
+      "path": "assets/classic/audio/rollover1a_wet.ogg",
+      "sha256": "7cfbf00e978c2188cfcdbdf90774601ddfdf85f9b42795264134e9f45be8bbb1",
+      "bytes": 29793
+    },
+    "rollover1b": {
+      "path": "assets/classic/audio/rollover1b.ogg",
+      "sha256": "0b7a4398bf652f0737949938cce0e8caa66dce5237a87492c572eb6689bb0e7f",
+      "bytes": 4429
+    },
+    "rollover1b_wet": {
+      "path": "assets/classic/audio/rollover1b_wet.ogg",
+      "sha256": "8630fd33e4180a938d38691162aabbc4e97de335867d4672fcfbad01c9ed2ed9",
+      "bytes": 29460
+    },
+    "rollover1c": {
+      "path": "assets/classic/audio/rollover1c.ogg",
+      "sha256": "da12ef85689cbba719e73ee7447cbdefbadb2a8b00fe078886f3293852b7a6ab",
+      "bytes": 4164
+    },
+    "rollover1c_wet": {
+      "path": "assets/classic/audio/rollover1c_wet.ogg",
+      "sha256": "850ee25a4aa499cbabd10d228e9453bd5aab4e0ae49f57cad1752df885d4cc18",
+      "bytes": 29378
+    },
+    "rollover1d": {
+      "path": "assets/classic/audio/rollover1d.ogg",
+      "sha256": "9736eb3ce655dac5f26fbfab17da189f264c7a1a1767fb0a6a66bf7aa6539306",
+      "bytes": 4455
+    },
+    "rollover1d_wet": {
+      "path": "assets/classic/audio/rollover1d_wet.ogg",
+      "sha256": "ba5b9a2c9fbe294ff0e93a8bda68cd4cbbd3a3b9fa8f33dfc5013db95e023de3",
+      "bytes": 28935
+    },
+    "rollover1e": {
+      "path": "assets/classic/audio/rollover1e.ogg",
+      "sha256": "8716367246ae24c53774222b58e637d321c81154c7ecd9e98d181cfe597538a3",
+      "bytes": 4455
+    },
+    "rollover1e_wet": {
+      "path": "assets/classic/audio/rollover1e_wet.ogg",
+      "sha256": "3b1172ee3a1979020c319fed05a65dc97153453d2cac9209842d4e58031e0393",
+      "bytes": 28798
+    },
+    "rollover1f": {
+      "path": "assets/classic/audio/rollover1f.ogg",
+      "sha256": "942f92375cbc8fd7d49a9f8360d9138a3ad9ed081cf7d95db12fb9ccd31fe8d5",
+      "bytes": 4183
+    },
+    "rollover1f_wet": {
+      "path": "assets/classic/audio/rollover1f_wet.ogg",
+      "sha256": "f2069e2d5a5128cac96854228fdf2642c3c649156f4941194fbcf388918e0c2d",
+      "bytes": 28567
+    },
+    "sonar_ping1": {
+      "path": "assets/classic/audio/sonar_ping1.ogg",
+      "sha256": "a34dfda59872cd1dd900df4e0a619f0d8899cb9da0fe54de3256ecad277161d5",
+      "bytes": 75512
+    },
+    "sonar_ping2": {
+      "path": "assets/classic/audio/sonar_ping2.ogg",
+      "sha256": "3f51f7972cb4b650eaafd79474e3c2781c86f16832b0c3c57badeaf690995601",
+      "bytes": 70048
+    },
+    "sonar_ping3": {
+      "path": "assets/classic/audio/sonar_ping3.ogg",
+      "sha256": "ebd38fc0cf81d647159c8eef605bd17168f6009bd9b3e30a310c3d8e0e4d73c6",
+      "bytes": 47795
+    },
+    "sonarpingnew1": {
+      "path": "assets/classic/audio/sonarpingnew1.ogg",
+      "sha256": "02be57c5a74429d9690c9c27a5db3e8f30d7ed0db6a3436b0b91d46a5e83468e",
+      "bytes": 130235
+    },
+    "sonarpingnew2": {
+      "path": "assets/classic/audio/sonarpingnew2.ogg",
+      "sha256": "7c2d91a04eeee322fe772262d529da2a13a47704a7dfff3e8876b639d557fa21",
+      "bytes": 116562
+    },
+    "souls": {
+      "path": "assets/classic/audio/souls.ogg",
+      "sha256": "00613e8dc9058fe13f48964c63b77da10e5c1c16682ec1f8351ac4c9e7e0432f",
+      "bytes": 126189
+    },
+    "souls2": {
+      "path": "assets/classic/audio/souls2.ogg",
+      "sha256": "c919ae0ba1ebaa38f86c90915a85ac59b4a9df712993731d6a026253a360032b",
+      "bytes": 105376
+    },
+    "souls3": {
+      "path": "assets/classic/audio/souls3.ogg",
+      "sha256": "8dc3f5019c405c089e9a5546a03a1dc88eb81db60ba8d74807e4b8e11eb8c4ce",
+      "bytes": 119033
+    },
+    "souls4": {
+      "path": "assets/classic/audio/souls4.ogg",
+      "sha256": "06d99788600d1b7b530dc264feb450dab6b9aeb57c14fbb616ca97a4be3c538a",
+      "bytes": 137044
+    },
+    "souls5": {
+      "path": "assets/classic/audio/souls5.ogg",
+      "sha256": "b6175ff7907a6ac1eca161c6a742a3d09c2a58ae0fa00a9402e9bdad7562f3fa",
+      "bytes": 121930
+    },
+    "souls6": {
+      "path": "assets/classic/audio/souls6.ogg",
+      "sha256": "1c30e243032a03483023b3ff955dad84158fe00921eea45d335f1452a72099f3",
+      "bytes": 119500
+    },
+    "souls7": {
+      "path": "assets/classic/audio/souls7.ogg",
+      "sha256": "c76c17db773883ba1ea986d6b2d66385c06efe19fd097e380c435ee07df4809a",
+      "bytes": 130195
+    },
+    "telemetry1verb": {
+      "path": "assets/classic/audio/telemetry1verb.ogg",
+      "sha256": "f0cdc19ee8e0e4b8b645798e1c5fb5a4ad92fd21525da88fb62518bf6d560cb2",
+      "bytes": 89239
+    },
+    "telemetry2verb": {
+      "path": "assets/classic/audio/telemetry2verb.ogg",
+      "sha256": "c0be76064fc1360d508fe26f6b3f1a9b7431d9b0f88258b9a323b49ce3043ccd",
+      "bytes": 87131
+    },
+    "telemetry3verb": {
+      "path": "assets/classic/audio/telemetry3verb.ogg",
+      "sha256": "63d2bb699ef95a51c09fc400dda53e348e2bd3d5e39366b890518c5e2f66ed83",
+      "bytes": 77142
+    },
+    "teleprinter_verb": {
+      "path": "assets/classic/audio/teleprinter_verb.ogg",
+      "sha256": "8888eccbfb66cdd9b9679b9598c1480eab272067102dd51c51923a11c0713a83",
+      "bytes": 238164
+    },
+    "text1a": {
+      "path": "assets/classic/audio/text1a.ogg",
+      "sha256": "caaa98aedc6ff1ad1902311a7b6da9fb4ac8b0e17b9fea7dd0e720cf5f5e131b",
+      "bytes": 4962
+    },
+    "text1b": {
+      "path": "assets/classic/audio/text1b.ogg",
+      "sha256": "4aa0bfad11eb3aa01ca3a2df0751d0f26777fae5051aac2f77cc57cac0bf5b07",
+      "bytes": 4593
+    },
+    "text1c": {
+      "path": "assets/classic/audio/text1c.ogg",
+      "sha256": "a0e809314f346498504c13ae7de3dfd8673616c0198a2f37291ffe2d3d75fdb7",
+      "bytes": 4698
+    },
+    "text1d": {
+      "path": "assets/classic/audio/text1d.ogg",
+      "sha256": "8eeaf0d6929686422c6ff4deaf230f6cf11b9daaefc04bb4fd32917aed83861f",
+      "bytes": 4970
+    },
+    "womancough_verb": {
+      "path": "assets/classic/audio/womancough_verb.ogg",
+      "sha256": "f233d44bb9058f87a03458d563e2dda476b4883f7cf42fc41cfce849cd5a26f0",
+      "bytes": 78583
+    },
+    "womancry2_verb": {
+      "path": "assets/classic/audio/womancry2_verb.ogg",
+      "sha256": "5117844b61e22cf875c7eb3d062a7efb17d35e13534eed40696048e2e5869f4d",
+      "bytes": 714762
+    },
+    "womancry_verb": {
+      "path": "assets/classic/audio/womancry_verb.ogg",
+      "sha256": "437615bbf94d20aa48c6ee3e473e5966646d9f0863c6cd846f7aabfc08bce05d",
+      "bytes": 193611
+    }
+  }
+}

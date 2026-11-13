@@ -8,13 +8,13 @@ product
 A player at a desktop in a dim room, watching an escalating global conflict and issuing tactical orders. The user authorized autonomous decisions and asked for a complete playable game.
 
 ## Product Purpose
-An original browser strategy game inspired by the atmosphere of classic DEFCON. Play a complete war against AI or inspect ship, fighter, bomber and nuclear engagements in a configurable battle lab.
+Reconstruct the classic DEFCON unit baseline inside the established BLACKOUT layout. Retain map/background colors, use original unit and audio assets from the user-provided installer, and source gameplay changes to native evidence or the manual. Battle lab remains a distinct sandbox.
 
 ## Brand Personality
-Clinical, ominous, cinematic. Distant radio traffic and mechanical military instrumentation make escalation feel consequential.
+Clinical, ominous, cinematic. Original DEFCON music, interface warnings and bunker recordings make escalation feel consequential.
 
 ## Anti-references
-No marketing landing page, cartoon weapons, decorative card grids or copied commercial game assets.
+No marketing landing page, cartoon weapons, decorative card grids or invented combat mechanics represented as native behavior.
 
 ## Design Principles
 The world map is the primary interaction surface. Orders always produce observable feedback. Escalation changes the actual rules of combat. Every session has a clear outcome and can restart.

@@ -1,87 +1,100 @@
-export const TYPES = {
- battleship:{name:'Battleship',hp:160,speed:1.35,range:16,damage:23,cooldown:3.8,cost:3,domain:'sea',targets:['sea','air'],icon:'ship'},
- carrier:{name:'Carrier',hp:200,speed:.9,range:12,damage:12,cooldown:4,cost:4,domain:'sea',targets:['air','sea'],icon:'carrier'},
- submarine:{name:'Submarine',hp:85,speed:1.1,range:15,damage:30,cooldown:6,cost:3,domain:'sea',targets:['sea'],icon:'sub'},
- fighter:{name:'Fighter',hp:55,speed:5.4,range:11,damage:20,cooldown:2.2,cost:2,domain:'air',targets:['air'],icon:'fighter'},
- bomber:{name:'Bomber',hp:85,speed:2.9,range:10,damage:38,cooldown:6,cost:3,domain:'air',targets:['sea','ground'],icon:'bomber'},
- silo:{name:'Nuclear silo',hp:180,speed:0,range:24,damage:24,cooldown:3,cost:4,domain:'ground',targets:['air'],icon:'silo'},
- radar:{name:'Radar station',hp:100,speed:0,range:0,damage:0,cooldown:0,cost:2,domain:'ground',targets:[],icon:'radar'}
+// Values backed by v1.43 constructor disassembly are documented in research/BASELINE.md.
+export const TYPES={
+ battleship:{name:'Battleship',hp:3,speed:.03,turn:.01,radar:10,range:10,reload:20,domain:'sea',targets:['sea','air'],icon:'battleship'},
+ carrier:{name:'Carrier',hp:3,speed:.03,turn:.01,radar:15,range:5,reload:60,domain:'sea',targets:['sub'],icon:'carrier'},
+ submarine:{name:'Submarine',hp:1,speed:.02,turn:.01,radar:0,range:5,reload:20,domain:'sea',targets:['sea'],icon:'sub'},
+ fighter:{name:'Fighter',hp:1,speed:.1,turn:.04,radar:5,range:5,reload:20,fuel:45,domain:'air',targets:['air'],icon:'fighter'},
+ bomber:{name:'Bomber',hp:1,speed:.05,turn:.01,radar:5,range:10,reload:30,fuel:140,domain:'air',targets:['sea'],icon:'bomber'},
+ silo:{name:'Missile silo',hp:25,speed:0,turn:0,radar:20,range:10,reload:20,domain:'ground',targets:['air'],icon:'silo'},
+ airbase:{name:'Airbase',hp:15,speed:0,turn:0,radar:20,range:0,reload:120,domain:'ground',targets:[],icon:'airbase'},
+ radar:{name:'Radar station',hp:1,speed:0,turn:0,radar:30,range:0,reload:0,domain:'ground',targets:[],icon:'radarstation'}
 };
-export const CITIES=[
- ['New York',-74,41,8.8,0],['Washington',-77,39,6.3,0],['Chicago',-88,42,9.5,0],['Los Angeles',-118,34,12.5,0],['Seattle',-122,48,4.1,0],['Houston',-95,30,7.1,0],['Toronto',-79,44,6.2,0],['Mexico City',-99,19,21.8,0],
- ['London',0,51,9,1],['Paris',2,49,11.1,1],['Berlin',13,52,6.1,1],['Moscow',38,56,12.7,1],['Rome',12,42,4.3,1],['Beijing',116,40,21.5,1],['Shanghai',121,31,24.9,1],['Tokyo',140,36,37.4,1],['Mumbai',73,19,20.7,1],['Tehran',51,36,9.3,1]
-];
-const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+export const MODES={
+ carrier:[{id:'fighter',name:'Fighter launch',prepare:120},{id:'bomber',name:'Bomber launch',prepare:120},{id:'antisub',name:'Anti-submarine',prepare:240}],
+ airbase:[{id:'fighter',name:'Fighter launch',prepare:120},{id:'bomber',name:'Bomber launch',prepare:120}],
+ submarine:[{id:'passive',name:'Passive sonar',prepare:240},{id:'active',name:'Active sonar',prepare:240},{id:'launch',name:'MRBM launch',prepare:120}],
+ silo:[{id:'defense',name:'Air defense',prepare:340},{id:'launch',name:'ICBM launch',prepare:120}],
+ bomber:[{id:'naval',name:'Naval combat',prepare:60},{id:'nuclear',name:'SRBM launch',prepare:240}]
+};
+export const INITIAL_STOCK={battleship:12,carrier:12,submarine:12,silo:6,airbase:4,radar:7};
+export const PHASE_ENDS={5:360,4:720,3:1200,2:1800};
+export const CITIES=[['New York',-74,41,8.8,0],['Washington',-77,39,6.3,0],['Chicago',-88,42,9.5,0],['Los Angeles',-118,34,12.5,0],['Seattle',-122,48,4.1,0],['Houston',-95,30,7.1,0],['Toronto',-79,44,6.2,0],['Mexico City',-99,19,21.8,0],['London',0,51,9,1],['Paris',2,49,11.1,1],['Berlin',13,52,6.1,1],['Moscow',38,56,12.7,1],['Rome',12,42,4.3,1],['Beijing',116,40,21.5,1],['Shanghai',121,31,24.9,1],['Tokyo',140,36,37.4,1],['Mumbai',73,19,20.7,1],['Tehran',51,36,9.3,1]];
+export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 export class Simulation {
- constructor({mode='war',seed=42,difficulty='standard',left='battleship',right='bomber',count=5}={}) {
-  this.mode=mode;this.seed=seed;this.difficulty=difficulty;this.time=0;this.phase=mode==='lab'?1:5;this.units=[];this.missiles=[];this.shots=[];this.blasts=[];this.events=[];this.nextId=1;this.losses=[0,0];this.kills=[0,0];this.remaining=[36,36];this.budget=16;this.running=false;this.ended=false;this.winner=null;this.aiClock=0;this.onEvent=()=>{};this.onEffect=()=>{};this.alert=0;this.totalNukes=0;this.radioClock=0;this.radioIndex=0;
+ constructor({mode='war',seed=42,difficulty='standard',left='battleship',right='bomber',count=5}={}){
+  this.mode=mode;this.seed=seed;this.difficulty=difficulty;this.time=0;this.phase=mode==='lab'?1:5;this.units=[];this.fleets=[];this.missiles=[];this.shots=[];this.blasts=[];this.events=[];this.nextId=1;this.losses=[0,0];this.kills=[0,0];this.running=false;this.started=false;this.ended=false;this.winner=null;this.onEvent=()=>{};this.onEffect=()=>{};this.alert=0;this.totalNukes=0;this.aiClock=0;this.victoryAt=null;this.navigation=null;this.stock=[{...INITIAL_STOCK},{...INITIAL_STOCK}];this.ghosts=new Map();
   this.cities=CITIES.map(([name,x,y,pop,team])=>({name,x,y,pop,initial:pop,team,dead:false}));
-  if(mode==='lab'){this.setupLab(left,right,count);}else this.setupWar();
-  this.remaining=[0,1].map(team=>this.units.filter(u=>u.team===team).reduce((sum,u)=>sum+u.ammo,0));
+  // The default rules give each territory 100 million inhabitants.
+  for(const team of [0,1]){const total=this.cities.filter(c=>c.team===team).reduce((sum,c)=>sum+c.pop,0);for(const c of this.cities.filter(c=>c.team===team))c.pop=c.initial=c.pop/total*100;}
+  if(mode==='lab')this.setupLab(left,right,count);else this.setupWar();this.initialNukes=this.remaining.reduce((a,b)=>a+b,0);
  }
  random(){this.seed=(Math.imul(1664525,this.seed)+1013904223)>>>0;return this.seed/4294967296;}
- event(message,kind='info'){const e={time:this.time,message,kind,id:this.nextId++};this.events.unshift(e);this.events.length=Math.min(this.events.length,80);this.onEvent(e);}
- add(type,team,x,y){const t=TYPES[type];if(!t)return null;const u={id:this.nextId++,type,team,x,y,hp:t.hp,maxHp:t.hp,target:null,order:null,cooldown:this.random()*3,ammo:['bomber','submarine'].includes(type)?2:type==='silo'?6:0,heading:team===0?0:Math.PI,dead:false,kills:0,trail:[]};this.units.push(u);return u;}
- setupWar(){
-  for(const team of [0,1]){
-   const x=team===0?-64:-15;
-   for(let i=0;i<4;i++){this.add('battleship',team,x+(i%2)*5,24+Math.floor(i/2)*9);this.add('fighter',team,x-6,28+i*5);}
-   for(let i=0;i<2;i++){this.add('carrier',team,x-4,20+i*22);this.add('submarine',team,x+10,18+i*29);this.add('bomber',team,team===0?-82:4,32+i*12);}
-   for(let i=0;i<3;i++)this.add('silo',team,team===0?-112+i*15:10+i*17,team===0?39+i*3:49+i*2);
-   this.add('radar',team,team===0?-100:23,54);
-  }
-  this.event('Command uplink established. Atlantic theater online.');this.event('DEFCON 5 · Deploy forces. Weapons hold.','alert');
+ get remaining(){return [0,1].map(team=>this.units.filter(u=>!u.dead&&!u.landed&&u.team===team).reduce((sum,u)=>sum+u.ammo+(u.stockNukes||0),0));}
+ event(message,kind='info'){const e={time:this.time,message,kind,id:this.nextId++};this.events.unshift(e);this.events.length=Math.min(this.events.length,100);this.onEvent(e);}
+ add(type,team,x,y,{homeId=null,fleetId=null}={}){
+  const t=TYPES[type];if(!t)throw new Error(`Unknown unit: ${type}`);
+  const u={id:this.nextId++,type,team,x,y,hp:t.hp,maxHp:t.hp,target:null,order:null,path:[],cooldown:0,mode:MODES[type]?.[0].id||'combat',stateTimer:0,ammo:type==='silo'?10:type==='submarine'?5:type==='bomber'?1:0,stockNukes:type==='carrier'?6:type==='airbase'?10:0,fighters:type==='carrier'||type==='airbase'?5:0,bombers:type==='carrier'?2:type==='airbase'?5:0,fuel:t.fuel??null,maxFuel:t.fuel??null,heading:team===0?0:Math.PI,dead:false,landed:false,kills:0,trail:[],homeId,fleetId,returning:false,detectedUntil:[0,0],sonarClock:0,regenClock:0,launchQueue:[]};this.units.push(u);return u;
  }
- setupLab(left,right,count){
-  this.cities=[];this.labTypes=[left,right];
-  for(let i=0;i<count;i++)for(let team=0;team<2;team++){
-   const type=team===0?left:right;
-   const u=this.add(type==='nuclear'?'silo':type,team,team===0?-51:-12,22+i*6);
-   if(!u)continue;
-   if(type!=='nuclear'&&TYPES[u.type].speed>0)u.order={x:team===0?-10:-53,y:22+i*6};
-  }
-  this.event('Battle laboratory initialized. Weapons free.','alert');
+ fleet(types,team,x,y){const fleet={id:this.nextId++,team,members:[],order:null};this.fleets.push(fleet);types.forEach((type,i)=>{const p={x:x+(i%3-1)*1.6,y:y+(Math.floor(i/3)-.5)*1.8};const u=this.add(type,team,p.x,p.y,{fleetId:fleet.id});fleet.members.push(u.id);if(this.stock[team][type]>0)this.stock[team][type]--;});return fleet;}
+ setupWar(){for(const team of [0,1]){
+  this.fleet(['battleship','battleship','carrier','carrier','submarine','submarine'],team,team===0?-57:-24,28);
+  this.fleet(['battleship','battleship','carrier','carrier','submarine','submarine'],team,team===0?-49:-26,42);
+  for(const [type,x,y] of team===0?[['silo',-108,39],['silo',-94,43],['silo',-81,36],['airbase',-97,33],['airbase',-76,43],['radar',-101,49],['radar',-72,47]]:[['silo',10,49],['silo',28,53],['silo',43,56],['airbase',3,47],['airbase',31,50],['radar',18,59],['radar',40,59]]){this.add(type,team,x,y);this.stock[team][type]--;}
+ }this.event('Classic baseline v1.43. Starting forces deployed.');this.event('DEFCON 5 · Place remaining units. Weapons hold.','alert');}
+ setupLab(left,right,count){this.cities=[];this.labTypes=[left,right];count=clamp(Number(count)||1,1,10);for(const team of [0,1])for(let i=0;i<count;i++){
+  const choice=team===0?left:right,type=choice==='nuclear'?'silo':choice;const u=this.add(type,team,team===0?-40:-25,27+(i-(count-1)/2)*2.5);if(type==='silo'&&choice==='nuclear')u.mode='launch';if(type==='submarine')u.mode='active';if(type==='carrier')u.mode='antisub';if(TYPES[type].speed)u.order={x:team===0?-24:-41,y:u.y};
+ }this.event('Battle lab · Classic unit parameters. Observer visibility enabled.','alert');}
+ setMode(id,mode){const u=this.units.find(u=>u.id===id&&!u.dead&&!u.landed);const spec=u&&MODES[u.type]?.find(m=>m.id===mode);if(!spec||u.team!==0||this.ended)return {ok:false,reason:'State unavailable.'};if(u.mode===mode)return {ok:true};if(['launch','nuclear'].includes(mode)&&this.phase!==1)return {ok:false,reason:'Nuclear launch states unlock at DEFCON 1.'};u.mode=mode;u.stateTimer=spec.prepare;u.target=null;u.launchQueue=[];this.event(`${TYPES[u.type].name} ${u.id}: preparing ${spec.name.toLowerCase()} (${spec.prepare}s).`);return {ok:true};}
+ deploy(type,x,y,fleetTypes=null){if(this.ended||this.mode!=='war')return {ok:false,reason:'Deployment unavailable.'};if(this.phase<4)return {ok:false,reason:'Deployment closed at DEFCON 3.'};if(!TYPES[type]||!INITIAL_STOCK[type])return {ok:false,reason:'Aircraft must launch from an airbase or carrier.'};if(x< -160||x> -35||y<5||y>70)return {ok:false,reason:'Place within the western command sector.'};const choices=TYPES[type].domain==='sea'?(fleetTypes||[type]):[type];if(choices.length<1||choices.length>6||choices.some(t=>TYPES[t]?.domain!=='sea')&&TYPES[type].domain==='sea')return {ok:false,reason:'A fleet contains one to six naval units.'};for(const t of new Set(choices))if(choices.filter(v=>v===t).length>this.stock[0][t])return {ok:false,reason:`No ${TYPES[t].name.toLowerCase()} units remaining.`};if(this.navigation){const onLand=this.navigation.land(x,y);if(TYPES[type].domain==='sea'&&onLand)return {ok:false,reason:'Naval units must be placed at sea.'};if(TYPES[type].domain==='ground'&&!onLand)return {ok:false,reason:'Installations must be placed on land.'};if(TYPES[type].domain==='sea'&&choices.some((_,i)=>this.navigation.land(x+(i%3-1)*1.6,y+(Math.floor(i/3)-.5)*1.8)))return {ok:false,reason:'Entire fleet formation must fit in open water.'};}
+  if(TYPES[type].domain==='ground'&&this.units.some(u=>!u.dead&&u.team===0&&TYPES[u.type].domain==='ground'&&distance(u,{x,y})<4))return {ok:false,reason:'Keep ground installations at least 4° apart.'};
+  let unit;if(TYPES[type].domain==='sea'){const f=this.fleet(choices,0,x,y);unit=this.units.find(u=>u.id===f.members[0]);}else{this.stock[0][type]--;unit=this.add(type,0,x,y);}this.initialNukes=this.remaining.reduce((a,b)=>a+b,0);this.event(`${choices.length>1?`${choices.length}-ship fleet`:TYPES[type].name} placed.`);return {ok:true,unit};
  }
- deploy(type,x,y){if(this.ended)return {ok:false,reason:'Operation has ended.'};if(this.mode!=='war')return {ok:false,reason:'Use the battle lab configuration to change forces.'};if(this.phase<4)return {ok:false,reason:'Deployment closed at DEFCON 3.'};const t=TYPES[type];if(!t)return {ok:false,reason:'Unknown asset.'};if(x> -35||x< -160||y<5||y>70)return {ok:false,reason:'Deploy inside the western command sector (160°W to 35°W, 5°N to 70°N).'};if(this.budget<t.cost)return {ok:false,reason:'Insufficient deployment credits.'};this.budget-=t.cost;const u=this.add(type,0,x,y);this.event(`${t.name} deployed to western command.`);return {ok:true,unit:u};}
- order(id,x,y,targetId=null){const u=this.units.find(v=>v.id===id&&!v.dead);if(!u||u.team!==0||this.ended)return false;if(!TYPES[u.type].speed)return false;u.order={x:Math.max(-174,Math.min(174,x)),y:Math.max(-65,Math.min(80,y))};u.target=targetId;this.event(`${TYPES[u.type].name} ${u.id}: ${targetId?'engage contact':'new heading confirmed'}.`);return true;}
- escalate(){if(this.phase<=1||this.ended)return;this.phase--;this.alert=5;this.event(`DEFCON ${this.phase} · ${['','Nuclear release authorized.','Strategic forces on alert.','Conventional weapons free.','Prepare for hostilities.'][this.phase]}`,'alert');this.onEffect('alarm');}
- launch(id,x,y){const u=this.units.find(v=>v.id===id&&!v.dead);if(this.ended)return {ok:false,reason:'Operation has ended.'};if(this.phase!==1)return {ok:false,reason:'Nuclear weapons locked until DEFCON 1.'};if(!u||!['silo','bomber','submarine'].includes(u.type))return {ok:false,reason:'Select a silo, bomber or submarine.'};if(u.ammo<=0||this.remaining[u.team]<=0)return {ok:false,reason:'Nuclear inventory depleted.'};if(u.cooldown>0)return {ok:false,reason:'Launch system recharging.'};if(u.type!=='silo'&&Math.hypot(x-u.x,y-u.y)>65)return {ok:false,reason:'Target outside launch radius (65°). Move closer.'};u.ammo--;u.cooldown=12;this.remaining[u.team]--;this.totalNukes++;this.missiles.push({id:this.nextId++,team:u.team,sx:u.x,sy:u.y,x:u.x,y:u.y,tx:x,ty:y,p:0,duration:13+Math.hypot(x-u.x,y-u.y)*.13,dead:false});this.event(`${u.team===0?'FRIENDLY':'HOSTILE'} LAUNCH DETECTED · ${TYPES[u.type].name} ${u.id}.`,'nuclear');this.onEffect('launch');return {ok:true};}
- hit(u,damage,attacker){if(u.dead)return;u.hp=Math.max(0,u.hp-damage);if(u.hp===0){u.dead=true;this.kills[1-u.team]++;if(attacker)attacker.kills++;this.blasts.push({x:u.x,y:u.y,age:0,nuclear:false});this.event(`${u.team===0?'Friendly':'Hostile'} ${TYPES[u.type].name.toLowerCase()} ${u.id} destroyed.`,u.team===0?'danger':'success');this.onEffect('hit');}}
- detonate(m){m.dead=true;this.blasts.push({x:m.tx,y:m.ty,age:0,nuclear:true});for(const u of this.units)if(!u.dead&&dist(u,{x:m.tx,y:m.ty})<11)this.hit(u,300*(1-dist(u,{x:m.tx,y:m.ty})/13));let casualties=0;for(const c of this.cities){const d=dist(c,{x:m.tx,y:m.ty});if(d<16){const lost=c.pop*Math.max(.05,1-d/18)*.85;c.pop-=lost;this.losses[c.team]+=lost;casualties+=lost;if(c.pop<.5)c.dead=true;}}this.event(`DETONATION · ${casualties.toFixed(1)}M estimated casualties.`,'nuclear');this.onEffect('nuclear');this.alert=2;}
- tick(dt){
-  if(!this.running||this.ended)return;dt=Math.max(0,Math.min(dt,1));this.time+=dt;this.alert=Math.max(0,this.alert-dt);
-  if(this.mode==='war'&&this.phase>1&&this.time>=(6-this.phase)*55)this.escalate();
-  for(const b of this.blasts)b.age+=dt;this.blasts=this.blasts.filter(b=>b.age<(b.nuclear?28:4));
-  for(const s of this.shots)s.age+=dt;this.shots=this.shots.filter(s=>s.age<.4);
-  for(const u of this.units){
-   if(u.dead)continue;const t=TYPES[u.type];u.cooldown=Math.max(0,u.cooldown-dt);
-   let enemy=this.units.find(e=>e.id===u.target&&!e.dead&&e.team!==u.team);
-   if(!enemy||dist(u,enemy)>t.range*2){enemy=null;let nearest=t.range;for(const e of this.units){if(e.dead||e.team===u.team||!t.targets.includes(TYPES[e.type].domain))continue;const d=dist(u,e);if(d<nearest){nearest=d;enemy=e;}}}
-   if(this.phase<=3&&enemy&&t.targets.includes(TYPES[enemy.type].domain)&&dist(u,enemy)<=t.range&&u.cooldown<=0){
-    u.cooldown=t.cooldown;this.shots.push({x:u.x,y:u.y,tx:enemy.x,ty:enemy.y,team:u.team,age:0});this.hit(enemy,t.damage*(.8+this.random()*.4),u);this.onEffect('shot');
-   }
-   if(u.type==='silo'&&this.phase<=3&&u.cooldown<=0){const missile=this.missiles.find(m=>!m.dead&&m.team!==u.team&&m.p>.6&&dist(u,m)<28);if(missile){u.cooldown=4;this.shots.push({x:u.x,y:u.y,tx:missile.x,ty:missile.y,team:u.team,age:0});if(this.random()<.3){missile.dead=true;this.event('Incoming warhead intercepted.','success');this.blasts.push({x:missile.x,y:missile.y,age:0,nuclear:false});}}}
-   if(t.speed>0){let dest=u.order;if(u.team===1&&this.mode==='war'&&this.phase<=3){if(!dest||dist(u,dest)<4){const targets=this.units.filter(e=>!e.dead&&e.team===0&&(t.targets.includes(TYPES[e.type].domain)||TYPES[e.type].domain===t.domain));dest=targets.sort((a,b)=>dist(u,a)-dist(u,b))[0];u.order=dest?{x:dest.x,y:dest.y}:null;}}
-    if(enemy&&dist(u,enemy)<t.range*.75&&t.targets.includes(TYPES[enemy.type].domain))dest=null;
-    if(dest){const d=dist(u,dest);if(d>.3){u.heading=Math.atan2(dest.y-u.y,dest.x-u.x);const step=Math.min(d,t.speed*dt);u.x+=Math.cos(u.heading)*step;u.y+=Math.sin(u.heading)*step;if(this.random()<dt*4){u.trail.push({x:u.x,y:u.y});if(u.trail.length>18)u.trail.shift();}}else u.order=null;}
-   }
-  }
-  for(const m of this.missiles){if(m.dead)continue;m.p+=dt/m.duration;m.x=m.sx+(m.tx-m.sx)*m.p;m.y=m.sy+(m.ty-m.sy)*m.p+Math.sin(m.p*Math.PI)*28;if(m.p>=1)this.detonate(m);}
-  this.missiles=this.missiles.filter(m=>!m.dead);
-  this.radioClock+=dt;
-  if(this.mode==='war'&&this.phase<=3&&this.radioClock>38){this.radioClock=0;const transmissions=['Emergency broadcast: remain indoors. Do not approach the windows.','Civil defense: underground shelters are reaching capacity.','Open frequency: is anybody receiving this transmission?','Medical channel: emergency power is failing. Request immediate assistance.','Civilian relay: the sky is brighter than it should be.','Command: several regional stations have stopped responding.'];this.event(transmissions[this.radioIndex++%transmissions.length],'radio');this.onEffect('radio');}
-  this.aiClock+=dt;
-  if(this.phase===1&&this.aiClock> (this.difficulty==='hard'?3.5:this.difficulty==='easy'?12:7)){
-   this.aiClock=0;const teams=this.mode==='lab'?[0,1]:[1];for(const team of teams){if(this.mode==='lab'&&this.labTypes[team]!=='nuclear')continue;const shooters=this.units.filter(u=>!u.dead&&u.team===team&&['silo','bomber','submarine'].includes(u.type)&&u.ammo>0&&u.cooldown<=0);if(shooters.length){const source=shooters[Math.floor(this.random()*shooters.length)];const choices=this.cities.filter(c=>c.team!==team&&c.pop>1);const opponents=this.units.filter(u=>!u.dead&&u.team!==team);const target=choices.length?choices[Math.floor(this.random()*choices.length)]:opponents[Math.floor(this.random()*opponents.length)];if(target)this.launch(source.id,target.x,target.y);}}
-  }
-  if(this.mode==='lab'){
-   const alive=[0,1].map(team=>this.units.some(u=>!u.dead&&u.team===team));
-   if(!alive[0]||!alive[1])this.finish(alive[0]?0:alive[1]?1:null);
-   else if(this.time>240)this.finish(this.kills[0]>this.kills[1]?0:this.kills[1]>this.kills[0]?1:null);
-  }else if(this.time>=600||this.losses.some((l,i)=>l>this.cities.filter(c=>c.team===i).reduce((s,c)=>s+c.initial,0)*.85)||this.units.filter(u=>u.team===0).every(u=>u.dead)||this.units.filter(u=>u.team===1).every(u=>u.dead)){
-   const scores=this.scores();this.finish(scores[0]>scores[1]?0:scores[1]>scores[0]?1:null);
-  }
+ moveUnit(u,to){const path=TYPES[u.type].domain==='sea'&&this.navigation?this.navigation.route(u,to):[{...to}];if(!path)return false;u.path=path;u.order={...to};u.returning=false;return true;}
+ order(id,x,y,targetId=null){const u=this.units.find(u=>u.id===id&&!u.dead&&!u.landed);if(!u||u.team!==0||!TYPES[u.type].speed||this.ended)return false;const dest={x:clamp(x,-179,179),y:clamp(y,-75,80)};if(targetId){const target=this.units.find(e=>e.id===targetId&&!e.dead&&e.team!==u.team);if(!target||!this.canTarget(u,target))return false;u.target=targetId;}
+  if(u.fleetId&&!targetId){const f=this.fleets.find(f=>f.id===u.fleetId),members=this.units.filter(v=>f.members.includes(v.id)&&!v.dead);if(this.navigation&&!this.navigation.route(u,dest))return false;for(const m of members){const offset={x:dest.x+(m.x-u.x),y:dest.y+(m.y-u.y)};if(!this.moveUnit(m,offset))this.moveUnit(m,dest);}f.order=dest;}else if(!this.moveUnit(u,dest))return false;this.event(`${u.fleetId&&!targetId?'Fleet':TYPES[u.type].name} ${u.fleetId&&!targetId?u.fleetId:u.id}: ${targetId?'attack target':'movement confirmed'}.`);return true;
  }
- scores(){return [0,1].map(t=>Math.round(this.kills[t]*4-this.losses[t]*2+this.losses[1-t]));}
- finish(winner){this.ended=true;this.running=false;this.winner=winner;this.event('Operation terminated. Final assessment available.','alert');this.onEffect('end');}
+ escalate(){if(this.phase<=1||this.ended)return;this.phase--;this.alert=4;this.event(`DEFCON ${this.phase} · ${this.phase===1?'Nuclear weapons authorized.':this.phase===3?'Naval and airborne combat authorized.':this.phase===4?'Radar coverage active.':'Full combat readiness.'}`,'alert');this.onEffect('alarm');}
+ visibleTo(u,team){if(u.team===team)return true;if(u.dead||u.landed)return false;if(u.type==='submarine'&&u.mode!=='launch')return u.detectedUntil[team]>this.time;if(this.phase===5)return false;return this.units.some(v=>!v.dead&&!v.landed&&v.team===team&&TYPES[v.type].radar>0&&distance(v,u)<=TYPES[v.type].radar);}
+ visible(u){return this.mode==='lab'||this.visibleTo(u,0);}
+ canTarget(u,e){if(u.dead||e.dead||e.landed||u.landed||u.team===e.team||u.stateTimer>0)return false;if(!this.visibleTo(e,u.team)&&this.mode!=='lab')return false;if(e.type==='submarine'&&e.mode!=='launch'&&e.detectedUntil[u.team]<=this.time)return false;if(u.type==='carrier')return u.mode==='antisub'&&e.type==='submarine';if(u.type==='submarine'&&u.mode!=='active')return false;if(u.type==='silo'&&u.mode!=='defense')return false;if(u.type==='bomber'&&u.mode!=='naval')return false;return TYPES[u.type].targets.includes(TYPES[e.type].domain);}
+ launchAircraft(id,x,y){const base=this.units.find(u=>u.id===id&&!u.dead&&!u.landed);if(!base||!['airbase','carrier'].includes(base.type)||!['fighter','bomber'].includes(base.mode))return {ok:false,reason:'Select an airbase or carrier in an aircraft launch state.'};if(this.phase>3)return {ok:false,reason:'Aircraft launch is available at DEFCON 3.'};if(base.stateTimer>0||base.cooldown>0)return {ok:false,reason:'Launch deck is preparing. See the inspector countdown.'};const type=base.mode,key=type==='fighter'?'fighters':'bombers';if(base[key]<=0)return {ok:false,reason:`No ${type}s aboard.`};const p={x,y};if(distance(base,p)>TYPES[type].fuel)return {ok:false,reason:'Destination beyond aircraft fuel range.'};base[key]--;base.cooldown=120;const u=this.add(type,base.team,base.x,base.y,{homeId:base.id});u.heading=Math.atan2(y-base.y,x-base.x);if(type==='bomber'){u.ammo=base.stockNukes>0?1:0;if(u.ammo)base.stockNukes--;u.mode='naval';}this.moveUnit(u,p);this.event(`${type==='fighter'?'Fighter':'Bomber'} ${u.id} launched from ${TYPES[base.type].name.toLowerCase()} ${base.id}.`);this.onEffect('aircraft');return {ok:true,unit:u};}
+ launch(id,x,y){const u=this.units.find(u=>u.id===id&&!u.dead&&!u.landed);if(this.ended)return {ok:false,reason:'Operation ended.'};if(this.phase!==1)return {ok:false,reason:'Nuclear weapons locked until DEFCON 1.'};if(!u||!['silo','submarine','bomber'].includes(u.type))return {ok:false,reason:'Select a nuclear-capable unit.'};if(!['launch','nuclear'].includes(u.mode))return {ok:false,reason:'Switch the unit to its nuclear launch state first.'};if(u.stateTimer>0||u.cooldown>0)return {ok:false,reason:'Launch system preparing. Wait for the inspector countdown.'};if(u.ammo<=0)return {ok:false,reason:'No warheads remaining.'};const range=u.type==='silo'?360:u.type==='submarine'?45:25;if(distance(u,{x,y})>range)return {ok:false,reason:`Outside ${range}° launch range.`};u.ammo--;u.cooldown=u.type==='submarine'?120:120;const total=distance(u,{x,y});this.totalNukes++;this.missiles.push({id:this.nextId++,team:u.team,sx:u.x,sy:u.y,x:u.x,y:u.y,tx:x,ty:y,p:0,duration:Math.max(30,total/.2),dead:false,hp:1});this.ghosts.set(u.id,{id:u.id,type:u.type,team:u.team,x:u.x,y:u.y,mode:u.mode});u.detectedUntil[1-u.team]=this.time+120;this.event(`${u.team===0?'ALLIED':'HOSTILE'} LAUNCH DETECTED · ${TYPES[u.type].name} ${u.id}.`,'nuclear');this.onEffect(u.team===1?'enemylaunch':'launch');if(u.type==='bomber')this.returnHome(u);return {ok:true};}
+ returnHome(u){const bases=this.units.filter(b=>!b.dead&&b.team===u.team&&['carrier','airbase'].includes(b.type)&&(u.type==='fighter'?b.fighters< (b.type==='carrier'?5:10):b.bombers<(b.type==='carrier'?2:10))&&distance(u,b)<u.fuel).sort((a,b)=>distance(u,a)-distance(u,b));if(bases.length){u.returning=true;u.homeId=bases[0].id;u.order={x:bases[0].x,y:bases[0].y};u.path=[{...u.order}];u.target=null;return true;}return false;}
+ hit(u,damage,attacker=null){if(u.dead||u.landed)return;u.hp=Math.max(0,u.hp-damage);if(u.hp===0){u.dead=true;u.order=null;u.path=[];this.kills[1-u.team]++;if(attacker)attacker.kills++;this.blasts.push({x:u.x,y:u.y,age:0,nuclear:false});this.event(`${u.team===0?'Allied':'Hostile'} ${TYPES[u.type].name.toLowerCase()} ${u.id} destroyed.`,u.team===0?'danger':'success');this.onEffect('hit');}}
+ detonate(m){m.dead=true;this.blasts.push({x:m.tx,y:m.ty,age:0,nuclear:true});for(const u of this.units)if(!u.dead&&!u.landed){const d=distance(u,{x:m.tx,y:m.ty});if(d<10)this.hit(u,Math.max(1,Math.round(10*(1-d/10))));}let casualties=0;for(const c of this.cities){const d=distance(c,{x:m.tx,y:m.ty});if(d<10){const lost=c.pop*.5*(1-d/10);c.pop-=lost;this.losses[c.team]+=lost;casualties+=lost;c.dead=c.pop<.01;}}this.event(`DETONATION · ${casualties.toFixed(2)}M estimated deaths.`,'nuclear');this.onEffect('nuclear');this.alert=1.5;}
+ movement(u,dt){const t=TYPES[u.type];if(!t.speed)return;const fleetMembers=u.fleetId?this.units.filter(v=>v.fleetId===u.fleetId&&!v.dead):[];const movementSpeed=fleetMembers.length?Math.min(...fleetMembers.map(v=>TYPES[v.type].speed)):t.speed;if(u.returning){const base=this.units.find(b=>b.id===u.homeId&&!b.dead);if(base){u.order={x:base.x,y:base.y};u.path=[{...u.order}];}else if(!this.returnHome(u)){u.returning=false;u.order=null;u.path=[];}}
+  let dest=u.path[0]||u.order;if(!dest&&t.domain==='air'){this.returnHome(u);dest=u.path[0]||u.order;}if(!dest)return;const d=distance(u,dest);if(d<Math.max(.15,t.speed*dt*1.2)){
+   if(u.path.length>1){u.path.shift();return;}if(u.returning){const base=this.units.find(b=>b.id===u.homeId&&!b.dead);if(base){base[u.type==='fighter'?'fighters':'bombers']++;base.stockNukes+=u.ammo;u.ammo=0;u.landed=true;u.order=null;this.event(`${TYPES[u.type].name} ${u.id} landed at ${TYPES[base.type].name.toLowerCase()} ${base.id}.`);return;}}
+   u.order=null;u.path=[];if(t.domain==='air')this.returnHome(u);return;
+  }
+  const desired=Math.atan2(dest.y-u.y,dest.x-u.x),change=clamp(wrapAngle(desired-u.heading),-t.turn*dt,t.turn*dt);u.heading=wrapAngle(u.heading+change);const step=Math.min(d,movementSpeed*dt),next={x:u.x+Math.cos(u.heading)*step,y:u.y+Math.sin(u.heading)*step};
+  if(t.domain==='sea'&&this.navigation&&!this.navigation.clear(u,next)){u.heading=desired;const direct={x:u.x+Math.cos(desired)*step,y:u.y+Math.sin(desired)*step};if(!this.navigation.clear(u,direct)){u.order=null;u.path=[];return;}next.x=direct.x;next.y=direct.y;}
+  u.x=clamp(next.x,-179,179);u.y=clamp(next.y,-79,80);if(t.domain==='air'){u.fuel=Math.max(0,u.fuel-step);if(u.fuel<=0){this.hit(u,u.hp);this.event(`${TYPES[u.type].name} ${u.id}: fuel exhausted.`,'danger');return;}const home=this.units.find(v=>v.id===u.homeId&&!v.dead);if(!u.returning&&home&&u.fuel<distance(u,home)+t.speed*Math.PI/t.turn+2)this.returnHome(u);}
+  if(!u.trail.length||distance(u,u.trail.at(-1))>.35){u.trail.push({x:u.x,y:u.y});if(u.trail.length>28)u.trail.shift();}
+ }
+ combat(u){if(this.phase>3||u.cooldown>0||u.stateTimer>0||u.returning)return;const t=TYPES[u.type];let enemies=this.units.filter(e=>this.canTarget(u,e)&&distance(u,e)<=t.range);let enemy=enemies.find(e=>e.id===u.target)||enemies.sort((a,b)=>distance(u,a)-distance(u,b))[0];if(!enemy)return;u.cooldown=t.reload;this.shots.push({x:u.x,y:u.y,tx:enemy.x,ty:enemy.y,team:u.team,age:0,duration:Math.max(.4,distance(u,enemy)/2)});let probability=u.type==='battleship'?TYPES[enemy.type].domain==='air'?.2:.15:u.type==='fighter'?.2:u.type==='bomber'?.25:u.type==='carrier'?.4:u.type==='submarine'?.3:.2;if(this.random()<probability)this.hit(enemy,1,u);if(u.type==='carrier')this.onEffect('depthcharge');}
+ ai(){const interval=this.difficulty==='hard'?35:this.difficulty==='easy'?100:60;if(this.aiClock<interval)return;this.aiClock=0;const teams=this.mode==='lab'?[0,1]:[1];for(const team of teams){for(const u of this.units.filter(u=>!u.dead&&!u.landed&&u.team===team)){
+   if(u.stateTimer>0)continue;
+   if(this.mode==='lab'&&this.labTypes[team]==='nuclear'&&u.type==='silo'){const target=this.units.find(e=>!e.dead&&!e.landed&&e.team!==team);if(target)this.launch(u.id,target.x,target.y);continue;}
+   if(this.mode==='lab')continue;
+   if(['airbase','carrier'].includes(u.type)&&this.phase<=3&&u.cooldown<=0){const enemy=this.units.filter(e=>!e.dead&&!e.landed&&e.team!==team&&this.visibleTo(e,team)).sort((a,b)=>distance(u,a)-distance(u,b))[0];if(u.fighters>0){if(u.mode!=='fighter'){u.mode='fighter';u.stateTimer=120;continue;}this.launchAircraft(u.id,enemy?.x??-58,enemy?.y??35);}else if(u.bombers>0){if(u.mode!=='bomber'){u.mode='bomber';u.stateTimer=120;continue;}this.launchAircraft(u.id,enemy?.x??-48,enemy?.y??34);}}
+   if(TYPES[u.type].domain==='sea'&&u.type!=='submarine'&&!u.order&&this.phase<=3){const enemy=this.units.filter(e=>!e.dead&&!e.landed&&e.team!==team&&TYPES[e.type].domain==='sea').sort((a,b)=>distance(u,a)-distance(u,b))[0];if(enemy)this.moveUnit(u,{x:enemy.x,y:enemy.y});}
+   if(this.phase===1&&['silo','submarine','bomber'].includes(u.type)&&u.ammo>0){const launchMode=u.type==='bomber'?'nuclear':'launch';if(u.mode!==launchMode){u.mode=launchMode;u.stateTimer=MODES[u.type].find(m=>m.id===launchMode).prepare;continue;}const targets=this.cities.filter(c=>c.team!==team&&c.pop>.1).sort((a,b)=>b.pop-a.pop);const target=targets[Math.floor(this.random()*Math.min(4,targets.length))];if(target)this.launch(u.id,target.x,target.y);}
+  }} }
+ tick(dt){if(!this.running||this.ended)return;dt=clamp(dt,0,1);this.started=true;this.time+=dt;this.alert=Math.max(0,this.alert-dt);if(this.mode==='war'&&this.phase>1&&this.time>=PHASE_ENDS[this.phase])this.escalate();for(const b of this.blasts)b.age+=dt;this.blasts=this.blasts.filter(b=>b.age<(b.nuclear?120:12));for(const s of this.shots)s.age+=dt;this.shots=this.shots.filter(s=>s.age<s.duration);
+  for(const u of this.units){if(u.dead||u.landed)continue;u.cooldown=Math.max(0,u.cooldown-dt);u.stateTimer=Math.max(0,u.stateTimer-dt);u.sonarClock+=dt;
+   if(this.phase<=3&&u.stateTimer===0&&((u.type==='carrier'&&u.mode==='antisub')||(u.type==='submarine'&&u.mode==='active'))&&u.sonarClock>=60){u.sonarClock=0;for(const e of this.units)if(!e.dead&&e.team!==u.team&&e.type==='submarine'&&distance(u,e)<5)e.detectedUntil[u.team]=this.time+75;this.onEffect('sonar');}
+   if(u.type==='airbase'){u.regenClock+=dt;if(u.regenClock>=600){u.regenClock=0;u.fighters=Math.min(5,u.fighters+1);}}
+   this.movement(u,dt);this.combat(u);
+   if(u.type==='silo'&&u.mode==='defense'&&u.stateTimer===0&&u.cooldown===0&&this.phase<=3){const m=this.missiles.find(m=>!m.dead&&m.team!==u.team&&m.p>.5&&distance(u,m)<10);if(m){u.cooldown=20;this.shots.push({x:u.x,y:u.y,tx:m.x,ty:m.y,team:u.team,age:0,duration:1});if(this.random()<.25){m.dead=true;this.event('Warhead intercepted by silo air defense.','success');}}}
+   if(this.visibleTo(u,0)&&u.team===1)this.ghosts.set(u.id,{id:u.id,type:u.type,team:u.team,x:u.x,y:u.y,mode:u.mode});
+  }
+  for(const m of this.missiles){if(m.dead)continue;m.p=Math.min(1,m.p+dt/m.duration);m.x=m.sx+(m.tx-m.sx)*m.p;m.y=m.sy+(m.ty-m.sy)*m.p+Math.sin(m.p*Math.PI)*Math.min(35,distance({x:m.sx,y:m.sy},{x:m.tx,y:m.ty})*.35);if(m.p>=1)this.detonate(m);}this.missiles=this.missiles.filter(m=>!m.dead);this.aiClock+=dt;this.ai();
+  const alive=[0,1].map(team=>this.units.some(u=>!u.dead&&!u.landed&&u.team===team));if(!alive[0]||!alive[1]){if(!this.missiles.length)this.finish(alive[0]?0:alive[1]?1:null);return;}
+  if(this.mode==='lab'){if(this.time>=3600)this.finish(this.kills[0]>this.kills[1]?0:this.kills[1]>this.kills[0]?1:null);}else{const available=this.remaining.reduce((a,b)=>a+b,0);if(this.phase===1&&this.victoryAt===null&&available<=this.initialNukes*.2){this.victoryAt=this.time+45*60;this.event('Victory timer started · 45 game minutes remaining.','alert');}if(this.victoryAt!==null&&this.time>=this.victoryAt){const s=this.scores();this.finish(s[0]>s[1]?0:s[1]>s[0]?1:null);}}
+ }
+ scores(){return [0,1].map(t=>Math.round(this.losses[1-t]*2-this.losses[t]));}
+ finish(winner){this.ended=true;this.running=false;this.winner=winner;this.event('Game over. Final scores recorded.','alert');this.onEffect('end');}
 }

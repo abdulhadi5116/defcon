@@ -1,39 +1,39 @@
 # DEFCON: BLACKOUT
 
-An original browser strategy game inspired by the atmosphere of classic global nuclear-war strategy games. Not affiliated with the commercial DEFCON game. All game art, interface and procedural audio are original. Coastline data is public-domain Natural Earth (https://www.naturalearthdata.com/), sourced from nvkelso/natural-earth-vector, ne_110m_land.geojson.
+Browser reconstruction of DEFCON's unit baseline inside the retained BLACKOUT map and interface. Includes original v1.43 unit textures, music and sound effects extracted from the installer supplied by the user. The published site remains owner-private.
 
 ## Run
 
-Node.js 20 or later, no installation needed:
+Node.js 20 or later; runtime requires no npm installation:
 
 ```sh
 npm start
 ```
 
-Open http://localhost:5186. The `dist` folder also works on any static web host. No API keys, backend or paid services. After loading, all gameplay and audio run locally. Voice announcements use optional browser speech synthesis, whose voice availability varies by device.
+Open http://localhost:5186. `PORT` optionally overrides the port. `dist/` works on a static web host; no API keys or backend services. Original OGG audio is approximately 61 MB and streams on demand. Enable AUDIO with a click to satisfy browser autoplay requirements.
 
-## Play
+## Classic controls
 
-- Begin operation. Deploy assets during DEFCON 5–4 by selecting an asset and clicking the western command sector.
-- Select an allied unit, click an empty map location to move, or a hostile contact to engage. Drag to pan, scroll to zoom. Contact list buttons select and center allied units.
-- Conventional combat unlocks at DEFCON 3. Nukes unlock at DEFCON 1. Select a silo, submarine or bomber, arm a strike and click its target. Bomber/submarine launch radius: 65 map degrees; silo range is global.
-- DEFCON advances every 55 simulation seconds. Manual escalation accelerates readiness. Speed controls: 1×, 3×, 10×.
-- Silos automatically defend against aircraft and incoming warheads, with probabilistic interception.
-- Full war ends at 10 simulation minutes, destruction of a faction's units, or catastrophic population losses. Score: 4 per enemy unit destroyed + enemy civilian losses in millions − twice allied civilian losses in millions.
-- Battle lab offers naval, air, bomber and nuclear presets, configurable units and force count. Nuclear lab auto-launches both sides. Impossible matchups are labeled and draw after four simulation minutes.
-- Press Space to pause/resume, M to toggle sound, 1/2/3 for speed, Escape to cancel selection, +/- to zoom and arrows to pan. Settings include reduced effects, voice, master volume and AI launch frequency.
+- Left click a unit to select; left click a destination/target for its current primary action (aircraft launch, nuclear launch or attack).
+- Right click open water to move the selected fleet. Right click a unit for its state menu, or use inspector state buttons.
+- Space deselects. M toggles sound. Keys 1/2/3/4 select 1×/5×/10×/20×. WASD/arrows pan. Q/E or +/- zoom. The pause button pauses time.
+- During DEFCON 5–4, deploy remaining finite ground units or compose a fleet of up to six ships in the left panel. Ground installations require land; fleet formations require open water. Aircraft launch from airbases or carriers.
+- Carrier: 5 fighters, 2 bombers, 6 SRBMs. Airbase: 5 fighters, 5 bombers, 10 SRBMs. Silo: 10 ICBMs. Submarine: 5 MRBMs. Bomber: 1 SRBM.
+- State changes take preparation time. Silos cannot provide air defense in launch state. Submarines must surface to launch. Submerged contacts require sonar. Aircraft use fuel and return to a compatible host to land.
+- The inspector shows fleet members, garrison, warheads, fuel, speed, preparation and reload. Unselected contacts blend into the map; selected contacts are emphasized.
+- At DEFCON 1, choose a nuclear launch state, wait for preparation, then left click a target. Submarine range is 45 map degrees; bomber range is 25; silo range is global.
+- Score: 2 points per million enemy dead, minus 1 per million allied dead. A 45-game-minute victory countdown starts when available nuclear stock falls to 20% of initial inventory.
+- Battle Lab uses the same unit constants with observer visibility; impossible matchups can end in a standoff. Nuclear-silo lab auto-launches both sides. Use 20× for observation.
 
-The game starts silent to respect browser autoplay requirements. Enable AUDIO for the procedural drone, weapon sounds, sirens, launch warning and spoken radio announcements. Settings are remembered in browser storage.
-
-## Verify
+## Verification and provenance
 
 ```sh
 npm test
 npm run check
 ```
 
-Simulation tests cover escalation, deployment, targeting restrictions, combat resolution, nuclear damage, pause, ownership, nuclear labs, and full-match completion. Browser QA is in `qa/browser.mjs` and uses Playwright with an installed Microsoft Edge; adjust its executable path for another system.
+Fourteen tests cover native constants, fleet pace, inventory, gates, launch preparation, garrison, fuel/landing, sonar, nuclear damage, scoring, water routes and asset provenance. `qa/browser.mjs` tests interactive flows and actual original-music playback in installed Microsoft Edge; install dev dependencies with `npm install` for browser QA.
 
-## Scope
+See [research/BASELINE.md](research/BASELINE.md) for binary hashes, instruction addresses, original file references, and explicit parity limits. The JavaScript engine is a reconstruction, not execution of the native Windows simulation. Full native combat math, AI, six-territory multiplayer and audio mixer parity are not claimed.
 
-Single-player AI and local battle sandbox. Combat is a fictional abstract simulation: units move in map space without coastline pathfinding; all contacts are visible, and ship movement is unrestricted by land. No multiplayer. No commercial DEFCON assets or code.
+Natural Earth coastline data is public domain, sourced from nvkelso/natural-earth-vector `ne_110m_land.geojson`. Original DEFCON graphics/audio belong to Introversion Software and were reused at the user's request from their supplied installer. This project is not affiliated with Introversion.
