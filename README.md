@@ -43,7 +43,9 @@ Original v1.43 movement constants and state preparations are retained. Carrier: 
 
 Score credits the faction that caused enemy civilian deaths (+2 per million), minus its own civilian deaths (−1 per million). Allied deaths grant no offensive points. A 45-game-minute victory timer starts when nuclear stock reaches 20% of initial deployed inventory.
 
-Battle Lab is a separate sandbox with observer visibility, two forces and a 60-game-minute limit. Impossible engagements can end in a standoff. Its nuclear preset auto-launches both sides.
+Battle Lab stages live engagements using the same combat engine as Global Conflict. Observer visibility never supplies weapon targeting radar. Naval formations have six ships; aircraft launch from finite carrier inventories and consume fuel. Presets include sub versus carrier and a nuclear airbase strike. It has two forces and a 60-game-minute limit; impossible encounters can end in a standoff.
+
+Conventional missiles, torpedoes and depth charges travel before resolving target-specific hit chances. Capital ships take three successful one-point conventional hits; aircraft/subs retain original one-life fragility. Direct nuclear hits do 10 damage: airbases survive one hit, silos survive two. Nuclear weapons cannot target or damage aircraft, per the requested rule. The blast has a soft 5-degree visual radius that shrinks and fades over 500 game seconds (25 real seconds at 20×); damage is confined to 2 degrees. See research/COMBAT.md for native evidence and reconstruction limits.
 
 ## Verify and reproduce
 

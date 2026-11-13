@@ -17,3 +17,5 @@ Radar sweep follows the current viewport focus. Nuclear explosions are small, so
 
 ## Interaction
 Native semantic popovers keep panels outside overflow clipping. One command panel opens at a time; right-click unit state menus remain available. Modal dialogs pause simulation and restore it on cancel. Fleet composition shows six explicit slots and an enabled placement action only when all six are filled.
+
+Nuclear effects keep a brief flash/shake, followed by a larger soft annulus that gradually contracts and fades with simulation time. No hard boundary stroke or Ground Zero label. Small conventional homing missiles use the original SAM texture; torpedoes/depth charges have compact traces.

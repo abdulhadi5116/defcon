@@ -65,3 +65,7 @@ The full-screen map uses on-demand popover windows, viewport-centered sweep, opt
 Horizontal geography and movement wrap at the antimeridian; vertical camera travel is bounded. Distance, radar, routes and missile arcs use wrapped longitude. The new degree/MGRS grid is a requested extension, not a native v1.43 feature. MGRS conversion uses proj4js/mgrs 2.2.0. Precision changes 3/4/5 digits per axis with zoom, while display lines mark UTM grid zones rather than one-meter cells. Polar UPS conversion is not provided.
 
 Combat hit probabilities, blast damage curves, the steering/landing integrator, coarse naval routing, AI, readiness timing and full native audio DSP remain reconstruction differences. Original OGG bytes remain unmodified and hash-verified.
+
+## Combat update
+
+See [COMBAT.md](COMBAT.md) and [native-combat.txt](native-combat.txt) for recovered v1.43 matchup integers, stationary-object nuclear damage and shrinking explosion rendering. This supersedes the previous generic hit chances and 10-degree damage falloff. Conventional ground attacks are not introduced; aircraft retain native one-life fragility. Nuclear aircraft immunity is an explicit user-requested deviation. Lab no longer bypasses radar targeting and now stages real decks and fleets using the shared gameplay combat implementation. Remaining native numerical parity limits still apply.
