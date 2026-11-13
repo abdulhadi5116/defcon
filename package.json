@@ -1,1 +1,17 @@
-{"name":"defcon-blackout","version":"1.1.0","type":"module","private":true,"scripts":{"start":"node server.mjs","test":"node --test tests/*.test.mjs","check":"node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/audio.js && node --check dist/navigation.js"},"devDependencies":{"playwright":"^1.65.0"}}
+{
+  "name": "defcon-blackout",
+  "version": "1.2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/audio.js && node --check dist/navigation.js && node --check dist/territories.js && node --check dist/grid.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.0"
+  },
+  "dependencies": {
+    "mgrs": "^2.2.0"
+  }
+}

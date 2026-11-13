@@ -1,19 +1,19 @@
 # Design system
 
 ## Physical scene
-A commander at a dimly lit radar terminal watches a widening Atlantic conflict. Dark ocean and low luminance panels keep the map and moving contacts legible without overwhelming their surroundings.
+A commander at a dimly lit global radar terminal follows a widening conflict. Dark ocean and low luminance land preserve contrast for subtle moving contacts.
 
 ## Composition
-Dense product interface: 80px terminal header, 61px playback/navigation bar, flexible three-column tactical workspace, event teletype and assessment strip, terminal footer. At tablet widths inspector yields space to map; on mobile map comes first and readiness/deployment appear underneath.
+The canvas occupies the entire viewport. A compact floating HUD carries identity, DEFCON, time and playback. A bottom command dock opens Units, Info, Alliances, Layers, Intel and Menu popovers. No panel stays visible by default. Unit clicks reveal the inspector. Modal operation setup includes a territory map, faction identity and a six-row alliance roster.
 
-## Palette
-Restrained operational neutrals, rose primary based on the supplied 350-degree brand seed, cyan allied contacts, coral hostile contacts. CSS tokens are OKLCH; canvas uses equivalent sRGB colors for predictable native rendering.
+## Palette and typography
+Retain the original BLACKOUT ocean/land hex colors in canvas and OKLCH interface tokens. The rose primary remains the action accent. Six faction colors identify ownership; unit textures are subdued until selected. System monospace carries instrumentation, Arial carries wordmark and dialog headings. Native v1.43 unit bitmap outlines are converted to PNG alpha without redrawing.
 
-## Typography
-System monospace for tactical data and labels; Arial for wordmark, DEFCON numeral and dialog headings. Operational labels are small by intent, body and guidance use mixed case and readable muted tones.
+## Map behavior
+Horizontal world wrap applies to geography, entities and paths; vertical pan is constrained. Degree graticules adapt to zoom. MGRS references use 3/4/5 digits per axis and UTM zone boundaries. Optional territory and maritime overlays use the original game's masks and fade into view. Radar coverage, population, orders and nuclear inventory are independently switchable.
 
-## Motion and sound
-Canvas animation communicates movement, radar sweeps, projectiles, missile arcs and expanding blast radii. Phase alert overlays pause no gameplay. Reduced motion disables decorative radar, flash and shake. Audio is explicitly enabled by the user. The original v1.43 OGG playlist, bunker ambience and event samples replace synthesized audio and speech. Unit silhouettes come from original bitmap textures with luminance mapped to PNG alpha. Unselected units use reduced opacity, with state/range/status detail revealed by selection.
+## Motion and audio
+Radar sweep follows the current viewport focus. Nuclear explosions are small, soft glows with flash and brief shake, without hard circular outlines or labels. Reduced effects and OS reduced motion suppress flash/shake/sweep. The original 115 OGG files include music, warnings and bunker ambience; audio starts only after a user click.
 
-## Controls
-Semantic buttons, native dialogs/selects/ranges, visible focus rings, keyboard speed/pause/audio/pan/zoom, clickable allied contact list, pointer capture for map panning.
+## Interaction
+Native semantic popovers keep panels outside overflow clipping. One command panel opens at a time; right-click unit state menus remain available. Modal dialogs pause simulation and restore it on cancel. Fleet composition shows six explicit slots and an enabled placement action only when all six are filled.

@@ -5,19 +5,19 @@
 product
 
 ## Users
-A player at a desktop in a dim room, watching an escalating global conflict and issuing tactical orders. The user authorized autonomous decisions and asked for a complete playable game.
+A player at a desktop in a dim room, observing global escalation and issuing tactical orders through a full-screen world map. The user authorized autonomous implementation.
 
 ## Product Purpose
-Reconstruct the classic DEFCON unit baseline inside the established BLACKOUT layout. Retain map/background colors, use original unit and audio assets from the user-provided installer, and source gameplay changes to native evidence or the manual. Battle lab remains a distinct sandbox.
+A browser reconstruction of DEFCON's unit baseline with original user-provided v1.43 assets. Choose among six territories and configure faction/alliance identity, then inspect ships, aircraft and nuclear engagements. Keep the established map colors, unobtrusive units and original audio. Battle Lab remains a separate testing sandbox.
 
 ## Brand Personality
-Clinical, ominous, cinematic. Original DEFCON music, interface warnings and bunker recordings make escalation feel consequential.
+Clinical, ominous, cinematic. Original music, interface warnings and bunker recordings provide atmosphere.
 
 ## Anti-references
-No marketing landing page, cartoon weapons, decorative card grids or invented combat mechanics represented as native behavior.
+Permanent dashboard sidebars, marketing pages, cartoon weapons, invented mechanics presented as native behavior, conspicuous unit frames, hard explosion rings and location labels.
 
 ## Design Principles
-The world map is the primary interaction surface. Orders always produce observable feedback. Escalation changes the actual rules of combat. Every session has a clear outcome and can restart.
+The map occupies the full viewport. Command windows open on click. Territory and alliances affect actual placement and targeting. Fleet placement requires exactly six ships as explicitly requested; movement stays a group action, while targeting and state selection remain individual. The globe wraps horizontally, and vertical travel stays bounded.
 
 ## Accessibility & Inclusion
-Keyboard controls, labeled buttons, pause, audio mute, reduced effects and reduced motion. Factions distinguished by shapes and labels as well as colors.
+Semantic labeled controls, native popovers/dialogs, keyboard pan/zoom/select, audio controls, and reduced-effects settings. Coordinate labels offer degrees or MGRS. Faction identity includes text and ownership labels as well as colors.
