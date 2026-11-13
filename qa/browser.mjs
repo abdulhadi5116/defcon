@@ -1,0 +1,43 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({executablePath:'/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',headless:true});
+const page=await browser.newPage({viewport:{width:1440,height:1000}});
+try {
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://localhost:5186');await page.waitForFunction(()=>window.blackout?.mapLoaded);
+assert.equal(await page.title(),'DEFCON: BLACKOUT | Global command');
+await page.screenshot({path:'qa/desktop.png',fullPage:true});
+await page.locator('[data-type="fighter"]').click();
+const map=await page.locator('#map').boundingBox();
+await page.mouse.click(map.x+map.width/2-100,map.y+map.height/2-30);
+assert.match(await page.locator('#toast').innerText(),/deployed/);
+await page.getByRole('button',{name:'BEGIN OPERATION'}).click();
+await page.waitForTimeout(400);assert.equal(await page.evaluate(()=>window.blackout.running),true);
+await page.getByRole('button',{name:'Pause simulation'}).click();
+const frozen=await page.evaluate(()=>window.blackout.time);await page.waitForTimeout(300);assert.equal(await page.evaluate(()=>window.blackout.time),frozen);
+await page.locator('#contacts [data-contact]').first().click();assert.ok(await page.locator('#inspector').innerText());
+for(let i=0;i<4;i++)await page.locator('#escalate').click();assert.equal(await page.evaluate(()=>window.blackout.phase),1);
+await page.locator('[data-speed="10"]').click();await page.getByRole('button',{name:'Resume simulation'}).click();await page.waitForTimeout(350);await page.getByRole('button',{name:'Pause simulation'}).click();
+const silo=await page.evaluate(()=>window.blackout.units.find(u=>u.team===0&&u.type==='silo'));
+await page.locator(`[data-contact="${silo.id}"]`).click();
+await page.locator('#arm-strike').click();
+// A centered silo is at the midpoint after the contact list focuses it. Launch into eastern sector.
+await page.mouse.click(map.x+map.width*.83,map.y+map.height*.45);
+assert.equal(await page.evaluate(()=>window.blackout.missiles.length),1);
+await page.locator('#sound').click();assert.equal(await page.evaluate(()=>window.blackout.audioEnabled),true);
+await page.locator('#help').click();assert.equal(await page.locator('#manual-dialog').isVisible(),true);await page.locator('#manual-ready').click();
+await page.locator('#lab-tab').click();await page.locator('[data-preset="bombing"]').click();await page.locator('#launch-lab').click();
+assert.equal(await page.evaluate(()=>window.blackout.mode),'lab');
+await page.locator('[data-speed="10"]').click();await page.waitForTimeout(5500);
+assert.ok(await page.evaluate(()=>window.blackout.kills.reduce((a,b)=>a+b,0)>0));
+await page.screenshot({path:'qa/battle.png',fullPage:true});
+if(await page.locator('#result-dialog').isVisible())await page.locator('#review-map').click();
+await page.locator('#lab-tab').click();await page.locator('[data-preset="nuclear"]').click();await page.locator('#launch-lab').click();
+await page.waitForTimeout(1100);assert.ok(await page.evaluate(()=>window.blackout.missiles.length>0));
+await page.screenshot({path:'qa/nuclear.png',fullPage:true});
+await page.locator('#war-tab').click();
+await page.setViewportSize({width:390,height:844});await page.waitForTimeout(150);await page.screenshot({path:'qa/mobile.png',fullPage:true});
+assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+assert.deepEqual(errors,[]);
+console.log(JSON.stringify({passed:true,checks:['map loaded','deployment','start','pause','selection','escalation','nuclear launch','audio enabled','manual','conventional lab damage','nuclear lab launch','mobile overflow','no runtime exceptions'],screenshots:['qa/desktop.png','qa/battle.png','qa/nuclear.png','qa/mobile.png']},null,2));
+} finally { await browser.close(); }
