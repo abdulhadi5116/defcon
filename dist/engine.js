@@ -17,6 +17,7 @@ export class Simulation {
   this.mode=mode;this.seed=seed;this.difficulty=difficulty;this.time=0;this.phase=mode==='lab'?1:5;this.units=[];this.missiles=[];this.shots=[];this.blasts=[];this.events=[];this.nextId=1;this.losses=[0,0];this.kills=[0,0];this.remaining=[36,36];this.budget=16;this.running=false;this.ended=false;this.winner=null;this.aiClock=0;this.onEvent=()=>{};this.onEffect=()=>{};this.alert=0;this.totalNukes=0;this.radioClock=0;this.radioIndex=0;
   this.cities=CITIES.map(([name,x,y,pop,team])=>({name,x,y,pop,initial:pop,team,dead:false}));
   if(mode==='lab'){this.setupLab(left,right,count);}else this.setupWar();
+  this.remaining=[0,1].map(team=>this.units.filter(u=>u.team===team).reduce((sum,u)=>sum+u.ammo,0));
  }
  random(){this.seed=(Math.imul(1664525,this.seed)+1013904223)>>>0;return this.seed/4294967296;}
  event(message,kind='info'){const e={time:this.time,message,kind,id:this.nextId++};this.events.unshift(e);this.events.length=Math.min(this.events.length,80);this.onEvent(e);}
