@@ -135,3 +135,11 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Real deployment, coastal force positioning, value/intelligence-based targets, synchronized multi-platform FIFO salvo schedules, reserves and damage reassessment.
 - [x] Scheduled packages persist across reload and respect real fuel, ammunition, preparation, cooldown, alliances and sensor information.
 - [x] 185 tests, prepared-defense penetration scenarios, narrow maritime deployment, single-controller Settings and handover/reload browser checks.
+
+## Continuous offense, counterstrikes and 3-degree submarine weapons
+
+- [x] Both torpedo and submarine nuclear ranges are 3°; sensor/sonar coverage remains distinct.
+- [x] Overlap independent coordinated packages; keep pressure between impacts; prioritize detected aggressors even after interception.
+- [x] Faster staging/reassessment, 6%/2% reserves with pending-ammo accounting, local air response and active submarine torpedo combat.
+- [x] Near-shore launch stations and physical fleet rotation keep short-range submarines useful without breaking formation/coast margins.
+- [x] 192 engine/save tests, active-wave counterstrike and coastal movement regressions; stronger prepared-SAM simulation outcomes; browser reload, mode and concurrent-package checks.

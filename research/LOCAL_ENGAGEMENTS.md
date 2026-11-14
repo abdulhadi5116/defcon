@@ -21,7 +21,7 @@ Carrier gun cooldown is separate from flight-deck cooldown and state preparation
 
 The bomber uses a direct missile profile with the same slow speed as an ICBM; it does not inherit the ballistic arc. The smaller ingress standoff includes room for the aircraft arrival threshold so it cannot return with an unspent payload just before reaching launch distance. A target under a defensive silo's coverage must now be approached well inside the SAM envelope before release. Fast SAMs and slower warheads provide response time; ammunition, reloads, detected contacts and pending-projectile allocation remain real engine rules in both Lab and campaign.
 
-Balance revision 5 preserves live missile progress and inventory while recalculating their duration once at restore. Existing fired conventional projectiles retain their launch-time properties. Subsequent shots use the revised profile. Naval circle radius remains 1°, hidden coastline clearance remains 1°, fighter fuel remains carrier 30 / airfield 44, and silo global/submarine 18° nuclear reach remains unchanged.
+Balance revision 5 preserves live missile progress and inventory while recalculating their duration once at restore. Existing fired conventional projectiles retain their launch-time properties. Subsequent shots use the revised profile. Naval circle radius remains 1°, hidden coastline clearance remains 1°, fighter fuel remains carrier 30 / airfield 44, and silo global reach remains unchanged; the subsequent offensive-pressure revision reduces submarine nuclear/torpedo range to 3°.
 
 ## Settings: Radar mode / Full view
 

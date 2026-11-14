@@ -94,3 +94,5 @@ Defense/fighter/warhead balance now follows research/BALANCE.md and public/balan
 Current fleet/air rules and persistent Radar/Full map intelligence follow research/LOCAL_ENGAGEMENTS.md. Full view changes presentation and inspection only; AI and weapon acquisition keep real sensor limits.
 
 All AI factions and player handover now use the unified controller in research/STRATEGY.md. Battleship range is 3°. The old personality/difficulty variants are disabled, with legacy-save migration retaining accepted manual orders.
+
+Current pressure policy: research/STRATEGY.md now documents independent overlapping packages and counterattacks during existing strikes. Submarine torpedo and nuclear reach is 3°. Missile fleets may physically rotate their compact circle to place submarines toward the coast while retaining navigation margins.
