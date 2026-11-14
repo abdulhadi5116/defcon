@@ -127,3 +127,11 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Bomber release 2° inside defense coverage; both nuclear profiles 0.06°/s; SAM radius 10°, speed 1.2°/s, reload 8s.
 - [x] Render-only Radar mode / Full view in Settings, persisted in session/default preferences across browsers.
 - [x] Revision-5 migration, 179 tests, 200 strike trials, 84 Lab exercises, strategy simulations and browser/mobile checks passed.
+
+## Unified strategic AI and 3-degree battleships
+
+- [x] Battleship weapon radius 3°.
+- [x] Disable personality/difficulty variants; migrate old minds to one strategic controller without resetting manual queues or stock.
+- [x] Real deployment, coastal force positioning, value/intelligence-based targets, synchronized multi-platform FIFO salvo schedules, reserves and damage reassessment.
+- [x] Scheduled packages persist across reload and respect real fuel, ammunition, preparation, cooldown, alliances and sensor information.
+- [x] 184 tests, prepared-defense penetration scenarios, narrow maritime deployment, single-controller Settings and handover/reload browser checks.

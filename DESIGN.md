@@ -92,3 +92,5 @@ Mobile controls now share a single header row with the brand; speed uses a compa
 Defense/fighter/warhead balance now follows research/BALANCE.md and public/balance.js, superseding WORLD_EXPANSION numeric values for those rules. Sensor illumination and weapon rings remain separate.
 
 Current fleet/air rules and persistent Radar/Full map intelligence follow research/LOCAL_ENGAGEMENTS.md. Full view changes presentation and inspection only; AI and weapon acquisition keep real sensor limits.
+
+All AI factions and player handover now use the unified controller in research/STRATEGY.md. Battleship range is 3°. The old personality/difficulty variants are disabled, with legacy-save migration retaining accepted manual orders.

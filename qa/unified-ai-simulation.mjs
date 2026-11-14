@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {Simulation} from '../public/engine.js';
+const results=[];
+for(const seed of [42,91]){
+ const s=new Simulation({seed});s.factions.forEach((f,i)=>f.active=i<2);s.units=[];s.fleets=[];s.cities=[{name:'Defended city',team:0,x:0,y:30,pop:30,initial:30,dead:false},{name:'Home city',team:1,x:-55,y:30,pop:30,initial:30,dead:false}];s.phase=1;s.phaseStartedAt=0;s.phaseEndsAt=null;s.running=s.started=true;
+ for(const x of [-6,0,6]){const site=s.add('silo',0,x,30);site.knownTo[1]=true;site.manualControl=true;}
+ for(const x of [-45,-43,-41,-39,-37,-35])s.add('silo',1,x,30);for(const x of [-43,-41,-39,-37])s.add('airbase',1,x,32);s.initialNukes=s.remaining.reduce((a,b)=>a+b,0);
+ const launches=[],arrivals=[],packages=[];s.onEffect=kind=>{if(['launch','enemylaunch'].includes(kind)){const n=s.missiles.at(-1);if(n.team===1)launches.push({time:s.time,impact:s.time+n.duration,wave:n.waveId,profile:n.profile});}};s.onEvent=e=>{if(e.message.includes('preparing coordinated strike package'))packages.push(e.message);if(e.message.includes('DETONATION'))arrivals.push(s.time);};
+ let firstWave=null,restored=false;for(let t=0;t<1800&&!s.ended;t++){s.tick(1);if(s.strategists[1].wave&&!firstWave)firstWave=structuredClone(s.strategists[1].wave);}
+ assert.ok(firstWave?.assigned>=12,'must commit a substantial coordinated package');assert.ok(firstWave.launcherIds.length>=8,'coordinate more than one launcher');assert.ok(launches.filter(n=>n.wave===firstWave.id).length>=12,'queued launches must actually leave their platforms');const first=launches.filter(n=>n.wave===firstWave.id&&Math.abs(n.impact-firstWave.impactAt)<15);assert.ok(first.length>=6,'multiple platforms should converge within a short arrival window');assert.ok(arrivals.length>0,'coordinated attack must penetrate actual prepared SAM defense');assert.ok(s.units.some(u=>u.team===0&&u.hp<u.maxHp)||s.unitLosses[0]>0||s.cities[0].pop<30);assert.ok(s.remaining[1]>0);results.push({seed,packageSize:firstWave.assigned,platforms:firstWave.launcherIds.length,firstArrivalGroup:first.length,launches:launches.length,detonations:arrivals.length,defenderLosses:s.unitLosses[0],remaining:s.remaining[1],packages:packages.length});
+}
+console.log(JSON.stringify({passed:true,results}));

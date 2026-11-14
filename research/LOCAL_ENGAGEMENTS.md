@@ -4,7 +4,7 @@ This is the current balance profile, superseding earlier numeric tables in BALAN
 
 | Weapon/rule | Current |
 | --- | --- |
-| Battleship weapon radius | 4° (previously 10°) |
+| Battleship weapon radius | 3° (previously 10°, then 4°) |
 | Battleship chance per shot against fighter / bomber | 12% / 10% (previously 30% / 20%) |
 | Carrier direct armament | AA gun only; aircraft targets only, no surface/ASW/warhead shots |
 | Carrier gun radius / reload / speed | 1.5° / 4 game seconds / 3° per game second |
@@ -36,3 +36,5 @@ This is a display setting: it does not change AI information, radar/sonar acquis
 - 84 real Lab matchup exercises still produce combat with finite fuel and valid unit state.
 - Two one-hour strategy exercises retain staging, retaliatory restrictions and reserves; seeds 42/91 produce six launches each, with first-use timing [421,901,901] / [421,901,1081].
 - Browser checks cover close ASW engagement, placement, scopes, mobile HUD, actual server-backed Radar/Full selection, reload, independent browser restoration, enemy inspection and returning to radar fog. Safari has not been tested.
+
+AI update: research/STRATEGY.md documents the unified coordinated-strike controller, replacing all previous personality and difficulty variants.
