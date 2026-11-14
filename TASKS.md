@@ -61,3 +61,13 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Fix non-finite fighter evasion when a newly created hostile projectile has no heading yet.
 - [x] Invalid local pending recovery resumes the same session's valid server checkpoint.
 - [x] Regression tests and browser verification for merged coverage and recovery.
+
+## Adaptive strategic AI and territory handover
+
+- [x] Utility-scored faction plans with five seeded, nationality-independent doctrines.
+- [x] First-use restraint, attack grievances, allied retaliation, staging, reserves and bounded waves.
+- [x] Intel-gated target selection, friendly blast veto and in-flight target deconfliction.
+- [x] Defensive/recon/offensive fleet objectives, sortie caps, fighter reserves and staged bomber payloads.
+- [x] Menu handover, immediate header/menu takeover, persistent control flag and preserved commands.
+- [x] Manual unit/fleet overrides; old save migration and strategy-state validation.
+- [x] 139 tests; two self-play scenarios; handover/reload/takeover and FIFO browser regression checks.

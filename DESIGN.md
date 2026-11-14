@@ -76,3 +76,9 @@ Phase durations in simulation seconds: DEFCON 5 = 360, 4 = 600, 3 = 1800, 2 = 36
 ## Exhausted silo fallback
 
 After a silo fires its last warhead and its FIFO launch queue drains, it automatically enters air-defense mode with the existing 340-second preparation time. Missiles already in flight continue unchanged. A partially expended silo remains in launch mode so further one-shot commands can still be chained. The same rule covers AI, Battle Lab, direct launch calls and queued commands. Loading an older exhausted launch-mode silo starts the same transition once; already preparing/defensive saves keep their remaining countdown.
+
+## Strategic doctrines and player handover
+
+Faction AI uses persisted utility plans with seeded doctrine diversity, first-use policy, retaliation, limited waves, target commitments and reserves. It uses observed contacts and known static installations, while preserving player alliances and unit mechanics. See research/STRATEGY.md for balance rules and validation.
+
+The existing command menu contains Hand over to AI. While automated, the header becomes Take command; reclaiming control preserves accepted orders. The menu reports only the player's doctrine and current reason. Opponent strategic intent stays out of the player UI. Handover state persists in game saves; new/legacy manual sessions do not silently enable it. Execution follows the active browser simulation.
