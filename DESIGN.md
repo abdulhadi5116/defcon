@@ -21,3 +21,5 @@ Native semantic popovers keep panels outside overflow clipping. One command pane
 Nuclear effects keep a brief flash/shake, followed by a larger soft annulus that gradually contracts and fades with simulation time. No hard boundary stroke or Ground Zero label. Small conventional homing missiles use the original SAM texture; torpedoes/depth charges have compact traces.
 
 Selection ranges use red for active weapons, blue for fuel/flight range, cyan for radar and green for sonar. Global ICBM reach marks the entire viewport with a subtle red outline and GLOBAL label, avoiding a misleading small circle. Deselecting clears selection overlays.
+
+X-axis coordinate labels remain pinned to the bottom viewport edge in both Degree and MGRS modes. Interaction instructions live inside the Info popup and are not a permanent map overlay.

@@ -5,3 +5,5 @@
 @media(max-width:640px){.command-dock button{font-size:7px}}
 
 .session-loading{position:fixed;inset:0;z-index:200;background:#080f14ed;display:grid;place-items:center;text-align:center;padding:30px}.session-loading[hidden]{display:none}.session-loading h2{font:300 26px var(--sans);margin-bottom:15px}.session-loading p{color:var(--muted);font-size:12px;margin-bottom:20px}.session-entry{padding:16px 0;border-bottom:1px solid var(--line);display:flex;gap:15px;align-items:center;justify-content:space-between}.session-entry strong{font-size:12px;font-weight:400;overflow-wrap:anywhere}.session-entry small{display:block;font-size:9px;color:var(--muted);line-height:1.8;margin-top:6px}.session-entry button{font-size:10px;padding:10px}#sessions-message{font-size:11px;color:var(--accent);line-height:1.8}#save-status{display:block;margin-top:5px;font-size:8px;color:var(--blue)}
+
+.control-guide{margin:16px 0 0;padding-top:13px;border-top:1px solid var(--line);font-size:9px;line-height:1.9;color:var(--muted)}.control-guide span{margin:0 4px}
