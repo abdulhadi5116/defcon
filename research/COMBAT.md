@@ -65,4 +65,4 @@ The authoritative current override table is in research/WORLD_EXPANSION.md. Defe
 
 ## Defense correction
 
-The excessive 22-degree/70% defense revision is superseded by [BALANCE.md](BALANCE.md): local 12-degree weapons, separate 20-degree silo radar, 20s reload, 40% warhead chance, native 10% aircraft chances, 5-degree fighter scope and 25% fighter warhead chance. Current shared values live in public/balance.js; real-system sources and measured saturation are recorded there.
+The excessive 22-degree/70% defense revision is superseded by [BALANCE.md](BALANCE.md): local 10-degree weapons, separate 20-degree silo radar, 20s reload, 40% warhead chance, native 10% aircraft chances, 5-degree fighter scope and 25% fighter warhead chance. Current shared values live in public/balance.js; real-system sources and measured saturation are recorded there.

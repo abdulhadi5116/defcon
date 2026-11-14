@@ -8,13 +8,13 @@ This revision supersedes the defense/fighter/warhead numbers in WORLD_EXPANSION.
 - [Rafael Iron Dome](https://www.rafael.co.il/system/iron-dome/) describes short-to-medium range, local multi-mission defense. Its reported operational success rate is not an individual shot probability against an ICBM.
 - The retained official DEFCON manual and v1.43 static evidence are catalogued in BASELINE.md and COMBAT.md. They establish silo offense/defense exclusivity, separate detection/attack/fuel scopes, finite nuclear inventories, role-specific targeting, 25-life silos taking three 10-damage nuclear strikes, and slower naval movement. Native conventional probabilities remain recorded separately from calibrated web interception extensions.
 
-The former silo change from 10 to 22 map degrees multiplied area by 4.84, while increasing per-shot success and reload throughput simultaneously. That was an excessive combined buff. At Earth scale 22 degrees of latitude is roughly 2,446 km; it cannot represent a Patriot battery. Even 12 degrees is not a literal Patriot range. This revision takes the user's alternative of DEFCON-style strategic balance: each silo is an abstract strategic installation, with a modest 20% increase from the previous 10-degree web baseline. That baseline is not a newly recovered native constant. The retained flat wrapped map distance is a game metric, not a geodesic kilometer simulation. Mixing real tactical kilometers into only one unit would leave it effectively invisible at world zoom while every other class retained strategic ranges.
+The former silo change from 10 to 22 map degrees multiplied area by 4.84, while increasing per-shot success and reload throughput simultaneously. That was an excessive combined buff. At Earth scale 22 degrees of latitude is roughly 2,446 km; it cannot represent a Patriot battery. Even 12 degrees is not a literal Patriot range. This revision takes the user's alternative of DEFCON-style strategic balance: each silo is an abstract strategic installation, with the previous 10-degree web baseline, after the user rejected the intermediate 12-degree adjustment. That baseline is not a newly recovered native constant. The retained flat wrapped map distance is a game metric, not a geodesic kilometer simulation. Mixing real tactical kilometers into only one unit would leave it effectively invisible at world zoom while every other class retained strategic ranges.
 
 ## Recalibrated rules
 
 | Rule | Previous excessive revision | Current |
 | --- | ---: | ---: |
-| Silo defensive weapon radius | 22° | 12° |
+| Silo defensive weapon radius | 22° | 10° |
 | Silo detection radius | 30° | 20° |
 | Dedicated radar detection | 30° | 30° |
 | Silo reload | 12 s | 20 s |
@@ -23,10 +23,10 @@ The former silo change from 10 to 22 map degrees multiplied area by 4.84, while 
 | Fighter combat / radar | 7° / 7° | 5° / 5° |
 | Fighter per-shot warhead chance | 50% | 25% |
 | Interceptor against warhead | 1.2°/s | 0.6°/s |
-| Ballistic ground-track speed | 0.12°/s | 0.16°/s (native constructor 0.20 reference) |
-| Bomber direct missile speed | 0.25°/s | unchanged |
+| Ballistic ground-track speed | 0.12°/s | 0.10°/s (native constructor 0.20 reference) |
+| Bomber direct missile speed | 0.25°/s | 0.18°/s |
 
-Silo defensive area is now 29.75% of the excessive 22-degree version. Radar can detect outside weapon range without enabling an out-of-range shot. Descending hostile missiles can be intercepted; fighters supplement local defense but do not provide guaranteed protection. At most two pending shots per team are allocated to one missile. Reload throughput and travelling projectiles permit saturation. Projectiles now have a finite flight budget of 1.25 times launch engagement range; a launched missile cannot chase a target indefinitely beyond the installation's area. AI assesses defensive coverage with the same current 12-degree radius and ignores defenses still preparing, replacing its stale hardcoded 10-degree estimate.
+Silo defensive area is now 20.66% of the excessive 22-degree version. Radar can detect outside weapon range without enabling an out-of-range shot. Descending hostile missiles can be intercepted; fighters supplement local defense but do not provide guaranteed protection. At most two pending shots per team are allocated to one missile. Reload throughput and travelling projectiles permit saturation. Projectiles now have a finite flight budget of 1.25 times launch engagement range; a launched missile cannot chase a target indefinitely beyond the installation's area. AI assesses defensive coverage with the same current 10-degree radius and ignores defenses still preparing, replacing its stale hardcoded 10-degree estimate.
 
 ## Other rules audited and retained
 
@@ -40,12 +40,16 @@ Silo defensive area is now 29.75% of the excessive 22-degree version. Radar can 
 
 ## Reproducible checks
 
-`node qa/balance-simulation.mjs`: 40 decorrelated deterministic seeds per scenario, 200 real-engine trials. One incoming ballistic missile with no defense hits in 40/40; a target beyond the defended region also hits in 40/40. One prepared silo intercepts 30/40 isolated missiles (75% in this scenario, not a universal rate). Against 12 simultaneous warheads, one silo stops 44/480 (9.17%); three nearby silos stop 92/480 (19.17%). This establishes a local defense benefit and measurable saturation, without continental immunity. Geometry, seed, damage to defenses and arrival synchronization affect results.
+`node qa/balance-simulation.mjs`: 40 decorrelated deterministic seeds per scenario, 200 real-engine trials. One incoming ballistic missile with no defense hits in 40/40; a target beyond the defended region also hits in 40/40. One prepared silo intercepts 33/40 isolated missiles (82.5% in this scenario, not a universal rate). Against 12 simultaneous warheads, one silo stops 61/480 (12.71%); three nearby silos stop 132/480 (27.5%). This establishes a local defense benefit and measurable saturation, without continental immunity. Geometry, seed, damage to defenses and arrival synchronization affect results.
 
 `node qa/matchup-simulation.mjs`: 84 exercises across battleship/carrier, sub/carrier, carrier/sub, fighter/bomber, fighter/fighter, silo/bomber and silo/fighter. Each runs real deployments, inventory, AI, fuel, shots and damage for up to 1,200 game seconds, asserting combat occurs and unit/fuel state remains finite. These are role/regression checks, not equal-cost win-rate certification.
 
-Two one-hour three-faction strategy scenarios still establish staging, no-first-use retaliation and arsenal reserves. Focused tests cover the exact 12-degree boundary, visible-but-out-of-range contacts, finite projectile chase, smaller fighter scope and current-save migration. Existing full engine tests and browser checks cover selected scopes, state completion, persistent placement, fuel, fog, damage and mobile controls.
+Two one-hour three-faction strategy scenarios still establish staging, no-first-use retaliation and arsenal reserves. Focused tests cover the exact 10-degree boundary, visible-but-out-of-range contacts, finite projectile chase, smaller fighter scope and current-save migration. Existing full engine tests and browser checks cover selected scopes, state completion, persistent placement, fuel, fog, damage and mobile controls.
 
-Existing sessions adopt the shared current ranges on reload. Revision-2 in-flight warheads preserve their progress and remaining inventories while adopting the new duration once; existing preparation/cooldown progress is not reset. Already fired conventional shots retain their launch-time chance; new shots use the new profile. No faction ownership, stocks, scores or cities are reset.
+Existing sessions adopt the shared current ranges on reload. Revision-2/3 in-flight warheads preserve their progress and remaining inventories while adopting the new duration once; existing preparation/cooldown progress is not reset. Already fired conventional shots retain their launch-time chance; new shots use the new profile. No faction ownership, stocks, scores or cities are reset.
 
 Limits: the model is DEFCON-style strategy, not real Patriot/Iron Dome/ICBM physics; native numerical parity is not claimed. Safari is not tested. The scenarios do not establish balance across every geography, alliance or player tactic.
+
+### Final requested range/speed adjustment
+
+Defense stays at the original 10-degree web baseline. Ballistic speed changes from 0.16 to 0.10 degrees/game-second, direct nuclear payload speed from 0.25 to 0.18. A nominal 10-degree straight defensive approach now takes 100 game seconds rather than 75 for the preceding 12-degree/0.16 profile; actual curved trajectories vary. Interceptor speed/probability/reload and radar are unchanged. Balance revision 4 updates existing missile durations once while preserving progress and inventory.

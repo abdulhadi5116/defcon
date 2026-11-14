@@ -99,3 +99,8 @@ Validation: 160 tests passed, syntax/build and diff checks passed; two one-hour 
 - [x] 200 seeded strike trials, 84 real Lab matchups, strategy self-play, boundary/migration regressions and desktop/mobile checks.
 
 Correction verification: 166 tests, syntax/build/diff checks, 200 strike trials, 84 matchup exercises, two strategy self-play runs, desktop and mobile browser checks passed.
+
+## Final requested 10-degree defense
+
+- [x] Set defense to 10°, ballistic warheads to 0.10°/s and direct bomber nuclear payloads to 0.18°/s; keep interceptor/radar rules intact.
+- [x] Revision-4 restore preserves active missiles/progress and inventory; verify 200 strike trials and two strategy scenarios.
