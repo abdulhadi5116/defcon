@@ -58,3 +58,7 @@ Lab and campaign now share strict unit and projectile visibility. Unknown enemy 
 Confirmed destroyed units lose their cached contact and trail immediately. Unconfirmed last-known contacts fade over 12 simulation seconds; nuclear destruction markers fade over 6 simulation seconds. Both follow 1×/5×/10×/20× playback, including cosmetic cleanup after the result is final. Old saves discard expired or undated contacts. The nuclear blast itself keeps its existing long decay.
 
 Full-screen nuclear flash and map shake require the blast footprint to touch the controller faction's land territory (or an owned coastal city). Foreign territory, other allied territories and open ocean retain only the local blast. Reduced effects still suppress flash/shake. Territory attribution uses the current controller, regardless of who launched the missile.
+
+## Radar coverage relief
+
+Coverage uses a uniform low-opacity cyan field with a narrow highlighted upper rim and dark lower rim. It lights the measured sensor radius without center bloom or a wide gradient. All enabled sensors fill one combined path, so fleet overlaps do not accumulate brightness. Selected-unit coverage uses the same treatment. Unit icons draw afterward at 85% opacity inside an active field; selection and nuclear-lit units retain full opacity. Slow blurred scan sweeps remain separate from the coverage field.

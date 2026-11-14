@@ -29,3 +29,10 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Follow playback speed; keep cosmetic cleanup running after game end.
 - [x] Gate full-screen shake/flash to controller territory impacts; preserve local blasts everywhere.
 - [x] Verify engine regressions and browser checks for own/foreign/ocean/reduced-effects cases and speed-scaled cleanup.
+
+## Radar coverage clarity
+
+- [x] Replace radial coverage gradients with flat illuminated sensor fields and raised rims.
+- [x] Prevent overlapping fleet sensors from accumulating bright haze.
+- [x] Increase unit ink contrast above coverage while retaining the existing map colors.
+- [x] Browser pixel checks for uniform fill, overlap stability, selected coverage and visible unit ink; screenshot review.
