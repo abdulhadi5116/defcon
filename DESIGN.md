@@ -18,10 +18,12 @@ Radar operation rings appear around the selected sensor. Nuclear explosions shri
 ## Interaction
 Native semantic popovers keep panels outside overflow clipping. One command panel opens at a time; right-click unit state menus remain available. Modal dialogs pause simulation and restore it on cancel. Fleet composition shows six explicit slots and an enabled placement action only when all six are filled.
 
-Nuclear effects keep a brief flash/shake, followed by a larger soft annulus that gradually contracts and fades with simulation time. No hard boundary stroke or Ground Zero label. Small conventional homing missiles use the original SAM texture; torpedoes/depth charges have compact traces.
+Nuclear effects start with a strong single flash/shake and sustained white central glare. A continuous radial glow falls smoothly to transparent, contracts from the outside inward, and fades with simulation time; no detached annulus. No hard boundary stroke or Ground Zero label. Small conventional homing missiles use the original SAM texture; torpedoes/depth charges have compact traces.
 
 Selection ranges use red for active weapons, blue for fuel/flight range, cyan for radar and green for sonar. Global ICBM reach marks the entire viewport with a subtle red outline and GLOBAL label, avoiding a misleading small circle. Deselecting clears selection overlays.
 
 X-axis coordinate labels remain pinned to the bottom viewport edge in both Degree and MGRS modes. Interaction instructions live inside the Info popup and are not a permanent map overlay.
 
 Live deployment, fleet, contact and inspector controls preserve their DOM identity across updates. Keyed controls update text/attributes in place instead of replacing buttons between pointerdown and pointerup. This also retains keyboard focus during preparation/reload countdowns.
+
+ICBM simulation, guidance and sprite orientation share one quadratic trajectory, including longitude wrap. Original icon alpha bounds are centered at the world coordinate; attack marks and endpoints use that center, with picking limited to the icon box rather than its labels or health bar.

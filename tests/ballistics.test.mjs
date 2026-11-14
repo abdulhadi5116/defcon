@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Simulation,longitudeDelta,wrapLongitude,missilePosition} from '../public/engine.js';
+test('ICBM position stays exactly on its quadratic guidance curve',()=>{const s=new Simulation({mode:'lab',left:'nuclear',right:'nuclear',count:1});s.ai=()=>{};const a=s.units.find(u=>u.team===0),b=s.units.find(u=>u.team===1);assert.ok(s.launch(a.id,b.x,b.y,b.id).ok);const m=s.missiles[0];s.running=true;for(let i=0;i<200;i++)s.tick(.25);const dx=longitudeDelta(m.sx,m.tx),rise=Math.min(35,Math.hypot(dx,m.ty-m.sy)*.35),p=m.p;assert.ok(Math.abs(m.y-(m.sy+(m.ty-m.sy)*p+4*p*(1-p)*rise))<1e-8,'missile and guidance must use the same curve');assert.equal(m.x,wrapLongitude(m.sx+dx*p));});
+test('clicking an installation targets its center rather than the click offset',()=>{const s=new Simulation({mode:'lab',left:'nuclear',right:'nuclear',count:1}),a=s.units.find(u=>u.team===0),b=s.units.find(u=>u.team===1);assert.ok(s.launch(a.id,b.x+.3,b.y+.3,b.id).ok);assert.equal(s.missiles[0].tx,b.x);assert.equal(s.missiles[0].ty,b.y);});
+
+test('wrapped trajectories use the short crossing and tangent heading',()=>{const m={sx:170,sy:10,tx:-170,ty:20};assert.deepEqual(missilePosition(m,0).x,170);assert.equal(missilePosition(m,1).x,-170);assert.equal(missilePosition(m,1).y,20);assert.equal(missilePosition(m,.5).x,-180);for(const p of [.1,.5,.9]){const a=missilePosition(m,p-1e-6),b=missilePosition(m,p+1e-6);assert.ok(Math.abs(missilePosition(m,p).heading-Math.atan2(b.y-a.y,longitudeDelta(a.x,b.x)))<1e-7);}});
