@@ -1,5 +1,5 @@
 const rendered=new WeakMap();
-const identity=node=>node?.nodeType===1?['id','data-type','data-contact','data-mode','data-command','data-city','data-member','data-remove'].map(name=>node.hasAttribute(name)?`${node.nodeName}:${name}:${node.getAttribute(name)}`:null).find(Boolean):null;
+const identity=node=>node?.nodeType===1?['id','data-type','data-contact','data-mode','data-command','data-clear-queue','data-city','data-member','data-remove'].map(name=>node.hasAttribute(name)?`${node.nodeName}:${name}:${node.getAttribute(name)}`:null).find(Boolean):null;
 const compatible=(a,b)=>a&&a.nodeType===b.nodeType&&a.nodeName===b.nodeName;
 function updateNode(current,next){
  if(current.nodeType===3){if(current.data!==next.data)current.data=next.data;return;}
