@@ -17,8 +17,8 @@ Existing six-faction campaign saves keep their original territory masks, units, 
 
 ## Current control and presentation behavior
 
-- Fleet drafts contain six naval units, distributed on a circle of radius 2.2 map degrees. Group routes share center waypoints and member offsets. Legacy two-row fleets reform through physical movement, with no teleport or stock changes. Ships slow through tight turns to reach short formation waypoints rather than orbiting them indefinitely.
-- Coast clearance is 1 map degree for hull centers. Group routing reserves 3.2 degrees for the circle plus hull clearance. Placement validates each member. Routes and actual movement use the same buffered coastline geometry; antimeridian wrapping remains enabled.
+- Fleet drafts contain six naval units, distributed on a circle of radius 1 map degree. Group routes share center waypoints and member offsets. Legacy two-row fleets reform through physical movement, with no teleport or stock changes. Ships slow through tight turns to reach short formation waypoints rather than orbiting them indefinitely.
+- Coast clearance is 1 map degree for hull centers. Group routing reserves 2 degrees for the circle plus hull clearance. Placement validates each member. Routes and actual movement use the same buffered coastline geometry; antimeridian wrapping remains enabled.
 - A ground deployment type remains selected after successful placement until its stock runs out or Esc cancels. A six-unit fleet draft remains available for repeated placement while the full composition is still in stock. Invalid placements do not consume stock.
 - The mobile header keeps the brand, readiness, clock, pause and a compact speed selector in one row. The map remains the primary surface. The desktop speed buttons are unchanged.
 - Unit health bars and integrity numbers are removed from the map and unit inspector/roster. Actual damage and survival rules remain intact.
@@ -59,3 +59,5 @@ Manual one-way flights are permitted, warned about, and not automatically redire
 ## State ownership
 
 A manual mode selection claims that unit even if the requested mode was already selected. AI cannot overwrite its mode or restart its preparation timer. Nuclear states explicitly indicate the DEFCON 1 lock or an empty payload instead of appearing to accept a blocked change. Preparation is measured in game time; pause and speed apply normally. Exhausted silos still automatically prepare defense after the final queued launch.
+
+Fleet compactness update: the six-ship circle radius is 1° (previously 2.2°). Formation revision 3 causes saved wider fleets to reform through normal movement, preserving fleet membership, orders and inventory. Routing clearance is FLEET_RADIUS + COAST_MARGIN, so the one-degree coastline margin remains intact.

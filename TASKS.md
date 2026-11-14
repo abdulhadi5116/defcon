@@ -114,3 +114,9 @@ Correction verification: 166 tests, syntax/build/diff checks, 200 strike trials,
 - [x] Verify large create/update/reopen, plain JSON upgrade, cross-browser restoration and size protections.
 
 Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 MB save create/update/reload and independent-browser restore passed; session/settings/controller regressions and repeated-error-toast recovery passed.
+
+## Compact fleet formation
+
+- [x] Reduce circular radius 2.2° → 1° (55% narrower); derive naval group clearance from radius plus unchanged coastline margin.
+- [x] Existing revision-2 fleets physically reform without teleport, stock reset or lost destination; new placements use compact geometry.
+- [x] Circle/movement/coast/legacy migration tests and browser placement checks.
