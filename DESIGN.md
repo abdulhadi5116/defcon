@@ -32,7 +32,7 @@ Selected scopes show the current action: silo air defense, nuclear strike reach,
 
 Empty-map primary clicks deselect; deliberate coordinate targeting is a one-shot Info command, cancelled by Space, Esc, right click, selection/state change or session reload. Enemy unit/city icons remain contextual targets.
 
-Nuclear glare draws below living unit symbols. Impacted survivors receive a small dark contrast backing and current HP/operational status; confirmed destroyed contacts receive a cross and destroyed label rather than a living ghost. Unknown installations are not revealed by these annotations.
+Nuclear glare draws below living unit symbols. Impacted survivors retain their icon and normal HP bar above the glare, with only a subtle shadow on the icon strokes. No opaque circular backing or operational-status banner. Confirmed destroyed contacts receive a cross and destroyed label rather than a living ghost. The hottest white core is compact (18% radius overlay), blending continuously into cream, amber and the retained outer haze. Unknown installations are not revealed by these annotations.
 
 Population-layer city light grows in radius and intensity with surviving population, and contracts/dims after losses. The Population Strike Lab preset enables that layer and stages real named cities. Its Info panel separates immediate impact losses, delayed radiation deaths and surviving population. Clicking a city row focuses the map without arming a weapon. The same city damage and fallout update runs in campaign and Lab and is included in saved city state.
 

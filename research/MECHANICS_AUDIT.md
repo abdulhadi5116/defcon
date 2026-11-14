@@ -31,7 +31,7 @@ Other retained deviations/unknowns: nuclear aircraft immunity and stronger horro
 
 ## Population and impact visibility extension
 
-Requested after the audit: preserve the strong blast while rendering operational units and HP above it, add confirmed destroyed markers, add Population Strike to Lab, and make city light depend on population. Hidden contacts remain hidden; destroyed annotations use the observers that knew the target before damage.
+Requested after the audit: preserve the strong blast while rendering unit icons and HP above it, add confirmed destroyed markers, add Population Strike to Lab, and make city light depend on population. Hidden contacts remain hidden; destroyed annotations use the observers that knew the target before damage.
 
 Immediate city damage retains the existing calibrated curve: current population × 0.5 × proximity inside the 2-degree damage radius. Each impact also schedules a separate radiation dose of 20% of the post-impact survivors × proximity, applied evenly over 300 game seconds. This is a user-requested game rule, not recovered DEFCON radiation logic or a real-world fallout model. Doses retain their source faction, accumulate across impacts, stop while paused, expire, clamp to surviving population, update losses/scoring exactly once and persist within city state. Old saves without doses continue normally. Both Lab and campaign use the same implementation, with a deterministic equivalence test.
 
@@ -42,3 +42,5 @@ Factions with surviving cities remain in the operation even if they have no mili
 Reported behavior reproduced with real Lab AI enabled: one manual target click reduced player silo ammo from 10 to 8 after 180 game seconds. The second warhead came from Lab's strategic AI, which controlled both sides even after a player command.
 
 Player-selected or manually commanded Lab units now retain manual control in their saved unit record. Uncontrolled Lab units retain automated scenario behavior. A shared FIFO launch queue accepts one nuclear/aircraft launch per click, reserves finite available stock, waits for readiness and reload, executes each entry once and stops when empty. Coordinates are captured per command; already launched missile endpoints are never rewritten. Pending targets that die or become allied are cancelled, with no automatic substitute. Bomber ingress remains one active strike and reserves its one payload. Inspector queue, numbered map previews, clear-pending action and save/reload behavior are covered by tests.
+
+Blast readability revision: removed the opaque circular survivor backing and Operational banner after visual review. Only the icon strokes receive a subtle shadow. The white glare overlay radius is reduced from 40% to 18% of the blast, with continuously graded white/cream/amber haze and no detached ring.
