@@ -104,3 +104,13 @@ Correction verification: 166 tests, syntax/build/diff checks, 200 strike trials,
 
 - [x] Set defense to 10°, ballistic warheads to 0.10°/s and direct bomber nuclear payloads to 0.18°/s; keep interceptor/radar rules intact.
 - [x] Revision-4 restore preserves active missiles/progress and inventory; verify 200 strike trials and two strategy scenarios.
+
+## Large-save failure
+
+- [x] Reproduce the exact 1.5 MB API rejection with a valid large snapshot.
+- [x] Compress persisted snapshots below D1 row limits; retain legacy reads and optimistic controller checks.
+- [x] Bounded 16 MB decoded requests and 1.8 MB compressed rows; omit completed visual trails.
+- [x] Suppress repeated identical save-error toasts while retaining error status and retries.
+- [x] Verify large create/update/reopen, plain JSON upgrade, cross-browser restoration and size protections.
+
+Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 MB save create/update/reload and independent-browser restore passed; session/settings/controller regressions and repeated-error-toast recovery passed.

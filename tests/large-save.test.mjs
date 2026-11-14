@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {gzipSync} from 'node:zlib';
+import {Simulation} from '../public/engine.js';
+import {snapshotSimulation} from '../public/save-state.js';
+import {openDatabase} from '../server/sqlite.js';
+import {sessionApi} from '../server/api.js';
+const writer='11111111-1111-4111-8111-111111111111';
+function largeSnapshot(){const s=new Simulation();for(let i=0;i<600;i++){const u=s.add('fighter',0,-60,30);u.trail=Array.from({length:64},(_,j)=>({x:-60+j*.0123456789123,y:30+i*.000987654321,at:j*.234567891}));}return {version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}};}
+test('large valid saves survive the API, compressed database storage, reopen and another browser read',async()=>{const dir=mkdtempSync(path.join(tmpdir(),'defcon-large-save-'));let db=openDatabase(dir);try{const snapshot=largeSnapshot(),serialized=JSON.stringify({writer,name:'Large operation',snapshot});assert.ok(Buffer.byteLength(serialized)>1500000);const response=await sessionApi(new Request('http://game.local/api/sessions',{method:'POST',headers:{'Content-Type':'application/json','Content-Encoding':'gzip'},body:gzipSync(serialized)}),db),result=await response.json();assert.equal(response.status,201,JSON.stringify(result));const row=await db.prepare('SELECT snapshot FROM game_sessions WHERE id=?').bind(result.id).first();assert.ok(row.snapshot.startsWith('gz1:'));assert.ok(Buffer.byteLength(row.snapshot)<1900000);db.close();db=openDatabase(dir);const loaded=await sessionApi(new Request('http://game.local/api/sessions/'+result.id),db);assert.deepEqual((await loaded.json()).snapshot,snapshot);}finally{db.close();rmSync(dir,{recursive:true,force:true});}});
+
+test('legacy plain JSON rows remain readable and update to compressed storage without changing identity',async()=>{const dir=mkdtempSync(path.join(tmpdir(),'defcon-legacy-save-')),db=openDatabase(dir);try{const snapshot=largeSnapshot(),created=await sessionApi(new Request('http://game.local/api/sessions',{method:'POST',body:JSON.stringify({writer,name:'Legacy',snapshot})}),db),saved=await created.json();assert.equal(created.status,201);await db.prepare('UPDATE game_sessions SET snapshot=? WHERE id=?').bind(JSON.stringify(snapshot),saved.id).run();const read=await sessionApi(new Request('http://game.local/api/sessions/'+saved.id),db);assert.deepEqual((await read.json()).snapshot,snapshot);snapshot.sim.time=123;const update=await sessionApi(new Request('http://game.local/api/sessions/'+saved.id,{method:'PUT',body:JSON.stringify({writer,revision:saved.revision,snapshot})}),db);assert.equal(update.status,200);assert.equal((await update.json()).id,saved.id);const row=await db.prepare('SELECT snapshot FROM game_sessions WHERE id=?').bind(saved.id).first();assert.ok(row.snapshot.startsWith('gz1:'));}finally{db.close();rmSync(dir,{recursive:true,force:true});}});
+
+test('completed flight trails are omitted from saves without mutating gameplay objects',()=>{const s=new Simulation(),plane=s.add('fighter',0,-60,30);plane.landed=true;plane.trail=[{x:-61,y:30,at:0}];const saved=snapshotSimulation(s).units.find(u=>u.id===plane.id);assert.deepEqual(saved.trail,[]);assert.equal(plane.trail.length,1);assert.equal(saved.fuel,plane.fuel);assert.equal(saved.hp,plane.hp);});
+
+test('request size protection still rejects a decompression bomb before database writes',async()=>{const {MAX_REQUEST_BYTES}=await import('../server/snapshot-codec.js');const response=await sessionApi(new Request('http://game.local/api/sessions',{method:'POST',headers:{'Content-Encoding':'gzip'},body:gzipSync(' '.repeat(MAX_REQUEST_BYTES+1))}),{});assert.equal(response.status,413);assert.match((await response.json()).error,/16 MB/);});
+
+test('compressed row protection leaves metadata headroom below the D1 row limit',async()=>{const {randomBytes}=await import('node:crypto'),{encodeSnapshot}=await import('../server/snapshot-codec.js');await assert.rejects(encodeSnapshot({random:randomBytes(1_500_000).toString('base64')}),error=>error.status===413);});

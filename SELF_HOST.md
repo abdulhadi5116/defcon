@@ -39,3 +39,9 @@ For backups, stop the Node process/container briefly and back up the whole data 
 ## Hosted Sites version
 
 The existing private Sites URL uses the same API and SQL schema through the `DB` D1 binding, with migrations under `drizzle/`. The Worker serves assets from `dist/client`; the self-host server serves the exact same source assets from `public/`. `npm run build` creates the hosted Worker artifact. Database credentials never enter the browser bundle.
+
+## Snapshot storage format
+
+Game snapshots use gzip plus a `gz1:` Base64 prefix in the existing game_sessions.snapshot column. The API decodes both legacy JSON and new compressed rows, so existing sessions retain their IDs and revision/controller protection. HTTP requests accept up to 16 MB after decompression; compressed snapshot text is capped at 1.8 MB to leave room below the hosted D1 2 MB row limit. Local SQLite uses the same codec. Updating requires no destructive schema migration. Old server versions without this codec cannot read newly compressed rows. Completed aircraft trails are omitted from checkpoints; core units, RNG, inventory, timers, orders and cities are retained.
+
+If a running browser previously showed Save exceeds 1.5 MB, leave it open after deployment until Save Now/autosave reports SAVED, then reload. An unsaved running simulation only exists in that browser plus any successful local recovery journal; other browsers can restore only a successful server checkpoint.
