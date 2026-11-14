@@ -1,3 +1,4 @@
+import {DEFENSE} from './balance.js';
 // Utility scoring with persistent plans and seeded variation, not a model of real politics.
 export const DOCTRINES={
  hawk:{name:'Forward pressure',aggression:.9,reserve:.25,delay:300,pause:180,noFirstUse:false,noise:.08},
@@ -47,7 +48,7 @@ export function strikeTargets(sim,u,plan,range=360){
   const city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:25,airbase:15,radar:1}[t.type]),needed=city?2:Math.ceil(hp/10);
   const committed=sim.missiles.filter(n=>!n.dead&&sim.allied(n.team,u.team)&&distance({x:n.tx,y:n.ty},t)<2).length+sim.units.filter(v=>!v.dead&&v.strike&&sim.allied(v.team,u.team)&&distance(v.strike,t)<2).length;
   const value=city?Math.log2(1+t.pop)*.65:t.type==='silo'?3.6:t.type==='airbase'?2.8:1.8;
-  const defense=known.filter(v=>v.type==='silo'&&sim.visibleTo(v,u.team)&&v.mode==='defense'&&distance(v,t)<10).length;
+  const defense=known.filter(v=>v.type==='silo'&&sim.visibleTo(v,u.team)&&v.mode==='defense'&&v.stateTimer<=0&&distance(v,t)<=DEFENSE.range).length;
   return {target:t,utility:committed>=needed?-Infinity:value+(t.team===plan.rival?.8:0)+(plan.retaliating&&t.type==='silo'?.8:0)-committed*1.4-defense*.25-distance(u,t)/360};
  }).filter(t=>Number.isFinite(t.utility)).sort((a,b)=>b.utility-a.utility);
 }

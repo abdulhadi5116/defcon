@@ -90,3 +90,12 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Engine/geometry/migration regressions; desktop/mobile browser checks; build and publication.
 
 Validation: 160 tests passed, syntax/build and diff checks passed; two one-hour self-play scenarios and desktop/mobile browser checks (320, 375, 430 px) passed. Safari has not been tested.
+
+## Local-defense balance correction
+
+- [x] Audit combat, sensor, fuel, nuclear, naval, population, escalation and AI rules; record primary references and calibration limits in research/BALANCE.md.
+- [x] Replace excessive silo defense with 12° weapons / 20° radar / 20s reload; normalize probabilities and fighter scope.
+- [x] Shared AI/overlay/weapon configuration; finite interceptor flight budget; preserve active saves.
+- [x] 200 seeded strike trials, 84 real Lab matchups, strategy self-play, boundary/migration regressions and desktop/mobile checks.
+
+Correction verification: 166 tests, syntax/build/diff checks, 200 strike trials, 84 matchup exercises, two strategy self-play runs, desktop and mobile browser checks passed.

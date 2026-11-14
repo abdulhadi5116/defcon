@@ -62,3 +62,7 @@ Fighter → nuclear missile now has a 0.15 per-projectile hit chance. The target
 ## Latest requested defense/fuel/naval balance
 
 The authoritative current override table is in research/WORLD_EXPANSION.md. Defensive silo range is 22°, radar 30°, reload 12s, warhead hit chance 70%; fighter warhead chance is 50% with 7° engagement. Interceptors travel at 1.2°/s. Ballistic warheads travel at 0.12°/s and direct bomber payloads at 0.25°/s. Submarine nuclear range is 18°, bomber nuclear range 5°. States now prepare in 15–30 game seconds (silo launch 20s, defense 25s). Hidden close-contact/ASW detection, actual reloads and finite projectile travel determine penetration; mass attacks can saturate defense. These user-requested overrides supersede earlier runtime values while preserving the recovered native table as provenance.
+
+## Defense correction
+
+The excessive 22-degree/70% defense revision is superseded by [BALANCE.md](BALANCE.md): local 12-degree weapons, separate 20-degree silo radar, 20s reload, 40% warhead chance, native 10% aircraft chances, 5-degree fighter scope and 25% fighter warhead chance. Current shared values live in public/balance.js; real-system sources and measured saturation are recorded there.

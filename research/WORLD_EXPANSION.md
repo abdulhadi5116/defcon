@@ -26,6 +26,8 @@ Existing six-faction campaign saves keep their original territory masks, units, 
 
 ## Requested combat overrides
 
+Historical values below are superseded for defense/fighter/warhead behavior by [BALANCE.md](BALANCE.md).
+
 These are custom gameplay balance changes, not claims of native v1.43 parity.
 
 | Behavior | Current value |

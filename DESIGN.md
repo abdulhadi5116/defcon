@@ -88,3 +88,5 @@ The existing command menu contains Hand over to AI. While automated, the header 
 The current operation setup offers ten factions; old six-faction sessions retain their original ownership/masks. See research/WORLD_EXPANSION.md for country grouping, data provenance, migration and the current numeric balance. Fleets use physical circular formations with buffered coast routes and repeatable deployment drafts. Ground placement remains active until canceled or exhausted.
 
 Mobile controls now share a single header row with the brand; speed uses a compact native selector. Unit HP presentation is removed. Population is shown through size and life illumination, with selected-city context and casualty-sensitive local/territory lighting. Fuel circles at hosts and two-focus airborne fuel ellipses describe return capacity; manually leaving that envelope can cause fuel exhaustion. Short preparation states show explicit readiness/locks and honor manual command ownership.
+
+Defense/fighter/warhead balance now follows research/BALANCE.md and public/balance.js, superseding WORLD_EXPANSION numeric values for those rules. Sensor illumination and weapon rings remain separate.
