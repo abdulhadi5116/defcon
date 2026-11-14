@@ -46,3 +46,7 @@ Dogfighting now uses lead intercept, a forward firing arc and a timed break turn
 ### Requested population extension and impact readability
 
 See MECHANICS_AUDIT.md for immediate/radiation loss separation and its explicitly calibrated game rules. City light follows surviving population; the Population Strike Lab and campaign share damage, fallout, scoring and persistence. The blast remains unchanged but now draws below live unit symbols and confirmed impact status, so glare does not conceal a surviving airbase or silo.
+
+### Aircraft calibration update
+
+The later user-requested aircraft refinement supersedes the earlier 25-degree bomber radius and per-aircraft payload controls: hosts configure immutable launch payloads; bomber release is now 10 degrees with close ingress and a direct SRBM profile, followed by RTB. Aircraft display attack and host-centered return-fuel coverage. See MECHANICS_AUDIT.md for the new calibration, fuel-envelope limits, seeded tactics and regression evidence.
