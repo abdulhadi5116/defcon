@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {Simulation,TYPES} from '../public/engine.js';
-import {deployReserves,STRATEGY_VERSION} from '../public/strategy.js';
+import {deployReserves,STRATEGY_VERSION,factionPlan} from '../public/strategy.js';
 import {TERRITORIES} from '../public/territories.js';
 import {Navigation} from '../public/navigation.js';
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
@@ -16,3 +16,5 @@ test('an accepted AI schedule does not fire early or ignore real launcher cooldo
 test('the narrow West Asian maritime zone can deploy every complete AI fleet without violating its coast margin',()=>{const s=new Simulation();s.navigation=new Navigation(JSON.parse(fs.readFileSync(new URL('../public/assets/land.json',import.meta.url))));for(let t=0;t<960;t+=30){s.time=t;deployReserves(s,6,TERRITORIES);}assert.ok(Object.values(s.stock[6]).every(n=>n===0));for(const u of s.units.filter(u=>u.team===6&&u.fleetId))assert.ok(s.navigation.navigable(u.x,u.y));});
 
 test('radar indexing respects moving, new and destroyed sensors without stale detection',()=>{const s=new Simulation();s.units=[];s.phase=3;const sensor=s.add('radar',0,0,30),point={x:20,y:30};assert.equal(s.radarCovers(point,0),true);sensor.x=-40;assert.equal(s.radarCovers(point,0),false);const added=s.add('fighter',0,19,30);assert.equal(s.radarCovers(point,0),true);s.hit(added,1);assert.equal(s.radarCovers(point,0),false);const allied=s.add('radar',1,20,30);s.factions[0].alliance=s.factions[1].alliance='alpha';s.radarSharing=true;assert.equal(s.radarCovers(point,0),true);s.radarSharing=false;assert.equal(s.radarCovers(point,0),false);assert.ok(allied);});
+
+test('detected incoming missiles identify the attacker and accelerate a counterstrike even before impact',()=>{const s=assault();s.factions[2].active=true;s.cities.push({name:'Second adversary',team:2,x:100,y:30,pop:30,initial:30,dead:false});s.strategists[1].rival=0;s.add('radar',1,-40,30);s.missiles=[{id:999,type:'missile',team:2,x:-40,y:30,tx:160,ty:-50,p:.8,hp:1,dead:false}];const p=factionPlan(s,1);assert.equal(p.incoming,1);assert.equal(p.rival,2);assert.ok(s.strategists[1].nextLaunch<=s.time+30);assert.equal(s.strategists[1].nuclearAttacked,false);});

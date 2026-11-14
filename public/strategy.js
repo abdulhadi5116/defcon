@@ -15,11 +15,11 @@ export function factionPlan(sim,team){
  const m=sim.strategists[team];if(sim.time<m.nextReview&&m.plan)return m.plan;
  const elapsed=Math.max(0,sim.time-(m.reviewedAt??sim.time));m.reviewedAt=sim.time;m.grievance=m.grievance.map(v=>v*Math.exp(-elapsed/2400));
  const own=sim.units.filter(u=>live(u)&&u.team===team),known=sim.units.filter(u=>live(u)&&sim.hostile(team,u.team)&&(sim.visibleTo(u,team)||ground(u)&&u.knownTo?.[team]));
- const incoming=sim.missiles.filter(n=>!n.dead&&sim.hostile(team,n.team)&&n.p>.5&&sim.radarCovers(n,team)&&own.some(u=>distance(u,n)<25)).length;
+ const detectedIncoming=sim.missiles.filter(n=>!n.dead&&sim.hostile(team,n.team)&&n.p>.5&&sim.radarCovers(n,team)&&own.some(u=>distance(u,n)<25)),incoming=detectedIncoming.length;for(const n of detectedIncoming)m.grievance[n.team]=Math.max(m.grievance[n.team]||0,.65);
  const rivals=sim.activeTeams().filter(t=>sim.hostile(team,t));
  const center=own[0]||{x:0,y:0},value=t=>{const cities=sim.cities.filter(c=>c.team===t&&!c.dead),near=Math.min(180,...cities.map(c=>distance(center,c)));return (m.grievance[t]||0)*12+known.filter(u=>u.team===t&&ground(u)).length*.15+Math.log2(1+cities.reduce((n,c)=>n+c.pop,0))*.3-near/70+(m.rival===t?.7:0);};
  m.rival=rivals.sort((a,b)=>value(b)-value(a)||a-b)[0]??null;m.baseline??=sim.remaining[team];if(sim.phase>1)m.baseline=Math.max(m.baseline,sim.remaining[team]);
- if(sim.phase===1&&m.phaseOneAt===null){m.phaseOneAt=sim.time;m.nextLaunch=sim.time+(sim.mode==='lab'?30:180);}
+ if(sim.phase===1&&m.phaseOneAt===null){m.phaseOneAt=sim.time;m.nextLaunch=sim.time+(sim.mode==='lab'?30:180);}if(incoming)m.nextLaunch=Math.min(m.nextLaunch,sim.time+30);
  const retaliating=m.nuclearAttacked||sim.strategists.some((v,i)=>i!==team&&sim.allied(team,i)&&v.nuclearAttacked),reserve=Math.floor(m.baseline*(retaliating?.06:.12));
  const nuclear=sim.phase===1&&m.rival!==null&&sim.time>=m.nextLaunch&&sim.remaining[team]>reserve;
  m.posture=nuclear?'STRIKE':incoming?'DEFEND':sim.phase>3?'RECON':'CONTAIN';m.tension=clamp(incoming*.12+Math.max(0,...m.grievance));m.reason=m.wave?'Coordinated strike package underway.':nuclear?'Concentrate fire, saturate defenses, assess damage.':incoming?'Intercept threats and prepare counterstrike.':'Deploy, scout and position strike forces.';

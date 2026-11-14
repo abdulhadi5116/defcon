@@ -134,4 +134,4 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Disable personality/difficulty variants; migrate old minds to one strategic controller without resetting manual queues or stock.
 - [x] Real deployment, coastal force positioning, value/intelligence-based targets, synchronized multi-platform FIFO salvo schedules, reserves and damage reassessment.
 - [x] Scheduled packages persist across reload and respect real fuel, ammunition, preparation, cooldown, alliances and sensor information.
-- [x] 184 tests, prepared-defense penetration scenarios, narrow maritime deployment, single-controller Settings and handover/reload browser checks.
+- [x] 185 tests, prepared-defense penetration scenarios, narrow maritime deployment, single-controller Settings and handover/reload browser checks.
