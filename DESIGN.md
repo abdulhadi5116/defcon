@@ -23,3 +23,5 @@ Nuclear effects keep a brief flash/shake, followed by a larger soft annulus that
 Selection ranges use red for active weapons, blue for fuel/flight range, cyan for radar and green for sonar. Global ICBM reach marks the entire viewport with a subtle red outline and GLOBAL label, avoiding a misleading small circle. Deselecting clears selection overlays.
 
 X-axis coordinate labels remain pinned to the bottom viewport edge in both Degree and MGRS modes. Interaction instructions live inside the Info popup and are not a permanent map overlay.
+
+Live deployment, fleet, contact and inspector controls preserve their DOM identity across updates. Keyed controls update text/attributes in place instead of replacing buttons between pointerdown and pointerup. This also retains keyboard focus during preparation/reload countdowns.
