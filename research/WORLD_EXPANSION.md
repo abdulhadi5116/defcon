@@ -1,5 +1,7 @@
 # Ten-faction world, naval formations and revised balance
 
+Current close-engagement balance and Radar/Full view settings are documented in [LOCAL_ENGAGEMENTS.md](LOCAL_ENGAGEMENTS.md), superseding older values below.
+
 ## World data
 
 New operations contain ten factions: North America, South America, Europe, Russia, Africa, South Asia, Iran, China, Southeast Asia, and Australia & NZ. South Asia retains India/Pakistan/Bangladesh/Nepal/Sri Lanka and neighboring South Asian states. Iran represents the West Asian block; China includes the East Asian block; Southeast Asia includes the ASEAN countries and Timor-Leste. Australia and New Zealand share one faction.

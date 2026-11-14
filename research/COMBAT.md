@@ -1,5 +1,7 @@
 # Combat correction: v1.43 evidence and web behavior
 
+Current close-engagement balance and Radar/Full view settings are documented in [LOCAL_ENGAGEMENTS.md](LOCAL_ENGAGEMENTS.md), superseding older values below.
+
 The target is the same user-supplied v1.43 installer documented in BASELINE.md. REA admitted the unpacked PE with SHA256 `8169bbbbb364084dadea790a004a4595acc9549dfcc5fc9a12884d072e4615e2`. Deep providers remain unavailable (Ghidra/Hopper/IDA/Kuna not configured); configuration was not modified. Read-only PEfile/Capstone inspection recovered the following evidence. No native Windows code was executed. `tools/inspect-classic-combat.py` reproduces the retained `native-combat.txt` using the existing analysis environment.
 
 ## Recovered matchup table

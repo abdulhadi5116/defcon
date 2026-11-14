@@ -120,3 +120,10 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Reduce circular radius 2.2° → 1° (55% narrower); derive naval group clearance from radius plus unchanged coastline margin.
 - [x] Existing revision-2 fleets physically reform without teleport, stock reset or lost destination; new placements use compact geometry.
 - [x] Circle/movement/coast/legacy migration tests and browser placement checks.
+
+## Close-range fleet/air balance and map intelligence
+
+- [x] Battleship 4°, fighter 2°, carrier 1.5° AA gun only with separate deck/gun cooldowns; no carrier surface/ASW weapon.
+- [x] Bomber release 2° inside defense coverage; both nuclear profiles 0.06°/s; SAM radius 10°, speed 1.2°/s, reload 8s.
+- [x] Render-only Radar mode / Full view in Settings, persisted in session/default preferences across browsers.
+- [x] Revision-5 migration, 179 tests, 200 strike trials, 84 Lab exercises, strategy simulations and browser/mobile checks passed.

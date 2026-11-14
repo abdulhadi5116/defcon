@@ -1,5 +1,7 @@
 # Balance review: local defense, strategic reach
 
+Current close-engagement balance and Radar/Full view settings are documented in [LOCAL_ENGAGEMENTS.md](LOCAL_ENGAGEMENTS.md), superseding older values below.
+
 This revision supersedes the defense/fighter/warhead numbers in WORLD_EXPANSION.md. `public/balance.js` is the shared current configuration used by combat, operation overlays and strategic target assessment. Lab and campaign use the same engine.
 
 ## Evidence and scale
