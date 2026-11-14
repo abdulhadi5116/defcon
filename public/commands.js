@@ -7,7 +7,7 @@ export function primaryAction(u){
 // Empty map clicks retain selection; aircraft decks accept direct launch coordinates.
 export function mapCommand(sim,{selectedId,unit=null,city=null,point,targetingId=null}){
  const select=unit=>unit?{kind:'select',unit}:{kind:'keep'},own=sim.units.find(u=>u.id===selectedId&&!u.dead&&!u.landed);
- if(!sim.started||sim.ended)return select(unit);
+ if(city&&(city.dead||!own||own.team!==sim.playerTeam||!primaryAction(own)))return {kind:'city',city};if(!sim.started||sim.ended)return select(unit);
  if(unit&&sim.allied(unit.team,sim.playerTeam))return select(unit);
  if(!own||own.team!==sim.playerTeam)return select(unit);
  const target=unit||city,action=primaryAction(own),destination=target||point;

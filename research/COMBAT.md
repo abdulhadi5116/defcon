@@ -58,3 +58,7 @@ Later user-requested fuel rebalance uses carrier 90/210 and airbase 140/300 figh
 ## Requested fighter interception extension
 
 Fighter → nuclear missile now has a 0.15 per-projectile hit chance. The target must be hostile, detected and descending (progress above 0.5), and combat retains the normal 5° fighter range, 20-second reload, facing gate and finite travelling missile. This is a requested gameplay extension, outside the recovered v1.43 combat table. Defensive silo → missile remains 0.25. Campaign and Lab both call the same acquisition, pursuit, combat and projectile resolution methods.
+
+## Latest requested defense/fuel/naval balance
+
+The authoritative current override table is in research/WORLD_EXPANSION.md. Defensive silo range is 22°, radar 30°, reload 12s, warhead hit chance 70%; fighter warhead chance is 50% with 7° engagement. Interceptors travel at 1.2°/s. Ballistic warheads travel at 0.12°/s and direct bomber payloads at 0.25°/s. Submarine nuclear range is 18°, bomber nuclear range 5°. States now prepare in 15–30 game seconds (silo launch 20s, defense 25s). Hidden close-contact/ASW detection, actual reloads and finite projectile travel determine penetration; mass attacks can saturate defense. These user-requested overrides supersede earlier runtime values while preserving the recovered native table as provenance.

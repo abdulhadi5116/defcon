@@ -71,3 +71,22 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Menu handover, immediate header/menu takeover, persistent control flag and preserved commands.
 - [x] Manual unit/fleet overrides; old save migration and strategy-state validation.
 - [x] 139 tests; two self-play scenarios; handover/reload/takeover and FIFO browser regression checks.
+
+## Circular fleets, extended world and defense/fuel/mobile revision
+
+- [x] Six-ship circular formation; physical legacy reformation and stable shared fleet waypoints.
+- [x] Hidden coastline margin in routing, movement and each fleet placement member.
+- [x] Repeat ground placement and repeat complete fleet drafts until stock is insufficient; Esc cancels.
+- [x] Compact one-row mobile brand/clock/pause/speed controls.
+- [x] Slower warheads, wider silo defense, reliable fighter/SAM interception and measurable mass saturation.
+- [x] Remove unit health bars and integrity presentation; preserve physical damage rules.
+- [x] Reduced fighter fuel; truthful return envelope; warned manual one-way flights can exhaust fuel and crash.
+- [x] Larger population markers/lights and selected-city life/territory tint that fades with casualties.
+- [x] Smaller bomber and submarine nuclear ranges.
+- [x] Shorter mode preparations, protected manual state, explicit DEFCON/payload locks and old-timer migration.
+- [x] Passive/active/ASW submarine detection; surfaced submarines use ordinary radar; fighter ASW mode.
+- [x] Ten-faction setup with India/South Asia, Iran, China, SEA, Australia + New Zealand and 250 cities.
+- [x] Preserve existing six-faction sessions without resetting ownership, units or inventory.
+- [x] Engine/geometry/migration regressions; desktop/mobile browser checks; build and publication.
+
+Validation: 160 tests passed, syntax/build and diff checks passed; two one-hour self-play scenarios and desktop/mobile browser checks (320, 375, 430 px) passed. Safari has not been tested.

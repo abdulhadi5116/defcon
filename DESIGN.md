@@ -82,3 +82,9 @@ After a silo fires its last warhead and its FIFO launch queue drains, it automat
 Faction AI uses persisted utility plans with seeded doctrine diversity, first-use policy, retaliation, limited waves, target commitments and reserves. It uses observed contacts and known static installations, while preserving player alliances and unit mechanics. See research/STRATEGY.md for balance rules and validation.
 
 The existing command menu contains Hand over to AI. While automated, the header becomes Take command; reclaiming control preserves accepted orders. The menu reports only the player's doctrine and current reason. Opponent strategic intent stays out of the player UI. Handover state persists in game saves; new/legacy manual sessions do not silently enable it. Execution follows the active browser simulation.
+
+## Ten-faction and balance follow-up
+
+The current operation setup offers ten factions; old six-faction sessions retain their original ownership/masks. See research/WORLD_EXPANSION.md for country grouping, data provenance, migration and the current numeric balance. Fleets use physical circular formations with buffered coast routes and repeatable deployment drafts. Ground placement remains active until canceled or exhausted.
+
+Mobile controls now share a single header row with the brand; speed uses a compact native selector. Unit HP presentation is removed. Population is shown through size and life illumination, with selected-city context and casualty-sensitive local/territory lighting. Fuel circles at hosts and two-focus airborne fuel ellipses describe return capacity; manually leaving that envelope can cause fuel exhaustion. Short preparation states show explicit readiness/locks and honor manual command ownership.

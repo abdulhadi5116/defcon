@@ -8,7 +8,7 @@ product
 A player at a desktop in a dim room, observing global escalation and issuing tactical orders through a full-screen world map. The user authorized autonomous implementation.
 
 ## Product Purpose
-A browser reconstruction of DEFCON's unit baseline with original user-provided v1.43 assets. Choose among six territories and configure faction/alliance identity, then inspect ships, aircraft and nuclear engagements. Keep the established map colors, unobtrusive units and original audio. Battle Lab remains a separate testing sandbox.
+A browser reconstruction of DEFCON's unit baseline with original user-provided v1.43 assets. Choose among ten territories and configure faction/alliance identity, then inspect ships, aircraft and nuclear engagements. Keep the established map colors, unobtrusive units and original audio. Battle Lab remains a separate testing sandbox.
 
 ## Brand Personality
 Clinical, ominous, cinematic. Original music, interface warnings and bunker recordings provide atmosphere.
