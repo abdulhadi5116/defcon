@@ -62,3 +62,13 @@ Full-screen nuclear flash and map shake require the blast footprint to touch the
 ## Radar coverage relief
 
 Coverage uses a uniform low-opacity cyan field with a narrow highlighted upper rim and dark lower rim. It lights the measured sensor radius without center bloom or a wide gradient. All enabled sensors fill one combined path, so fleet overlaps do not accumulate brightness. Selected-unit coverage uses the same treatment. Unit icons draw afterward at 85% opacity inside an active field; selection and nuclear-lit units retain full opacity. Slow blurred scan sweeps remain separate from the coverage field.
+
+## Commands, intelligence and escalation follow-up
+
+Map selection persists across empty clicks, movement, and successful or rejected actions. Esc clears it; Space cancels coordinate targeting while retaining selection. Airfield/carrier fighter and bomber states accept direct left-click launch coordinates; each click remains one FIFO launch. Nuclear coordinates retain the explicit Target nuclear strike step. Full six-ship fleet drafts can be placed immediately, with all existing stock, land and maritime-border checks.
+
+Fighters can intercept radar-detected descending nuclear missiles with their existing range, turn, reload and travelling projectiles. The 15% per-shot chance is a user-requested extension to the native combat table. Warhead glyphs can be clicked for fighter targeting. They never provide guidance to hidden hostile destinations.
+
+AI ground strikes require current radar/sonar visibility or a previously observed installation; no omniscient installation fallback. A silo launch exposes that fixed launch installation to every faction. Known sites and launch exposure persist in unit snapshots. Nuclear Battle Lab exercises include actual finite-fuel recon patrols to reveal installations through the same sensor logic, keeping the automated exercise active without a visibility bypass.
+
+Phase durations in simulation seconds: DEFCON 5 = 360, 4 = 600, 3 = 1800, 2 = 3600. Each transition starts a fresh deadline; the deadline and phase start persist across reloads. Legacy saves receive one full current-phase countdown on migration. Existing DEFCON 1 games remain at 1. Playback accelerates both movement and countdown together.

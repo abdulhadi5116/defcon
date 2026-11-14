@@ -36,3 +36,13 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Prevent overlapping fleet sensors from accumulating bright haze.
 - [x] Increase unit ink contrast above coverage while retaining the existing map colors.
 - [x] Browser pixel checks for uniform fill, overlap stability, selected coverage and visible unit ink; screenshot review.
+
+## Persistent selection, direct commands and conventional pacing
+
+- [x] Keep selection on map/action clicks; Esc clears and Space only cancels targeting.
+- [x] Direct aircraft launch clicks from hosts, preserving one-click/one-launch FIFO rules.
+- [x] Immediate placement when a fleet draft reaches six units.
+- [x] Fighter anti-warhead interception, detected missile clicking, finite pursuit coordinates.
+- [x] Remove AI omniscient installation targets; remember observed ground sites and reveal launched silos.
+- [x] Give conventional phases longer windows; persist per-phase countdowns and migrate old saves once.
+- [x] Update controls/manual and exercise recon scene; engine and real-browser regression checks.

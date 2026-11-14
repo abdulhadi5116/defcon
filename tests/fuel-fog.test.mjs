@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Simulation,TYPES} from '../public/engine.js';
-function arena(){const s=new Simulation({mode:'lab',left:'nuclear',right:'nuclear',count:1});s.ai=()=>{};return s;}
+function arena(){const s=new Simulation({mode:'lab',left:'nuclear',right:'nuclear',count:1});s.units=s.units.filter(u=>u.mission!=='recon');s.ai=()=>{};return s;}
 test('airbase flights have larger budgets than carrier flights for both aircraft types',()=>{const s=arena();for(const type of ['fighter','bomber']){const carrier=s.add('carrier',0,-50,30),base=s.add('airbase',0,-65,45);carrier.mode=base.mode=type;const deck=s.launchAircraft(carrier.id,-45,30).unit,land=s.launchAircraft(base.id,-60,45).unit;assert.ok(deck.fuel>TYPES[type].fuel);assert.ok(land.fuel>deck.fuel);assert.equal(land.fuel,land.maxFuel);}});
 test('Lab enemy units stay hidden until they enter real sensor coverage',()=>{const s=arena(),enemy=s.units.find(u=>u.team===1);assert.equal(s.visible(enemy),false);const radar=s.add('radar',0,enemy.x-29,enemy.y);assert.equal(s.visible(enemy),true);radar.x=enemy.x-31;assert.equal(s.visible(enemy),false);});
-test('a launch outside radar announces an origin without revealing the enemy unit or ghost',()=>{const s=arena(),own=s.units.find(u=>u.team===0),enemy=s.units.find(u=>u.team===1);assert.ok(s.launch(enemy.id,own.x,own.y,own.id).ok);assert.equal(s.visibleTo(enemy,0),false);assert.equal(s.ghosts.has(enemy.id),false);assert.ok(s.missiles.length);assert.match(s.events[0].message,/unidentified launch origin/);});
+test('a nuclear silo reveals its installation when it launches',()=>{const s=arena(),own=s.units.find(u=>u.team===0),enemy=s.units.find(u=>u.team===1);assert.ok(s.launch(enemy.id,own.x,own.y,own.id).ok);assert.equal(s.visibleTo(enemy,0),true);assert.equal(s.ghosts.has(enemy.id),true);assert.ok(s.missiles.length);assert.match(s.events[0].message,/Missile silo/);});
 test('each radar-capable unit reveals contacts at its own actual radius',()=>{for(const type of ['radar','silo','airbase','battleship','carrier','fighter','bomber']){const s=arena();s.units=[];const source=s.add(type,0,-50,30),enemy=s.add('battleship',1,-50+TYPES[type].radar-.1,30);assert.equal(s.visible(enemy),true,type);enemy.x+=.2;assert.equal(s.visible(enemy),false,type);}});
 
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
