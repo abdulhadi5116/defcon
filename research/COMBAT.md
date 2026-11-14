@@ -29,7 +29,7 @@ Nuclear weapons cannot select aircraft, and airborne units are excluded from nuc
 
 ## One combat engine
 
-Both Global Conflict and Battle Lab call the same target-validation, radar/sonar, projectile travel, impact probability, damage, nuclear detonation, flight steering/fuel, deck launch/reload and recovery functions. Observer visibility only affects rendering. It never provides weapon lock. Real projectiles carry source/target IDs, home toward live positions, resolve damage on arrival, expire and respect new alliances.
+Both Global Conflict and Battle Lab call the same target-validation, radar/sonar, projectile travel, impact probability, damage, nuclear detonation, flight steering/fuel, deck launch/reload and recovery functions. Rendering and weapon targeting now both obey real radar/sonar visibility in Lab and campaign; the previous Lab rendering-only observer bypass has been removed. Real projectiles carry source/target IDs, home toward live positions, resolve damage on arrival, expire and respect new alliances.
 
 Fighters curve into firing passes; naval bombers maintain standoff passes. These steering patterns, projectile speeds (.4 degrees/s conventional missiles, .12 torpedoes, .08 depth charges), sonar exposure, tactical target priorities and AI are web reconstructions, not recovered native algorithms.
 
@@ -50,3 +50,7 @@ See MECHANICS_AUDIT.md for immediate/radiation loss separation and its explicitl
 ### Aircraft calibration update
 
 The later user-requested aircraft refinement supersedes the earlier 25-degree bomber radius and per-aircraft payload controls: hosts configure immutable launch payloads; bomber release is now 10 degrees with close ingress and a direct SRBM profile, followed by RTB. Aircraft display attack and host-centered return-fuel coverage. See MECHANICS_AUDIT.md for the new calibration, fuel-envelope limits, seeded tactics and regression evidence.
+
+### Fuel and fog correction
+
+Later user-requested fuel rebalance uses carrier 90/210 and airbase 140/300 fighter/bomber travelled-degree budgets. Selected units illuminate their real radar radius without a hard edge; global coverage is still an explicit layer. The same radar helper determines detection and projectile display. Dedicated sonar acquisition is tracked separately from launch announcements, so neither a launch nor legacy launch flags can reveal the source unit outside sensors. See MECHANICS_AUDIT.md for compatibility and regression details.

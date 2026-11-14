@@ -28,7 +28,7 @@ Live deployment, fleet, contact and inspector controls preserve their DOM identi
 
 ICBM simulation, guidance and sprite orientation share one quadratic trajectory, including longitude wrap. Original icon alpha bounds are centered at the world coordinate; attack marks and endpoints use that center, with picking limited to the icon box rather than its labels or health bar.
 
-Selected scopes show the current action: silo air defense, nuclear strike reach, or the chosen aircraft's flight range. Radar coverage belongs to the explicit Radar layer, or radar-station selection, so airbases and launch-ready silos do not display a second short sensor ring. Scope sweeps are cached soft angular/radial gradients, with no needle or wedge edge and an approximately 84-second revolution. Reduced effects suppresses motion. Silo ICBM reach remains global with broad illumination; submarine/bomber strike scopes retain their shorter actual launch radii.
+Selected scopes show the current action: silo air defense, nuclear strike reach, or the chosen aircraft's flight range. Selecting any friendly radar-capable unit automatically shows a soft local sensor glow using its actual radar radius. The Radar layer adds every friendly/shared sensor. This glow has no boundary stroke, keeping it distinct from weapon/fuel rings. Scope sweeps are cached soft angular/radial gradients, with no needle or wedge edge and an approximately 84-second revolution. Reduced effects suppresses motion. Silo ICBM reach remains global with broad illumination; submarine/bomber strike scopes retain their shorter actual launch radii.
 
 Empty-map primary clicks deselect; deliberate coordinate targeting is a one-shot Info command, cancelled by Space, Esc, right click, selection/state change or session reload. Enemy unit/city icons remain contextual targets.
 
@@ -45,3 +45,9 @@ Bomber payload is configured at the airbase/carrier. Nuclear and conventional lo
 Guidance endpoints, planned orders and trails are displayed only for own/allied units, including in observer Lab scenes. Aircraft/ship trails carry simulation timestamps, expire after 35 game seconds and fade by age. Small weapon traces expire after 8 seconds. Enemy nuclear launches announce the launch origin with an animated warning symbol without revealing the destination. The warning honors reduced effects.
 
 Fighter intercepts vary seeded lead/lag/crossing choices and reactive evasive breaks within the existing normal turn limit. Firing passes include a short gun-burst visual and small luminous missile streaks. Air-defense Lab stages aircraft that cross the silo's real radar/SAM radius. Air-defense silos use the original SAM state symbol in map and inspector. Radar coverage lifts local color with a soft radial glow and no hard perimeter stroke.
+
+## Fuel and fog correction
+
+Host launch fuel budgets are explicitly rebalanced: carrier fighter/bomber 90°/210°, airbase fighter/bomber 140°/300° of total travelled distance. Blue return coverage and validation use the actual aircraft fuel budget. Existing active saved flights upgrade once, preserving distance already consumed and their current orders, HP and payload. These are requested game-balance values, not claims about native constants.
+
+Lab and campaign now share strict unit and projectile visibility. Unknown enemy contacts are neither rendered nor pickable before radar/sonar detection. Nuclear origin alerts do not reveal the launcher icon or manufacture a ghost. Previously observed ghost contacts may remain as memory; unverified legacy ghosts are discarded. Hidden impact-status markers and hidden selected-unit inspectors are suppressed.

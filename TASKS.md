@@ -11,4 +11,12 @@
 - [x] Soft illuminated radar coverage instead of hard boundary rings.
 - [x] Regression tests, browser/visual verification, build and publish.
 
-Verification: 94 engine/state tests; browser checks for aircraft operations, hostile guidance privacy, payload locking, air-defense SAM engagement, launch markers, FIFO commands, population, blast, selection and fuel scopes. Published through the existing owner-private Site.
+Verification: 101 engine/state tests; browser checks for aircraft operations, hostile guidance privacy, payload locking, air-defense SAM engagement, launch markers, FIFO commands, population, blast, selection and fuel scopes. Published through the existing owner-private Site.
+
+## Fuel and visibility follow-up
+
+- [x] Larger host-specific fuel budgets, with airbases exceeding carriers.
+- [x] Preserve consumed fuel and orders when upgrading existing saved flights once.
+- [x] Selected unit radar glow uses its actual sensor radius.
+- [x] Strict radar/sonar visibility in both Lab and campaign; no unknown contacts, projectiles, launch ghosts or inspector leaks.
+- [x] Fuel/fog regression and browser verification, build and publication.
