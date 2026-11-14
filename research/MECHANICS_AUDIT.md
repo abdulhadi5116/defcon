@@ -79,3 +79,11 @@ Full-screen nuclear flash and map shake require the blast footprint to touch the
 ### Requested command and strategy extensions
 
 Blank map clicks now retain selection. Airbase/carrier states launch directly with left-click coordinates; nuclear coordinate targeting remains explicit. Completed six-unit drafts place directly. Fighter interception of descending detected warheads is a requested custom rule (15% per shot), not claimed as native DEFCON parity. It shares the normal steering, sensor, projectile and damage pipeline in both Lab and campaign. Enemy nuclear installation selection now requires observed intelligence or a revealed silo launch; public city coordinates remain legitimate strategic targets. Nuclear Lab scenes use actual reconnaissance aircraft rather than an omniscient AI exemption. DEFCON 3 lasts 30 game minutes and DEFCON 2 lasts 60, with saved relative deadlines rather than automatic catch-up against old absolute timestamps.
+
+### Radar union and invalid saved unit follow-up
+
+Coverage now fills the combined sensor path once, without stroking any sensor circumference. This removes interior rings from overlapping and fully nested sensors while preserving the exact measured footprint and its natural outer boundary. Weapon/fuel scopes remain separate selected-action overlays.
+
+A seeded campaign reproduced `Invalid saved unit` at simulation second 1321: a fighter evaded a newly created projectile before `advanceShots` assigned its heading, generating a NaN break point and corrupting its position. Evasion now derives that initial direction from the projectile's finite target coordinates when needed. Snapshot validation stays strict. A damaged browser pending journal falls back to the same active session's valid server checkpoint rather than preventing load or creating a new game.
+
+Validation: the fixed campaign completed 12,000 simulation seconds with 1,009 unit records; JSON-round-tripped snapshots passed validation every 60 seconds. The complete suite passed 124 tests. Browser checks verified nested/overlapping coverage has no internal edges and a corrupt pending journal resumes the existing valid server session.

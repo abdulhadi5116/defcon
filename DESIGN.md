@@ -61,7 +61,7 @@ Full-screen nuclear flash and map shake require the blast footprint to touch the
 
 ## Radar coverage relief
 
-Coverage uses a uniform low-opacity cyan field with a narrow highlighted upper rim and dark lower rim. It lights the measured sensor radius without center bloom or a wide gradient. All enabled sensors fill one combined path, so fleet overlaps do not accumulate brightness. Selected-unit coverage uses the same treatment. Unit icons draw afterward at 85% opacity inside an active field; selection and nuclear-lit units retain full opacity. Slow blurred scan sweeps remain separate from the coverage field.
+Coverage uses a uniform low-opacity cyan area. Overlapping sensor discs form one filled union, with no individual circle strokes or internal edges. The silhouette of the filled union marks the outer coverage boundary without center bloom or a wide gradient. All enabled sensors fill one combined path, so fleet overlaps do not accumulate brightness. Selected-unit coverage uses the same treatment. Unit icons draw afterward at 85% opacity inside an active field; selection and nuclear-lit units retain full opacity. Slow blurred scan sweeps remain separate from the coverage field.
 
 ## Commands, intelligence and escalation follow-up
 

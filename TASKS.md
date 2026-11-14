@@ -53,3 +53,11 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Preserve remaining FIFO launches and in-flight warheads; keep unspent silos available for chaining.
 - [x] Apply the normal defense preparation time and preserve it through reloads.
 - [x] Repair exhausted silos in old saves; verify engine and browser behavior including SAM icon.
+
+## Unified radar area and save reliability
+
+- [x] Remove individual sensor outlines; overlaps and nested sensors form one continuous illuminated area.
+- [x] Pixel checks prove internal boundaries match the surrounding covered area; retain readable unit glyphs.
+- [x] Fix non-finite fighter evasion when a newly created hostile projectile has no heading yet.
+- [x] Invalid local pending recovery resumes the same session's valid server checkpoint.
+- [x] Regression tests and browser verification for merged coverage and recovery.
