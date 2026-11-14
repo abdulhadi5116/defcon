@@ -72,3 +72,7 @@ Fighters can intercept radar-detected descending nuclear missiles with their exi
 AI ground strikes require current radar/sonar visibility or a previously observed installation; no omniscient installation fallback. A silo launch exposes that fixed launch installation to every faction. Known sites and launch exposure persist in unit snapshots. Nuclear Battle Lab exercises include actual finite-fuel recon patrols to reveal installations through the same sensor logic, keeping the automated exercise active without a visibility bypass.
 
 Phase durations in simulation seconds: DEFCON 5 = 360, 4 = 600, 3 = 1800, 2 = 3600. Each transition starts a fresh deadline; the deadline and phase start persist across reloads. Legacy saves receive one full current-phase countdown on migration. Existing DEFCON 1 games remain at 1. Playback accelerates both movement and countdown together.
+
+## Exhausted silo fallback
+
+After a silo fires its last warhead and its FIFO launch queue drains, it automatically enters air-defense mode with the existing 340-second preparation time. Missiles already in flight continue unchanged. A partially expended silo remains in launch mode so further one-shot commands can still be chained. The same rule covers AI, Battle Lab, direct launch calls and queued commands. Loading an older exhausted launch-mode silo starts the same transition once; already preparing/defensive saves keep their remaining countdown.

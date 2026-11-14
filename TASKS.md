@@ -46,3 +46,10 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Remove AI omniscient installation targets; remember observed ground sites and reveal launched silos.
 - [x] Give conventional phases longer windows; persist per-phase countdowns and migrate old saves once.
 - [x] Update controls/manual and exercise recon scene; engine and real-browser regression checks.
+
+## Automatic defense after nuclear payload exhaustion
+
+- [x] Return an exhausted silo to defense after its final queued/direct launch.
+- [x] Preserve remaining FIFO launches and in-flight warheads; keep unspent silos available for chaining.
+- [x] Apply the normal defense preparation time and preserve it through reloads.
+- [x] Repair exhausted silos in old saves; verify engine and browser behavior including SAM icon.
