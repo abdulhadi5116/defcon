@@ -68,3 +68,10 @@ Sonar acquisition has its own per-observer expiry record, separated from legacy 
 Nuclear launches still produce their requested origin warning, but an out-of-radar launch is labelled unidentified and does not grant a live unit contact or ghost. Ghosts are created only from observed units. Unverified legacy enemy ghosts are removed on restore; verified historical contacts remain faint memories after contact loss.
 
 Regression evidence: `tests/fuel-fog.test.mjs` tests host budgets, all sensor boundaries, Lab fog, launch-source privacy, allied sharing, DEFCON gates, legacy fuel upgrade idempotency and ghost migration. `qa/fuel-fog-browser.mjs` verifies actual rendering/picking before detection, after sensor entry and after exit, plus selected glow radii for all radar-capable unit types.
+
+
+## Aftermath timing and territorial screen effects
+
+Confirmed destroyed units lose their cached contact and trail immediately. Unconfirmed last-known contacts fade over 12 simulation seconds; nuclear destruction markers fade over 6 simulation seconds. Both follow 1×/5×/10×/20× playback, including cosmetic cleanup after the result is final. Old saves discard expired or undated contacts. The nuclear blast itself keeps its existing long decay.
+
+Full-screen nuclear flash and map shake require the blast footprint to touch the controller faction's land territory (or an owned coastal city). Foreign territory, other allied territories and open ocean retain only the local blast. Reduced effects still suppress flash/shake. Territory attribution uses the current controller, regardless of who launched the missile.

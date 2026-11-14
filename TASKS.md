@@ -20,3 +20,12 @@ Verification: 101 engine/state tests; browser checks for aircraft operations, ho
 - [x] Selected unit radar glow uses its actual sensor radius.
 - [x] Strict radar/sonar visibility in both Lab and campaign; no unknown contacts, projectiles, launch ghosts or inspector leaks.
 - [x] Fuel/fog regression and browser verification, build and publication.
+
+
+## Aftermath cleanup and controller impact feedback
+
+- [x] Expire stale contacts in 12 simulation seconds; clear confirmed destroyed bodies and trails immediately.
+- [x] Fade nuclear destruction markers within 6 simulation seconds, independent of blast lifetime.
+- [x] Follow playback speed; keep cosmetic cleanup running after game end.
+- [x] Gate full-screen shake/flash to controller territory impacts; preserve local blasts everywhere.
+- [x] Verify engine regressions and browser checks for own/foreign/ocean/reduced-effects cases and speed-scaled cleanup.

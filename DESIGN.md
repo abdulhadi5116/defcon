@@ -51,3 +51,10 @@ Fighter intercepts vary seeded lead/lag/crossing choices and reactive evasive br
 Host launch fuel budgets are explicitly rebalanced: carrier fighter/bomber 90°/210°, airbase fighter/bomber 140°/300° of total travelled distance. Blue return coverage and validation use the actual aircraft fuel budget. Existing active saved flights upgrade once, preserving distance already consumed and their current orders, HP and payload. These are requested game-balance values, not claims about native constants.
 
 Lab and campaign now share strict unit and projectile visibility. Unknown enemy contacts are neither rendered nor pickable before radar/sonar detection. Nuclear origin alerts do not reveal the launcher icon or manufacture a ghost. Previously observed ghost contacts may remain as memory; unverified legacy ghosts are discarded. Hidden impact-status markers and hidden selected-unit inspectors are suppressed.
+
+
+## Aftermath timing and territorial screen effects
+
+Confirmed destroyed units lose their cached contact and trail immediately. Unconfirmed last-known contacts fade over 12 simulation seconds; nuclear destruction markers fade over 6 simulation seconds. Both follow 1×/5×/10×/20× playback, including cosmetic cleanup after the result is final. Old saves discard expired or undated contacts. The nuclear blast itself keeps its existing long decay.
+
+Full-screen nuclear flash and map shake require the blast footprint to touch the controller faction's land territory (or an owned coastal city). Foreign territory, other allied territories and open ocean retain only the local blast. Reduced effects still suppress flash/shake. Territory attribution uses the current controller, regardless of who launched the missile.
