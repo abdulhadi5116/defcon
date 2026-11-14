@@ -1,8 +1,8 @@
 import test from 'node:test';
 import fs from 'node:fs';
-import {Navigation} from '../dist/navigation.js';
+import {Navigation} from '../public/navigation.js';
 import assert from 'node:assert/strict';
-import {Simulation,TYPES,COMBAT_CHANCES,NUCLEAR,blastAppearance,distance} from '../dist/engine.js';
+import {Simulation,TYPES,COMBAT_CHANCES,NUCLEAR,blastAppearance,distance} from '../public/engine.js';
 function arena(){const s=new Simulation();s.units=[];s.fleets=[];s.cities=[];s.missiles=[];s.shots=[];s.events=[];s.phase=3;s.ai=()=>{};s.running=true;return s;}
 function step(s,seconds){for(let i=0;i<seconds*4;i++)s.tick(.25);}
 test('matchup matrix differentiates weapons, aircraft and ASW without inventing extra HP',()=>{assert.ok(COMBAT_CHANCES.fighter.bomber>COMBAT_CHANCES.fighter.fighter);assert.ok(COMBAT_CHANCES.battleship.fighter>COMBAT_CHANCES.battleship.battleship);assert.ok(COMBAT_CHANCES.carrier.submarine>COMBAT_CHANCES.submarine.carrier);assert.equal(COMBAT_CHANCES.submarine.fighter,undefined);assert.equal(TYPES.fighter.hp,1);assert.equal(TYPES.bomber.hp,1);assert.equal(TYPES.battleship.hp,3);assert.equal(TYPES.carrier.hp,3);});
@@ -20,4 +20,4 @@ test('identical live encounter produces identical damage, projectiles and steeri
 test('active submarine sonar acquires a carrier without receiving observer radar',()=>{const s=arena(),sub=s.add('submarine',0,-40,30),carrier=s.add('carrier',1,-38,30);sub.mode='active';assert.equal(s.canTarget(sub,carrier),false);step(s,61);assert.ok(s.visibleTo(carrier,0));assert.ok(s.canTarget(sub,carrier));assert.ok(s.shots.some(p=>p.kind==='torpedo'));});
 test('live bomber lab keeps naval attack mission while deploying and recovering real aircraft',()=>{const s=new Simulation({mode:'lab',left:'bomber',right:'battleship',count:1});s.running=true;step(s,180);const planes=s.units.filter(u=>u.type==='bomber');assert.ok(planes.length);assert.ok(planes.every(u=>u.mode==='naval'));assert.ok(s.units.some(u=>u.type==='battleship'&&u.hp<u.maxHp)||s.shots.some(p=>p.sourceId===planes[0].id));});
 
-test('lab ground installations are on real land and naval formations are at sea',()=>{const nav=new Navigation(JSON.parse(fs.readFileSync(new URL('../dist/assets/land.json',import.meta.url))));for(const [left,right] of [['nuclear','airbase'],['silo','silo'],['submarine','carrier']]){const s=new Simulation({mode:'lab',left,right,count:2});for(const u of s.units)assert.equal(nav.land(u.x,u.y),TYPES[u.type].domain==='ground');}});
+test('lab ground installations are on real land and naval formations are at sea',()=>{const nav=new Navigation(JSON.parse(fs.readFileSync(new URL('../public/assets/land.json',import.meta.url))));for(const [left,right] of [['nuclear','airbase'],['silo','silo'],['submarine','carrier']]){const s=new Simulation({mode:'lab',left,right,count:2});for(const u of s.units)assert.equal(nav.land(u.x,u.y),TYPES[u.type].domain==='ground');}});

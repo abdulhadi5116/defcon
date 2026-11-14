@@ -3,7 +3,7 @@ from PIL import Image
 from pathlib import Path
 import json,hashlib,sys
 source=Path(sys.argv[1] if len(sys.argv)>1 else '/tmp/defcon-v143-reference/main/data/earth')
-output=Path(__file__).resolve().parents[1]/'dist/territory-data.js'
+output=Path(__file__).resolve().parents[1]/'public/territory-data.js'
 def simplify(points,eps=.7):
     if len(points)<3:return points
     a,b=points[0],points[-1];dx,dy=b[0]-a[0],b[1]-a[1];den=(dx*dx+dy*dy)**.5

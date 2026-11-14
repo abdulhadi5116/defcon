@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Simulation,TYPES,operationRanges,nuclearRange,distance} from '../dist/engine.js';
+import {Simulation,TYPES,operationRanges,nuclearRange,distance} from '../public/engine.js';
 const step=(s,n)=>{s.running=true;for(let t=0;t<n&&!s.ended;t+=.25)s.tick(.25);};
 function arena(){const s=new Simulation();s.units=[];s.fleets=[];s.cities=[];s.phase=1;s.ai=()=>{};return s;}
 test('selected operation radii match active nuclear states and actual launch validation',()=>{const s=arena();for(const [type,mode,radius] of [['silo','launch',360],['submarine','launch',45],['bomber','nuclear',25]]){const u=s.add(type,0,-50,30);u.mode=mode;assert.equal(nuclearRange(u),radius);assert.equal(operationRanges(u).find(r=>r.kind==='weapon').radius,radius);if(type==='silo')assert.ok(operationRanges(u).find(r=>r.global));if(type==='submarine')assert.equal(s.launch(u.id,30,30).ok,false);}const silo=s.units.find(u=>u.type==='silo');assert.ok(s.launch(silo.id,130,-40).ok);});

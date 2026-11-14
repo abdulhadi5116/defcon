@@ -1,0 +1,7 @@
+.git
+node_modules
+data
+dist
+qa
+research
+*.tar.gz

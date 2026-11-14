@@ -13,7 +13,7 @@ from PIL import Image
 
 source=Path(sys.argv[1]).expanduser().resolve()
 root=Path(__file__).resolve().parents[1]
-out=root/'dist/assets/classic'
+out=root/'public/assets/classic'
 with tempfile.TemporaryDirectory(prefix='defcon-assets-') as folder:
     temp=Path(folder)
     subprocess.run(['innoextract','--extract','--output-dir',str(temp/'installer'),str(source)],check=True)
@@ -30,10 +30,10 @@ with tempfile.TemporaryDirectory(prefix='defcon-assets-') as folder:
         rgba.putalpha(luminance)
         dest=out/'units'/f'{name}.png'
         rgba.save(dest)
-        manifest['units'][name]={'original':f'data/graphics/{name}.bmp','original_sha256':hashlib.sha256(original.read_bytes()).hexdigest(),'path':str(dest.relative_to(root/'dist')),'sha256':hashlib.sha256(dest.read_bytes()).hexdigest(),'conversion':'RGB luminance to alpha; original pixels and dimensions retained'}
+        manifest['units'][name]={'original':f'data/graphics/{name}.bmp','original_sha256':hashlib.sha256(original.read_bytes()).hexdigest(),'path':str(dest.relative_to(root/'public')),'sha256':hashlib.sha256(dest.read_bytes()).hexdigest(),'conversion':'RGB luminance to alpha; original pixels and dimensions retained'}
     for original in sorted((temp/'sounds/data/sounds').glob('*.ogg')):
         dest=out/'audio'/original.name
         shutil.copyfile(original,dest)
-        manifest['audio'][original.stem]={'path':str(dest.relative_to(root/'dist')),'sha256':hashlib.sha256(original.read_bytes()).hexdigest(),'bytes':original.stat().st_size}
+        manifest['audio'][original.stem]={'path':str(dest.relative_to(root/'public')),'sha256':hashlib.sha256(original.read_bytes()).hexdigest(),'bytes':original.stat().st_size}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(f"Exported {len(manifest['units'])} textures and {len(manifest['audio'])} original OGG files.")

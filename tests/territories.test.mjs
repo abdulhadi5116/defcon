@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {Simulation,TYPES,distance,longitudeDelta} from '../dist/engine.js';
-import {Navigation} from '../dist/navigation.js';
-import {TERRITORIES,territoryMap,defaultFactions,validateSetup} from '../dist/territories.js';
-import {precisionForZoom,mgrsReference,gridZones} from '../dist/grid.js';
+import {Simulation,TYPES,distance,longitudeDelta} from '../public/engine.js';
+import {Navigation} from '../public/navigation.js';
+import {TERRITORIES,territoryMap,defaultFactions,validateSetup} from '../public/territories.js';
+import {precisionForZoom,mgrsReference,gridZones} from '../public/grid.js';
 const advance=(s,n)=>{s.running=true;for(let i=0;i<n&&!s.ended;i++)s.tick(1);};
-const nav=new Navigation(JSON.parse(fs.readFileSync(new URL('../dist/assets/land.json',import.meta.url))));
+const nav=new Navigation(JSON.parse(fs.readFileSync(new URL('../public/assets/land.json',import.meta.url))));
 test('all six factions own 25 cities and 100M population; every opening fleet has six ships',()=>{const s=new Simulation();assert.equal(s.factions.length,6);assert.equal(s.cities.length,150);for(let team=0;team<6;team++){const cities=s.cities.filter(c=>c.team===team);assert.equal(cities.length,25);assert.ok(Math.abs(cities.reduce((sum,c)=>sum+c.pop,0)-100)<1e-9);assert.equal(s.units.filter(u=>u.team===team).length,19);assert.equal(['battleship','carrier','submarine'].reduce((sum,t)=>sum+s.stock[team][t],0)%6,0);}assert.ok(s.fleets.every(f=>f.members.length===6));});
 test('opening ground installations and all fleet members fit their land/maritime territory masks',()=>{const s=new Simulation();for(const u of s.units){const sea=TYPES[u.type].domain==='sea';assert.ok(territoryMap.contains(s.factions[u.team].territory,u.x,u.y,sea),`${u.type} ${u.id} in ${s.factionName(u.team)}`);assert.equal(nav.land(u.x,u.y),!sea);}});
 test('territory selection changes command ownership and deployment restrictions',()=>{const s=new Simulation({playerTeam:2});s.navigation=nav;assert.equal(s.factions[s.playerTeam].territory,'europe');assert.equal(s.deploy('silo',-100,40).ok,false);const before=s.stock[2].battleship;assert.equal(s.deploy('battleship',-55,35,Array(6).fill('battleship')).ok,false);assert.equal(s.stock[2].battleship,before);const r=s.deploy('battleship',-19,44,Array(6).fill('battleship'));assert.ok(r.ok,r.reason);assert.equal(r.unit.team,2);assert.equal(s.stock[2].battleship,before-6);});
