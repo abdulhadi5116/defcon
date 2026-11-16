@@ -99,3 +99,8 @@ Active submarines can engage other submarines with torpedoes: 6° for active/sur
 Nuclear sea damage is 20 × (1 − distance / 2°) HP inside a 2° radius, applied to every ship in the footprint, including neighboring fleets. Damage is zero at and beyond 2°. Ground installations retain 10 HP nuclear impact damage. Aircraft remain excluded. Radiation continues to affect population only.
 
 Visual radii are unchanged: initial glow radius 5°, additional center-light radius 0.9° (18% of glow radius), fading and shrinking over 500 game seconds. The brightest portion of the additional core occupies roughly its inner 0.27° and blends into the other gradient; none of these are hard-edged damage rings.
+
+
+## HP override revision 9 (2026-11-16)
+
+Bomber 3 HP, fighter 4 HP, carrier 18 HP. Battleship 15, submarine 5, silo 30, airfield 20, radar 6 and nuclear warhead 10 remain unchanged. Existing saves preserve the damaged fraction when adopting the new maximum HP; destroyed units remain destroyed. Weapon damage is unchanged: successful gun bursts, conventional missiles and depth charges deal 1 HP; bombs and torpedoes deal 3 HP; nuclear ground impact deals 10 HP, with naval shock damage up to 20 HP falling linearly to zero at 2°.

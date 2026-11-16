@@ -19,10 +19,10 @@ test('a submarine accepts an attack during active sonar preparation, persists it
 });
 test('passive submarine and impossible target commands remain rejected',()=>{const s=arena(),u=s.add('submarine',0,0,30),e=s.add('carrier',1,1,30),plane=s.add('fighter',1,1,30);assert.equal(s.order(u.id,e.x,e.y,e.id),false);s.setMode(u.id,'active');assert.equal(s.order(u.id,plane.x,plane.y,plane.id),false);});
 test('nuclear shock damages every nearby ship with doubled center damage and distance falloff, without radiation',()=>{
- const s=arena(),ships=[0,.5,1,1.5,2,2.1].map(x=>s.add('carrier',1,x,30)),base=s.add('silo',1,0,30),air=s.add('fighter',1,0,30);s.detonate({team:0,tx:0,ty:30});assert.deepEqual(ships.map(u=>u.hp),[0,5,10,15,20,20]);assert.equal(base.hp,20);assert.equal(air.hp,5);assert.equal(s.blasts.find(b=>b.nuclear).impacts.filter(hit=>ships.some(u=>u.id===hit.unitId)).length,4);const before=ships.map(u=>u.hp);for(let i=0;i<400;i++)s.advanceRadiation(1);assert.deepEqual(ships.map(u=>u.hp),before);assert.equal(NUCLEAR.damageRadius,2);
+ const s=arena(),ships=[0,.5,1,1.5,2,2.1].map(x=>s.add('carrier',1,x,30)),base=s.add('silo',1,0,30),air=s.add('fighter',1,0,30);s.detonate({team:0,tx:0,ty:30});assert.deepEqual(ships.map(u=>u.hp),[0,3,8,13,18,18]);assert.equal(base.hp,20);assert.equal(air.hp,4);assert.equal(s.blasts.find(b=>b.nuclear).impacts.filter(hit=>ships.some(u=>u.id===hit.unitId)).length,4);const before=ships.map(u=>u.hp);for(let i=0;i<400;i++)s.advanceRadiation(1);assert.deepEqual(ships.map(u=>u.hp),before);assert.equal(NUCLEAR.damageRadius,2);
 });
 test('one blast applies splash to a circular six-ship formation in lab and gameplay equally',()=>{
- const results=[];for(const mode of ['lab','war']){const s=arena();s.mode=mode;const f=s.fleet(Array(6).fill('carrier'),1,0,30);s.detonate({team:0,tx:0,ty:30});results.push(f.members.map(id=>s.units.find(u=>u.id===id).hp));}assert.ok(results[0].every(hp=>Math.abs(hp-10)<1e-9));assert.deepEqual(results[0],results[1]);
+ const results=[];for(const mode of ['lab','war']){const s=arena();s.mode=mode;const f=s.fleet(Array(6).fill('carrier'),1,0,30);s.detonate({team:0,tx:0,ty:30});results.push(f.members.map(id=>s.units.find(u=>u.id===id).hp));}assert.ok(results[0].every(hp=>Math.abs(hp-8)<1e-9));assert.deepEqual(results[0],results[1]);
 });
 
 test('active sonar submarine torpedoes engage active and passive submerged opponents without ordinary weapons bypassing stealth',()=>{
