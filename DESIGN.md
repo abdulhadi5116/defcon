@@ -102,3 +102,9 @@ Current pressure policy: research/STRATEGY.md now documents independent overlapp
 City symbols and labels progressively reveal lower population cities as the player zooms in. Population layer follows the same filtering. Larger cities and the selected city take priority; measured label rectangles choose a free side of the marker and omit labels that still collide. Unit glyphs scale linearly with map scale, including fleet members and selection rings. Fleet formation remains at its existing world spacing, so zoom cannot make fixed screen glyphs overlap the fleet.
 
 Airborne fuel uses a circular remaining-distance envelope centered on the moving aircraft, replacing the earlier two-focus return ellipse. Host launch rings still show nominal round-trip reach. Fuel zero collapses the circle and destroys the aircraft. Return-to-host status remains a separate explicit inspection value.
+
+## Readable zoom correction
+
+This correction supersedes the world-scaled glyph paragraph above. Unit glyphs retain an 18 CSS-pixel visible extent across zoom levels, compensated for each original bitmap's transparent padding. City marker size depends on population (2.5–12 CSS pixels), not map zoom. All city markers and population glows render at every zoom; only names/population text use zoom thresholds and collision rejection. Unlabelled cities remain pickable.
+
+At low zoom, a fleet's visible contacts are separated onto a compact minimum screen-radius circle with faint stems to their real positions. Display offsets never change simulation positions, weapon reach, navigation, visibility, or save state. Picking and planned target markers share the display coordinates. Selected ships remain at their true position so range overlays stay centered. Hidden enemies never participate in the visible layout. As geographic spacing becomes sufficient at higher zoom, glyphs return to their actual projected locations.

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Simulation,TYPES,COMBAT_CHANCES,selectionRanges,distance} from '../public/engine.js';
-import {Renderer,cityVisible} from '../public/renderer.js';
+import {Renderer,cityLabelVisible,cityMarkerSize} from '../public/renderer.js';
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
 const arena=()=>{const s=new Simulation({mode:'lab',left:'radar',right:'radar',count:1});s.units=[];s.fleets=[];s.cities=[];s.ai=()=>{};s.started=s.running=true;s.add('radar',1,150,0);return s;};
 const save=s=>({version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}});
@@ -34,13 +34,22 @@ test('legacy durability and in-flight odds migrate once without healing damage r
  const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,6);assert.equal(u.hp,2);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,.05);assert.equal(r.balanceRevision,6);assert.equal(u.ammo,ship.ammo);
  const again=restoreSimulation(save(r));assert.equal(again.units.find(v=>v.id===ship.id).hp,2);assert.equal(again.shots[0].probability,.05);
 });
-test('city detail increases monotonically with zoom while selected small cities remain visible',()=>{
+test('city label detail increases monotonically with zoom while selected small cities remain visible',()=>{
  const cities=[.1,1,3,6,12,30].map((pop,i)=>({name:'City '+i,pop}));let previous=0;
- for(const zoom of [1,2,3,4,5,6]){const count=cities.filter(c=>cityVisible(c,zoom)).length;assert.ok(count>=previous);previous=count;}
- assert.equal(cities.filter(c=>cityVisible(c,1)).length,2);assert.equal(previous,cities.length);assert.equal(cityVisible(cities[0],1,cities[0].name),true);
+ for(const zoom of [1,2,3,4,5,6]){const count=cities.filter(c=>cityLabelVisible(c,zoom)).length;assert.ok(count>=previous);previous=count;}
+ assert.equal(cities.filter(c=>cityLabelVisible(c,1)).length,2);assert.equal(previous,cities.length);assert.equal(cityLabelVisible(cities[0],1,cities[0].name),true);
 });
-test('unit icons and fleet spacing scale together across zoom levels',()=>{
- const r=Object.create(Renderer.prototype);r.width=1440;r.height=950;r.pan={x:0,y:0};
- const ratios=[];for(const zoom of [1,2,4,6]){r.zoom=zoom;const a=r.project(0,0),b=r.project(1,0),spacing=Math.abs(b.x-a.x);ratios.push(r.iconSize()/spacing);assert.ok(r.iconSize()<spacing);}
- for(const ratio of ratios)assert.ok(Math.abs(ratio-.85)<1e-9);
+test('unit and population marker sizes stay readable and consistent on screen at every zoom',()=>{
+ const r=Object.create(Renderer.prototype);r.width=1440;r.height=950;r.pan={x:0,y:0};r.iconBounds={};
+ for(const zoom of [1,2,4,6]){r.zoom=zoom;assert.equal(r.iconSize(),18);assert.equal(cityMarkerSize(30),Math.sqrt(30)*1.8);assert.ok(cityMarkerSize(.1)>=2.5);assert.ok(cityMarkerSize(100)<=12);}
+ r.iconBounds.silo={width:.4,height:.6};const box=r.unitBox({type:'silo',mode:'launch'});assert.equal(box.halfHeight,11);assert.ok(box.halfWidth>=6);
+});
+test('fleet glyphs remain separated and individually pickable at low zoom without moving simulated ships',()=>{
+ const s=arena(),f=s.fleet(['carrier','battleship','submarine','carrier','battleship','submarine'],0,0,30),members=s.units.filter(u=>u.fleetId===f.id),before=members.map(u=>[u.x,u.y]);
+ const r=Object.create(Renderer.prototype);r.width=1440;r.height=950;r.pan={x:0,y:0};r.iconBounds={};r.visibilityMode='radar';
+ for(const zoom of [1,2,4,6]){r.focus(0,30,zoom);r.layoutUnits(s);const points=members.map(u=>r.unitScreen(u));for(let i=0;i<points.length;i++){assert.equal(r.pick(s,points[i].x,points[i].y)?.id,members[i].id);for(let j=i+1;j<points.length;j++)assert.ok(Math.hypot(points[i].x-points[j].x,points[i].y-points[j].y)>=22-.001);}}
+ r.focus(0,30,1);r.selected=members[0].id;r.layoutUnits(s);assert.equal(r.unitOffsets.has(r.selected),false);assert.deepEqual(r.unitDisplayPoint(members[0]),members[0]);assert.deepEqual(members.map(u=>[u.x,u.y]),before);
+});
+test('fleet display layout never uses or exposes hidden enemy contacts',()=>{
+ const s=arena(),f=s.fleet(Array(6).fill('submarine'),1,70,30),r=Object.create(Renderer.prototype);r.width=1440;r.height=950;r.pan={x:0,y:0};r.zoom=1;r.visibilityMode='radar';r.layoutUnits(s);for(const id of f.members)assert.equal(r.unitOffsets.has(id),false);
 });

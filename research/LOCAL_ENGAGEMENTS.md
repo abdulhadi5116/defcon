@@ -58,3 +58,9 @@ Validation: 207 tests pass, including exact movement, tight fighter turns, real 
 ### Fleet radar follow-up
 
 Battleship and carrier radar now share a 12° radius (`NAVAL_COMBAT.radarRange`). The actual sensor lookup and coverage drawing both read the same type value, including existing saved ships. Submerged submarines retain sonar-based detection with no new radar capability. A regression checks visible contacts just inside 12° and hidden contacts just outside, as well as displayed coverage radius.
+
+### Readable zoom correction
+
+The previous linear world-sized icon change made installations unreadably small, and the city-detail filter incorrectly removed markers as well as labels. Unit glyphs now have 18 CSS-pixel visible extent at every zoom, normalized by original texture alpha bounds. Every city dot remains rendered and clickable; zoom filtering applies only to text. Population-based city marker size remains consistent across zoom (minimum 2.5, maximum 12 pixels). Population glow size also stays consistent on screen.
+
+Fleet glyphs use compact visual decluttering only when their true projected spacing is too small. Faint stems mark each real position; selected glyphs stay at their actual coordinates to center operational ranges accurately. This does not move the fleet physically or grant sensor information: only currently visible members participate. Shared display positions drive picking and target markers. Full test suite: 210 passing checks; browser checks verify all city dots at all tested zooms, progressively revealed nonoverlapping text, stable unit size, individually pickable fleet contacts, fuel centering and real session reloads. Safari remains untested.

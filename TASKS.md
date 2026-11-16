@@ -164,3 +164,10 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 ## Fleet radar range
 - [x] Battleship/carrier radar 12°, shared by real detection and coverage display.
 - [x] Boundary regression at 11.99° / 12.01°; submarine sonar retained.
+
+## Readable zoom correction
+- [x] Keep every city marker at every zoom; filter only labels.
+- [x] Normalize original unit texture bounds and compensate zoom for readable screen size.
+- [x] Population marker sizes remain consistent across zoom and unlabelled dots stay clickable.
+- [x] Compact visual fleet separation, real-position stems and accurate selected-unit range origins.
+- [x] Regression/browser checks for dots, labels, glyph sizing and individual fleet selection.
