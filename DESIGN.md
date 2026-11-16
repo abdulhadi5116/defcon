@@ -105,6 +105,14 @@ Airborne fuel uses a circular remaining-distance envelope centered on the moving
 
 ## Readable zoom correction
 
-This correction supersedes the world-scaled glyph paragraph above. Unit glyphs retain an 18 CSS-pixel visible extent across zoom levels, compensated for each original bitmap's transparent padding. City marker size depends on population (2.5–12 CSS pixels), not map zoom. All city markers and population glows render at every zoom; only names/population text use zoom thresholds and collision rejection. Unlabelled cities remain pickable.
+This correction supersedes the world-scaled glyph paragraph above. Unit glyphs retain an 18 CSS-pixel visible extent across zoom levels, compensated for each original bitmap's transparent padding. City marker size depends on population (5–18 CSS pixels), not map zoom. All city markers and population glows render at every zoom; only names/population text use zoom thresholds and collision rejection. Unlabelled cities remain pickable.
 
 At low zoom, a fleet's visible contacts are separated onto a compact minimum screen-radius circle with faint stems to their real positions. Display offsets never change simulation positions, weapon reach, navigation, visibility, or save state. Picking and planned target markers share the display coordinates. Selected ships remain at their true position so range overlays stay centered. Hidden enemies never participate in the visible layout. As geographic spacing becomes sufficient at higher zoom, glyphs return to their actual projected locations.
+
+## Control pacing and save responsiveness
+
+Small cities have a minimum 5-pixel marker and 10-pixel picking radius; large cities retain population-based size up to 18 pixels. Airborne fuel scopes use 4/6-pixel dashes and 25% opacity.
+
+Fleet members follow the center route immediately, including waypoint direction changes, without first turning through their old heading. Island avoidance and physical formation offsets remain authoritative. Airfield fighter/bomber launch intervals are 5/10 simulation seconds; carrier deck intervals are 8/15. State preparation, finite inventory and FIFO orders still apply.
+
+Periodic save work is based on real time, independent of playback: 8 seconds normally and 15 at 10×/20×. Input-triggered saves debounce 1.5 seconds with minimum 3/5-second spacing. Manual saves remain immediate and show SAVING before encoding. Snapshot encoding, gzip and IndexedDB recovery writes run in a Worker, while the simulation/render loop captures only a shallow descriptor and posts an immutable structured copy. Autosave skips pending work rather than accumulating more captures behind a slow request.

@@ -41,7 +41,7 @@ test('city label detail increases monotonically with zoom while selected small c
 });
 test('unit and population marker sizes stay readable and consistent on screen at every zoom',()=>{
  const r=Object.create(Renderer.prototype);r.width=1440;r.height=950;r.pan={x:0,y:0};r.iconBounds={};
- for(const zoom of [1,2,4,6]){r.zoom=zoom;assert.equal(r.iconSize(),18);assert.equal(cityMarkerSize(30),Math.sqrt(30)*1.8);assert.ok(cityMarkerSize(.1)>=2.5);assert.ok(cityMarkerSize(100)<=12);}
+ for(const zoom of [1,2,4,6]){r.zoom=zoom;assert.equal(r.iconSize(),18);assert.equal(cityMarkerSize(30),Math.sqrt(30)*2.7);assert.ok(cityMarkerSize(.1)>=5);assert.ok(cityMarkerSize(100)<=18);}
  r.iconBounds.silo={width:.4,height:.6};const box=r.unitBox({type:'silo',mode:'launch'});assert.equal(box.halfHeight,11);assert.ok(box.halfWidth>=6);
 });
 test('fleet glyphs remain separated and individually pickable at low zoom without moving simulated ships',()=>{

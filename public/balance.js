@@ -7,3 +7,5 @@ export const BOMBER_NUCLEAR_RANGE=2;
 export const SUBMARINE_WEAPON_RANGE=3;
 export const SUBMARINE_NUCLEAR_RANGE=20;
 export const FLEET_RADIUS=1;
+
+export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:5,bomber:10},carrier:{fighter:8,bomber:15}};

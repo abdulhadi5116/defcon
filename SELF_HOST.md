@@ -28,11 +28,11 @@ Run from the repository root. Use your service manager to restart the process. `
 
 - The last unfinished active session resumes automatically on reload or from another browser.
 - Menu → Sessions & Saves lists saved operations. Continue transfers control to this browser; the old browser pauses after its next save is rejected. Revision checks prevent stale overwrites.
-- Autosave runs every two seconds and after commands/view/settings changes. Save Now requests an immediate checkpoint. The status distinguishes saved, saving and failed requests.
+- Autosave uses wall-clock time: every 8 seconds normally and every 15 seconds at 10×/20×. Input changes are debounced and limited to one save per 3 seconds normally or 5 seconds at high speed. Save Now requests an immediate checkpoint. The status distinguishes saved, saving and failed requests.
 - World state includes unit/fleet orders, weapons in flight, fuel, stock, targets, state preparation, RNG, cities, casualties, scoring, DEFCON and timers. Settings, map layers, coordinate mode, speed, selection and camera are included.
-- The simulation advances in the controlling browser. It does not advance offline. Without a browser, the server retains the last checkpoint. A same-browser recovery journal supplements the last server save after reload; other devices see the server checkpoint.
+- The simulation advances in the controlling browser. It does not advance offline. Without a browser, the server retains the last checkpoint. A same-browser IndexedDB recovery journal, written by the save worker before each network checkpoint, supplements the last server save after reload; other devices see the server checkpoint.
 - Sound preference is retained, but browsers require a click to resume audio.
-- Game records stay on the server. Browser storage is only a controller identifier, legacy preference cache and recovery journal.
+- Game records stay on the server. Browser storage contains the controller identifier, preference cache and recovery journal. JSON encoding, gzip compression and IndexedDB journaling run in a module Worker; old localStorage journals remain readable during migration.
 
 For backups, stop the Node process/container briefly and back up the whole data directory/volume, including SQLite companion files. Restore that directory to the same `DATA_DIR`. Updating the game files does not reset the database.
 

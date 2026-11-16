@@ -171,3 +171,13 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Population marker sizes remain consistent across zoom and unlabelled dots stay clickable.
 - [x] Compact visual fleet separation, real-position stems and accurate selected-unit range origins.
 - [x] Regression/browser checks for dots, labels, glyph sizing and individual fleet selection.
+
+## Control pacing and autosave follow-up
+- [x] Larger population markers and 10px minimum city hitbox.
+- [x] Immediate fleet direction along validated center routes; retain island clearance.
+- [x] Dashed low-opacity aircraft fuel circles.
+- [x] Airfield fighter/bomber queue intervals 5s/10s, carrier 8s/15s; migrate saved cooldowns.
+- [x] Wall-clock autosave throttling and coalescing at high playback speed.
+- [x] Worker JSON/gzip and IndexedDB recovery; shallow snapshot capture; immediate manual save feedback.
+- [x] Real-server interrupted-save recovery, captured-state isolation, browser interaction and before/after frame-gap checks.
+- [x] 217 automated tests, syntax checks and production build.
