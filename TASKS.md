@@ -228,3 +228,11 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Fleet vs fleet preset with six configurable ships per side and one/two formations per side.
 - [x] AI vs AI and Manual vs AI, persistent through save/reload; finite launch decks and ASW support.
 - [x] 260 tests, real UI attack-to-move/fire, AI Lab combat, manual mode persistence and mobile overflow checks.
+
+## Friendly fleet separation
+- [x] Maintain 1° of free water between friendly/allied formation envelopes; exclude hostile fleets and ships within one fleet.
+- [x] Forecast crossing/head-on encounters and smoothly steer formations without changing destinations or exceeding 0.05°/s.
+- [x] Retain a stable passing side; preserve six-ship shape and let moving fleets avoid stationary fleets.
+- [x] Check every translated hull against island/coast clearance and prevent following fleets crossing a stopped fleet's gap.
+- [x] Recover existing overlap gradually without teleporting; persist steering and passing side through ordinary saves.
+- [x] 269 tests passed; browser map orders, scissor crossing and actual Save Now/reload verified without browser errors.

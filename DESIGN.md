@@ -138,3 +138,11 @@ Conventional bombs have a solid finned capsule, subtle tumbling, and a short vis
 An attack on a visible contact outside the selected naval unit's effective weapon range commands the entire formation to a safe standoff position. The selected unit retains its individual target; other ships keep their own modes. Pursuit follows only current sensor contacts, preserves coastal clearance, and stops after entering range. A movement order cancels pursuit. An individual attack on an already reachable target preserves existing fleet movement.
 
 Battle Lab has a Fleet vs Fleet preset with six ship selectors per side, reusable across one or two formations. AI vs AI is the default; Manual vs AI leaves the allied side stationary until commanded. A mixed fleet normally starts with two battleships, two carriers and two submarines; every second carrier starts in ASW duty while the other operates its finite aircraft deck. All combat, pursuit, sensors and damage use the existing shared engine. Control mode and composition persist with the session. Composition fieldsets stack on narrow screens.
+
+## Friendly formation collision avoidance
+
+The minimum fleet gap is 1 map degree of free water between formation envelopes, rather than between their centers. Ships inside one six-ship fleet retain their normal close spacing. Only friendly/allied formations interact; hostile fleets can cross through each other.
+
+A sixty-second forecast checks whether current routes would violate the gap. Steering blends over eight simulation seconds and remembers a passing side until the encounter clears. The same translation applies to every ship in the formation, capped at the existing fleet speed. Stationary fleets stay anchored when approaching traffic can pass around them. The original route/destination remains intact, including attack pursuit.
+
+Every avoidance translation respects each hull's coastal clearance. Closing velocity is removed at the safety boundary while tangential movement remains; a coastal stop propagates safely to following formations. Existing overlapping formations separate gradually without teleportation. Steering and passing-side state live on the normal saved fleet record; invalid steering values are rejected during restore.

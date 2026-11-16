@@ -14,3 +14,5 @@ export const SUBMARINE_ACTIVE_RANGE=9;
 export const WARHEAD_HP=10;
 
 export const ASW_COMBAT={passiveDetection:8,activeDetection:12,carrierRange:3,carrierReload:8};
+
+export const FLEET_AVOIDANCE={gap:1,lookahead:60,response:8};
