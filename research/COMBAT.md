@@ -68,3 +68,21 @@ The authoritative current override table is in research/WORLD_EXPANSION.md. Defe
 ## Defense correction
 
 The excessive 22-degree/70% defense revision is superseded by [BALANCE.md](BALANCE.md): local 10-degree weapons, separate 20-degree silo radar, 20s reload, 40% warhead chance, native 10% aircraft chances, 5-degree fighter scope and 25% fighter warhead chance. Current shared values live in public/balance.js; real-system sources and measured saturation are recorded there.
+
+
+## Current weapon and aircraft override (2026-11-16)
+
+These values supersede the earlier balance history above and are shared by Campaign and Battle Lab:
+
+| Unit | Weapon | Range | Damage per successful hit |
+| --- | --- | --- | --- |
+| Fighter | Missile / gun | 4° / 1.5° | 1 / 1 |
+| Carrier | AA gun / depth charge | 5° / 2° | 1 / 1 |
+| Battleship | AA missile / AA gun / anti-ship | 6° / 2° / 9° | 1 / 1 / 1 |
+| Active submarine | Torpedo | 6° | 3 |
+
+Passive submarines retain the 1.5° enemy ASW firing cap. Active sonar detection remains 9°. Each selected unit has at most one weapon ring, representing its furthest weapon; sensor coverage and fuel remain separate overlays.
+
+Fighter loadout is configured at the launch host. Each queued launch captures that configuration; airborne aircraft cannot switch payload through the UI or engine command. Saved host configurations and queued payloads persist. AI and Lab select the loadout before takeoff.
+
+Conventional bombers approach the target center, release within 0.65° and 30° of their heading, continue 4.5° past the target, and go around before approaching again. Bomb projectiles start at the aircraft center with no visual wing offset. Six bombs are carried; the original-base fuel reserve can end a sortie before all six are spent. Tests cover complete six-pass delivery with sufficient fuel and normal-budget recovery with multiple completed passes.
