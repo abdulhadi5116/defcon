@@ -86,3 +86,16 @@ Passive submarines retain the 1.5° enemy ASW firing cap. Active sonar detection
 Fighter loadout is configured at the launch host. Each queued launch captures that configuration; airborne aircraft cannot switch payload through the UI or engine command. Saved host configurations and queued payloads persist. AI and Lab select the loadout before takeoff.
 
 Conventional bombers approach the target center, release within 0.65° and 30° of their heading, continue 4.5° past the target, and go around before approaching again. Bomb projectiles start at the aircraft center with no visual wing offset. Six bombs are carried; the original-base fuel reserve can end a sortie before all six are spent. Tests cover complete six-pass delivery with sufficient fuel and normal-budget recovery with multiple completed passes.
+
+
+## Nuclear shock, fuel and sonar override (2026-11-16 follow-up)
+
+Carrier depth charges remain 2°. Fighter fuel is now 40 travelled degrees, corresponding to a nominal 20° return radius at both host types. Existing airborne fighters retain distance already consumed when upgrading fuel revision 5 to 6; bomber budgets are unchanged.
+
+Silo and submarine Nuclear Launch preparation takes 120 game seconds. AI strike synchronization includes the actual transition preparation, not only an existing countdown. Submarine active-sonar attack orders may be assigned during preparation and are held as the pending engagement until readiness; visibility, ownership and target-class validation still apply. This intent survives session restore.
+
+Active submarines can engage other submarines with torpedoes: 6° for active/surfaced opponents, with the existing 1.5° passive-target weapon cap. Passive attackers remain unarmed. Torpedoes can resolve underwater; ordinary missiles still lose lock on a diving submarine.
+
+Nuclear sea damage is 20 × (1 − distance / 2°) HP inside a 2° radius, applied to every ship in the footprint, including neighboring fleets. Damage is zero at and beyond 2°. Ground installations retain 10 HP nuclear impact damage. Aircraft remain excluded. Radiation continues to affect population only.
+
+Visual radii are unchanged: initial glow radius 5°, additional center-light radius 0.9° (18% of glow radius), fading and shrinking over 500 game seconds. The brightest portion of the additional core occupies roughly its inner 0.27° and blends into the other gradient; none of these are hard-edged damage rings.

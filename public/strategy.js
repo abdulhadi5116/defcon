@@ -69,7 +69,7 @@ export function coordinateStrike(sim,team,plan,{nuclearRange,aircraftFuel,modes,
   if(!sources.length||desired<Math.min(6,entry.needed,capacity))continue;selection={entry,sources,desired};break;
  }
  if(!selection){m.nextLaunch=sim.time+20;m.nextReview=0;return;}
- const {entry,sources,desired}=selection,target=entry.target,id=`${team}:${++m.waveSequence}:${sim.time}`,impactAt=sim.time+35+Math.max(...sources.map(s=>s.travel+Math.max(s.u.cooldown,s.u.stateTimer))),launchers=new Set();let assigned=0,lastImpact=impactAt;
+ const {entry,sources,desired}=selection,target=entry.target,id=`${team}:${++m.waveSequence}:${sim.time}`,impactAt=sim.time+35+Math.max(...sources.map(s=>{const mode=s.kind==='aircraft'?'bomber':'launch',preparation=s.u.mode===mode?s.u.stateTimer:modes[s.u.type].find(m=>m.id===mode).prepare;return s.travel+Math.max(s.u.cooldown,preparation);})),launchers=new Set();let assigned=0,lastImpact=impactAt;
  for(let round=0;round<3&&assigned<desired;round++)for(const source of sources){if(round>=source.capacity||assigned>=desired)continue;const {u,kind,travel}=source,arrival=impactAt+round*120,notBefore=arrival-travel;
   const mode=kind==='aircraft'?'bomber':'launch';if(u.mode!==mode){u.mode=mode;u.stateTimer=modes[u.type].find(s=>s.id===mode).prepare;}if(kind==='aircraft')u.bomberPayload='nuclear';u.aiWave=id;u.aiStrike=true;
   u.launchQueue??=[];u.launchQueue.push({kind,payload:kind==='aircraft'?'nuclear':null,x:target.x,y:target.y,targetId:target.type?target.id:null,targetTeam:target.team,cityName:target.type?null:target.name,label:target.type?`${target.type} ${target.id}`:target.name,notBefore,ai:true,waveId:id});assigned++;launchers.add(u.id);lastImpact=arrival;

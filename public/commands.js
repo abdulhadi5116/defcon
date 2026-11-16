@@ -12,6 +12,6 @@ export function mapCommand(sim,{selectedId,unit=null,city=null,point,targetingId
  if(!own||own.team!==sim.playerTeam)return select(unit);
  const target=unit||city,action=primaryAction(own),destination=target||point;
  if(action&&(action.kind==='aircraft'||target||targetingId===own.id))return {kind:'action',result:sim.queueAction(own.id,action.kind,destination.x,destination.y,unit?.id)};
- if(unit&&sim.hostile(unit.team,sim.playerTeam))return {kind:'action',result:{ok:sim.order(own.id,unit.x,unit.y,unit.id),reason:'Target cannot be engaged in the current state.'}};
+ if(unit&&sim.hostile(unit.team,sim.playerTeam)){const ok=sim.order(own.id,unit.x,unit.y,unit.id);return {kind:'action',result:{ok,queued:ok&&own.stateTimer>0,reason:!ok?'Target cannot be engaged in the current state.':own.stateTimer>0?'Attack queued until state preparation completes.':'Attack order confirmed.'}};}
  return select(unit);
 }
