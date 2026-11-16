@@ -113,3 +113,12 @@ Current HP: battleship 18, carrier 20, submarine 5, fighter 4, bomber 3, silo 30
 Initial nuclear core-light radius is 1.2° inside the existing 5° outer glow. It shrinks with the existing blast lifetime. Warhead speed remains 0.06°/game second for ballistic and direct profiles; a 10° route takes about 166.7 game seconds (direct profiles retain a 12-second minimum).
 
 Coherent circular fleets persist their course and speed. Acceleration uses an 8-game-second response, deceleration 4 seconds; ship turn rate remains 0.04 radians/game second. A large course change reduces target speed to as little as 8% while turning, then accelerates as alignment improves. All six ships share one translation, followed by existing friendly-fleet collision avoidance and coastal/territory validation. Legacy formations still use their existing reformation route before adopting shared steering. Course/speed survive save and reload.
+
+
+## Warhead profile and interceptor visibility revision 11 (2026-11-17)
+
+Silo ICBMs travel at 0.06°/game second and have 5 HP. Submarine nuclear missiles travel at 0.12°/game second and have 3 HP. Bomber direct nuclear payloads retain 0.06°/game second and 10 HP. Launches record source ID/type and profile; AI arrival synchronization uses the actual submarine speed and minimum 12-second flight duration. Existing in-flight missiles preserve progress and remaining health fraction on migration. Legacy submarine launches are identified from retained source metadata or a matching launch origin; ambiguous legacy ballistic missiles retain the ICBM profile.
+
+All conventional missiles/interceptors now deal exactly 1 HP per successful hit, independent of source and target type. Guns retain 0.5 HP, depth charges 2 HP, bombs and torpedoes 3 HP. Nuclear blast damage is unchanged.
+
+ICBM glyphs are longer (22 screen pixels) and thinner than submarine nuclear glyphs (12 pixels). Enemy interceptor trails are clipped to visible radar areas or the final 2° around a visible target. Successful/missed hits show short sparks, with stronger flashes on destruction; these persist for 1.25 real seconds for readability at 20×. Impact visuals never reveal the firing unit or alter radar/launch-detection rules.
