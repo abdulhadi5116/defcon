@@ -4,7 +4,7 @@ export const FIGHTER_COMBAT={range:5,gunRange:2,gunReload:3,reload:10,radar:7,wa
 export const WARHEAD_SPEED={ballistic:.06,direct:.06};
 export const NAVAL_COMBAT={radarRange:12,battleshipRange:9,battleshipAirRange:7,carrierGunRange:3,carrierGunReload:4};
 export const BOMBER_NUCLEAR_RANGE=2;
-export const SUBMARINE_WEAPON_RANGE=5;
+export const PASSIVE_SUBMARINE_TARGET_RANGE=1.5;
 export const SUBMARINE_NUCLEAR_RANGE=20;
 export const FLEET_RADIUS=1;
 

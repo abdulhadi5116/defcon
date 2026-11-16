@@ -208,3 +208,11 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Battleship 15 HP, carrier 20 HP, submarine 5 HP, fighter 5 HP.
 - [x] Save migration preserves damage ratio and spent payload; no resurrection or repeated replenishment.
 - [x] 240 automated tests and local browser projectile/damage checks.
+
+## Passive submarine correction
+- [x] Disable all conventional attack commands and autonomous firing outside active sonar.
+- [x] Show no passive weapon ring; active torpedoes remain 9°, nuclear launch 20°.
+- [x] Cap enemy conventional firing range against passive submarines at 1.5°, including shared sonar contacts.
+- [x] Clear stale passive attack intent on restore; keep original ammunition.
+- [x] Correct inspector ranges/help and host conventional bomber label to six payloads.
+- [x] Verify state switches and scopes in local browser, plus shared combat boundary tests.
