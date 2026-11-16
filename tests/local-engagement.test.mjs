@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Simulation,TYPES,WARHEAD_SPEED,selectionRanges,distance,nuclearRange} from '../public/engine.js';
+import {Simulation,TYPES,WARHEAD_SPEED,operationRanges,selectionRanges,distance,nuclearRange} from '../public/engine.js';
 import {Renderer,displayVisible} from '../public/renderer.js';
 import {validatePreferences,snapshotSimulation,restoreSimulation} from '../public/save-state.js';
 import {mapCommand} from '../public/commands.js';
@@ -30,3 +30,13 @@ test('silo SAMs are fast against aircraft and warheads and reload in eight game 
 test('nuclear bomber enters silo air defense before releasing its slow, direct payload',()=>{const s=arena(),host=s.add('airbase',0,-20,30),defense=s.add('silo',1,0,30);host.mode='bomber';host.bomberPayload='nuclear';s.random=()=>.999;const bomber=s.launchAircraft(host.id,0,30,{targetId:defense.id}).unit;let firedBeforeDrop=false,released=false;for(let i=0;i<2400&&!released;i++){s.tick(.25);if(s.shots.some(p=>p.sourceId===defense.id)&&bomber.ammo===1)firedBeforeDrop=true;if(s.missiles.length){released=true;assert.ok(distance(bomber,defense)<=1.8+.02);assert.ok(bomber.returning);assert.equal(s.missiles[0].profile,'direct');assert.equal(s.missiles[0].duration,distance({x:s.missiles[0].sx,y:s.missiles[0].sy},defense)/WARHEAD_SPEED.ballistic);}}assert.ok(firedBeforeDrop);assert.ok(released);assert.equal(nuclearRange(bomber),2);assert.equal(WARHEAD_SPEED.direct,.06);assert.equal(WARHEAD_SPEED.ballistic,.06);});
 test('full map view reveals enemy activity without changing radar locks or AI intelligence',()=>{const s=arena(),sub=s.add('submarine',1,80,30),missile={team:1,x:80,y:30};s.add('radar',0,0,30);assert.equal(displayVisible(s,sub,'radar'),false);assert.equal(displayVisible(s,sub,'full'),true);assert.equal(s.visibleTo(sub,0),false);assert.equal(Renderer.prototype.projectileVisible.call({visibilityMode:'full'},s,missile),true);assert.equal(Renderer.prototype.projectileVisible.call({visibilityMode:'radar'},s,missile),false);sub.dead=true;assert.equal(displayVisible(s,sub,'full'),false);});
 test('visibility mode persists with a session and rejects unknown settings',()=>{const s=arena(),save={version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard',visibilityMode:'full'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}};assert.doesNotThrow(()=>restoreSimulation(save));assert.equal(save.preferences.visibilityMode,'full');save.preferences.visibilityMode='invalid';assert.throws(()=>validatePreferences(save),/visibility/);});
+
+test('surface fleet radar uses the same twelve-degree boundary for detection and coverage',()=>{
+ for(const type of ['battleship','carrier']){
+  const s=arena(),ship=s.add(type,0,0,30),enemy=s.add('bomber',1,11.99,30);
+  assert.equal(TYPES[type].radar,12);assert.equal(operationRanges(ship).find(r=>r.kind==='radar').radius,12);
+  assert.equal(s.radarCovers(enemy,0),true);assert.equal(s.visibleTo(enemy,0),true);
+  enemy.x=12.01;assert.equal(s.radarCovers(enemy,0),false);assert.equal(s.visibleTo(enemy,0),false);
+ }
+ assert.equal(TYPES.submarine.radar,0);
+});

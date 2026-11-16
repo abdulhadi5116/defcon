@@ -5,8 +5,8 @@ import {createStrategists,factionPlan,navalObjective,recordAggression,deployRese
 import {TERRITORIES,defaultFactions,validateSetup,territoryMap} from './territories.js';
 // Native provenance is recorded in research/BASELINE.md; current user-requested balance is documented in research/COMBAT.md.
 export const TYPES={
- battleship:{name:'Battleship',hp:6,speed:.1,turn:.04,radar:10,range:NAVAL_COMBAT.battleshipRange,reload:20,domain:'sea',targets:['sea','air'],icon:'battleship'},
- carrier:{name:'Carrier',hp:6,speed:.1,turn:.04,radar:15,range:NAVAL_COMBAT.carrierGunRange,reload:NAVAL_COMBAT.carrierGunReload,domain:'sea',targets:['air'],icon:'carrier'},
+ battleship:{name:'Battleship',hp:6,speed:.1,turn:.04,radar:NAVAL_COMBAT.radarRange,range:NAVAL_COMBAT.battleshipRange,reload:20,domain:'sea',targets:['sea','air'],icon:'battleship'},
+ carrier:{name:'Carrier',hp:6,speed:.1,turn:.04,radar:NAVAL_COMBAT.radarRange,range:NAVAL_COMBAT.carrierGunRange,reload:NAVAL_COMBAT.carrierGunReload,domain:'sea',targets:['air'],icon:'carrier'},
  submarine:{name:'Submarine',hp:4,speed:.1,turn:.04,radar:0,range:SUBMARINE_WEAPON_RANGE,reload:20,domain:'sea',targets:['sea'],icon:'sub'},
  fighter:{name:'Fighter',hp:3,speed:.5,turn:.8,radar:FIGHTER_COMBAT.radar,range:FIGHTER_COMBAT.range,reload:20,fuel:44,domain:'air',targets:['air','sea','missile'],icon:'fighter'},
  bomber:{name:'Bomber',hp:4,speed:.25,turn:.08,radar:5,range:10,reload:30,fuel:60,domain:'air',targets:['sea'],icon:'bomber'},

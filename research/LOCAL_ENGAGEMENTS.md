@@ -54,3 +54,7 @@ Submarine torpedo range remains 3°; surfaced nuclear launch range is independen
 Rendering: city visibility threshold is 8M at minimum zoom, dropping monotonically to zero at zoom 5. Selected cities remain visible. Population-sorted labels use measured text rectangles and four candidate positions; labels without a collision-free position are omitted. Population layer respects this zoom filtering. Hidden small city markers cannot be picked accidentally. Unit icon extent is 0.85 map degrees at every zoom, preserving its ratio to the circular fleet's 1° member spacing rather than letting minimum screen sizes merge the fleet.
 
 Validation: 207 tests pass, including exact movement, tight fighter turns, real fighter-to-ship projectiles, fuel exhaustion, proportional save migration and zoom scaling. Browser QA covers increasing city labels (4/8/10 in the same synthetic cluster), no intersecting labels, fixed icon/spacing ratio, centered fuel rendering, actual session reload migration and screenshots. Build and syntax checks pass. Safari has not been checked.
+
+### Fleet radar follow-up
+
+Battleship and carrier radar now share a 12° radius (`NAVAL_COMBAT.radarRange`). The actual sensor lookup and coverage drawing both read the same type value, including existing saved ships. Submerged submarines retain sonar-based detection with no new radar capability. A regression checks visible contacts just inside 12° and hidden contacts just outside, as well as displayed coverage radius.

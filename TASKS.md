@@ -160,3 +160,7 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Higher HP for every unit, reduced hit probabilities, proportional legacy-save migration.
 - [x] Separate submarine 20° nuclear and 3° torpedo range, including AI planner.
 - [x] 207 tests, seeded AI exercise, browser rendering/session migration checks, syntax and deployment build.
+
+## Fleet radar range
+- [x] Battleship/carrier radar 12°, shared by real detection and coverage display.
+- [x] Boundary regression at 11.99° / 12.01°; submarine sonar retained.
