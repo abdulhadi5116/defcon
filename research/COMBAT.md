@@ -122,3 +122,12 @@ Silo ICBMs travel at 0.06°/game second and have 5 HP. Submarine nuclear missile
 All conventional missiles/interceptors now deal exactly 1 HP per successful hit, independent of source and target type. Guns retain 0.5 HP, depth charges 2 HP, bombs and torpedoes 3 HP. Nuclear blast damage is unchanged.
 
 ICBM glyphs are longer (22 screen pixels) and thinner than submarine nuclear glyphs (12 pixels). Enemy interceptor trails are clipped to visible radar areas or the final 2° around a visible target. Successful/missed hits show short sparks, with stronger flashes on destruction; these persist for 1.25 real seconds for readability at 20×. Impact visuals never reveal the firing unit or alter radar/launch-detection rules.
+
+
+## Bomb damage and limited naval nuclear correction revision 12 (2026-11-17)
+
+Conventional bombs now deal 4 HP per successful impact; saved in-flight bombs migrate to the same value. Torpedoes remain 3 HP.
+
+A full silo retains 30 HP and takes 10 HP per nuclear impact, surviving two direct detonations and dying on the third. Fallout processing iterates cities only, never buildings or ships. Legacy silo maximum HP is normalized to 30 on restore while preserving its damaged fraction; an already-damaged silo can legitimately require fewer further hits. A resolved/intercepted warhead cannot detonate again.
+
+Explicit nuclear ship targets retain their target ID through FIFO launch commands. Every 30 game seconds after launch, a missile may shift its impact point by at most 0.05 map degrees toward its currently detected hostile ship target. Hidden, dead, allied and coordinate-only targets receive no correction. Lost-contact checkpoints do not accumulate extra correction credit. Flight duration and impact schedule remain fixed, and the guidance renderer reads the corrected trajectory from the shared calculation. Correction target/checkpoint state persists on reload. A full-speed fleet travels up to 1.5° in the same interval, so this is a small correction rather than continuous homing.
