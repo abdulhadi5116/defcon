@@ -76,3 +76,11 @@ Autosave intervals are 8 real seconds normally, 15 at 10×/20×; input-triggered
 Browser verification uses the real local API/SQLite store: 8-pixel-offset clicks select small cities, fuel strokes report rgba alpha 0.25 plus dashes, queued aircraft drain, fleets translate immediately without south drift, and Save Now persists the queue. An injected 503 leaves a worker recovery snapshot; another client restores and commits it, preserving the captured unit state even when the live object changes immediately afterward.
 
 Performance fixture: 800 units / 51,200 trail points, four saves. Before: total capture 77.6 ms, maximum sampled frame gap 33.4 ms. After: capture 0.2–0.3 ms, sampled frame gap 16.7–16.8 ms. Async encode/save completion takes longer in this synthetic stubbed-network fixture because it now includes worker gzip and IndexedDB; this is a UI-stall measurement, not a network-latency or whole-game FPS guarantee. Final suite: 217 passing tests; syntax/build/browser checks pass. Safari not tested.
+
+### City-local influence correction
+
+City selection previously forced faction territory alpha to at least 0.65 and recolored the full region green. A regression reproduced three territory fills/strokes with the territory layer disabled. Selection now affects only the city's local light. The territory layer retains its independent faction colors when explicitly enabled.
+
+Local catchments start with a population-derived radius capped at 8 map degrees and are clipped by nearby city bisectors using wrapped longitude. Cached irregular textures are intersected with those catchments and blurred afterward, so no hard district outlines appear. Lighting follows local surviving population rather than total faction survivors. Geometry stays anchored to initial city locations/populations; light fades/shrinks as casualties rise.
+
+Browser verification on Moscow found zero city boundary strokes and a local changed area of 120×115 pixels at the tested camera, while distant same-faction land pixels stayed exactly unchanged. The sampled alpha transition changed by at most 13/255 per pixel. An actual UI click preserved the disabled territory-layer setting. 237 tests, syntax and build checks pass; Safari remains untested.

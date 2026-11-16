@@ -122,3 +122,9 @@ Periodic save work is based on real time, independent of playback: 8 seconds nor
 City marker sizes now use a continuous logarithmic 6–25px scale, giving medium populations a distinct intermediate size. Population influence extends farther and renders through cached irregular multi-lobed textures instead of circular radial halos. Selected-city life light uses the same organic footprint. Population casualties still dim and contract it. Unit symbols use gentle optical compensation from 18px at zoom-out to about 22.65px at maximum zoom, without altering unit geography.
 
 Aircraft inspection shows conventional bomber bombs remaining independently of nuclear stock. Fighter weapon scopes label missiles (5°) and guns (2°) separately; battleship scopes label anti-ship (9°) and anti-air (7°). Passive submarine torpedoes use 5° on confirmed contacts; active sonar and torpedoes use 9°. Carrier AA gun reach is 3°. Aircraft engagement paths move continuously around the enemy rather than pausing at short steering waypoints.
+
+## Per-city light catchments
+
+Selecting a city no longer triggers country/faction fill or a faction border stroke. Territory and maritime overlays are controlled only by their own layer/deployment state. City life color applies to that city's local light patch.
+
+Every city receives a bounded local catchment (maximum 8 map degrees) clipped against nearby cities using wrapped-longitude perpendicular bisectors. The catchment shapes the cached irregular light texture, then a second blur softens its edges. No district border is stroked. The footprint follows map scale, while city marker pixel sizes retain their existing population scale. Surviving population dims and shrinks only that city's light; destroyed neighboring catchments remain dark rather than being absorbed into a faction-wide glow.

@@ -194,3 +194,10 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] All AI deployment stock placed within first 30s, with validated spread across naval fronts.
 - [x] Medium city markers, wider organic population influence and optical unit scaling.
 - [x] Automated/browsed combat, reload and rendering verification; shared Lab/campaign rules.
+
+## Per-city light clarification
+- [x] Remove city-selection-driven full faction fill and boundary stroke.
+- [x] Partition local city influence against nearby city catchments, including longitude wrap.
+- [x] Apply organic texture and soft fade without drawing district lines.
+- [x] Keep the selected city's light and casualties local; preserve explicit territory layer control.
+- [x] 237 tests, browser pixel/stroke checks, actual city-click verification, syntax/build checks.
