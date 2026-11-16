@@ -236,3 +236,13 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Check every translated hull against island/coast clearance and prevent following fleets crossing a stopped fleet's gap.
 - [x] Recover existing overlap gradually without teleporting; persist steering and passing side through ordinary saves.
 - [x] 269 tests passed; browser map orders, scissor crossing and actual Save Now/reload verified without browser errors.
+
+## Fighter/carrier ranges and DEFCON 5 sea movement
+- [x] Fighter missile/ASW range 3°; carrier AA/ASW range 5°. Fighter guns remain 2° and passive-sub firing cap remains 1.5°.
+- [x] DEFCON 5 war-mode fleet routes stay in the union of active own/allied maritime territory.
+- [x] Validate every hull and the full route, including legal detours around unauthorized sea corridors.
+- [x] Keep water-only navigation caches independent from the live alliance predicate.
+- [x] Apply permission checks to collision avoidance, individual sea movement, restored paths and attack routing.
+- [x] Release the sea-territory movement restriction at DEFCON 4; preserve normal coast clearance.
+- [x] Readiness/help/rejection copy explains the restriction.
+- [x] 275 tests passed, browser own/allied/neutral/DEFCON 4 checks and real fighter/carrier scope/combat checks.

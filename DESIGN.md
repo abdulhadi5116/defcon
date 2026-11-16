@@ -146,3 +146,9 @@ The minimum fleet gap is 1 map degree of free water between formation envelopes,
 A sixty-second forecast checks whether current routes would violate the gap. Steering blends over eight simulation seconds and remembers a passing side until the encounter clears. The same translation applies to every ship in the formation, capped at the existing fleet speed. Stationary fleets stay anchored when approaching traffic can pass around them. The original route/destination remains intact, including attack pursuit.
 
 Every avoidance translation respects each hull's coastal clearance. Closing velocity is removed at the safety boundary while tangential movement remains; a coastal stop propagates safely to following formations. Existing overlapping formations separate gradually without teleportation. Steering and passing-side state live on the normal saved fleet record; invalid steering values are rejected during restore.
+
+## DEFCON 5 sea permissions and revised short-range weapons
+
+Fighter missiles and ASW depth charges use 3° reach; fighter guns retain 2°. Carrier AA guns and ASW depth charges use 5° reach. The 1.5° firing limit against passive submarines remains the tighter cap.
+
+At DEFCON 5 in Global Conflict, naval movement is restricted to the union of active own/allied maritime zones. Navigation checks the full route against this live permission predicate, including every hull's formation offset. It can route around unauthorized corridors rather than merely checking endpoints. Permission checks are independent from cached coast geometry, so alliance changes take effect immediately. Per-tick movement and collision-avoidance checks prevent old paths or avoidance steering from crossing a newly forbidden sea boundary. At DEFCON 4 the maritime permission restriction is removed; ordinary water routing and coastal clearance remain. Lab scenarios keep their normal unrestricted exercise routing.

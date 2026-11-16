@@ -31,3 +31,5 @@ Against a passive submarine, every eligible enemy conventional weapon uses the s
 The shared weaponRange helper controls actual combat and targeted aircraft steering; passive attack commands are rejected by canTarget. Inspector uses mode-aware weapon range rather than static type metadata. Restoring older snapshots clears obsolete passive attack intent without altering payload or nuclear queues. Local Edge browser verifies passive 0°/no weapon ring, active 9° torpedoes, and switch back to passive; no browser errors. Safari remains untested.
 
 The later [naval pursuit and mixed Fleet Lab rules](NAVAL_PURSUIT_AND_FLEET_LAB.md) supersede the passive-submarine attacker eligibility paragraph above: only fighter/carrier ASW can conventionally engage submerged subs; active sonar is detected by ASW at 12°, passive at 8°. Carrier depth charges now have 3° normal range, capped at 1.5° against passive subs.
+
+Latest [DEFCON 5 navigation and range update](DEFCON5_NAVIGATION.md): fighter missile/ASW 3°, carrier AA/ASW 5°; fighter guns 2° and passive-sub cap 1.5° remain. Global Conflict fleets stay in own/allied sea zones at DEFCON 5, with open-sea movement at DEFCON 4.
