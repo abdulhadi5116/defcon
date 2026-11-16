@@ -23,7 +23,7 @@ test('battleship AA guns work inside two degrees while the six-degree missile re
 });
 test('active submarine torpedoes have six-degree reach and inflict three damage on arrival',()=>{
  const s=arena(),sub=s.add('submarine',0,0,30),e=s.add('carrier',1,6.01,30);sub.mode='active';s.random=()=>0;
- s.combat(sub);assert.equal(s.shots.length,0);e.x=5.99;s.combat(sub);assert.equal(s.shots[0].damage,3);s.advanceShots(31);assert.equal(e.hp,15);
+ s.combat(sub);assert.equal(s.shots.length,0);e.x=5.99;s.combat(sub);assert.equal(s.shots[0].damage,3);s.advanceShots(31);assert.equal(e.hp,17);
 });
 test('each selected unit shows at most one weapon ring and carrier Anti Submarine is named clearly',()=>{
  const s=arena();for(const type of ['battleship','carrier','fighter','submarine','bomber','silo'])for(const mode of (MODES[type]||[{id:'combat'}])){const u=s.add(type,0,0,30);u.mode=mode.id;assert.ok(operationRanges(u).filter(r=>r.kind==='weapon').length<=1);}

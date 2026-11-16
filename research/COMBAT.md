@@ -104,3 +104,12 @@ Visual radii are unchanged: initial glow radius 5°, additional center-light rad
 ## HP override revision 9 (2026-11-16)
 
 Bomber 3 HP, fighter 4 HP, carrier 18 HP. Battleship 15, submarine 5, silo 30, airfield 20, radar 6 and nuclear warhead 10 remain unchanged. Existing saves preserve the damaged fraction when adopting the new maximum HP; destroyed units remain destroyed. Weapon damage is unchanged: successful gun bursts, conventional missiles and depth charges deal 1 HP; bombs and torpedoes deal 3 HP; nuclear ground impact deals 10 HP, with naval shock damage up to 20 HP falling linearly to zero at 2°.
+
+
+## Weapon damage and fleet steering revision 10 (2026-11-17)
+
+Current HP: battleship 18, carrier 20, submarine 5, fighter 4, bomber 3, silo 30, airfield 20, radar 6; warhead 10. All gun hits now deal 0.5 HP, aircraft/carrier depth charges 2 HP, battleship anti-ship missiles 3 HP against every ship class. Other conventional missiles retain 1 HP, bombs and torpedoes 3 HP. Nuclear damage and hit probabilities are unchanged. Existing damaged ships retain their damage fraction when their maximum HP migrates; in-flight projectile damage adopts the shared weaponDamage definition once.
+
+Initial nuclear core-light radius is 1.2° inside the existing 5° outer glow. It shrinks with the existing blast lifetime. Warhead speed remains 0.06°/game second for ballistic and direct profiles; a 10° route takes about 166.7 game seconds (direct profiles retain a 12-second minimum).
+
+Coherent circular fleets persist their course and speed. Acceleration uses an 8-game-second response, deceleration 4 seconds; ship turn rate remains 0.04 radians/game second. A large course change reduces target speed to as little as 8% while turning, then accelerates as alignment improves. All six ships share one translation, followed by existing friendly-fleet collision avoidance and coastal/territory validation. Legacy formations still use their existing reformation route before adopting shared steering. Course/speed survive save and reload.

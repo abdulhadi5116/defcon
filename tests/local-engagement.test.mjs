@@ -13,7 +13,7 @@ test('fighter ship attacks accept map commands and deal real projectile damage w
   assert.equal(mapCommand(s,{selectedId:fighter.id,unit:ship}).result.ok,true);
   s.combat(fighter);
   assert.equal(s.shots.length,2);assert.equal(s.shots[0].targetId,ship.id);
-  const hp=ship.hp;s.advanceShots(4);assert.equal(ship.hp,hp-2);
+  const hp=ship.hp;s.advanceShots(4);assert.equal(ship.hp,hp-1.5);
  }
 });
 test('fighter naval attacks retain short range, radar requirements and anti-sub specialization',()=>{
