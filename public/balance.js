@@ -12,3 +12,5 @@ export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:5,bomber:10},carrier:{fi
 
 export const SUBMARINE_ACTIVE_RANGE=9;
 export const WARHEAD_HP=10;
+
+export const ASW_COMBAT={passiveDetection:8,activeDetection:12,carrierRange:3,carrierReload:8};

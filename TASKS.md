@@ -216,3 +216,15 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Clear stale passive attack intent on restore; keep original ammunition.
 - [x] Correct inspector ranges/help and host conventional bomber label to six payloads.
 - [x] Verify state switches and scopes in local browser, plus shared combat boundary tests.
+
+## Fleet pursuit, submarine eligibility and mixed Fleet Lab
+- [x] Attack orders close the whole formation into the selected ship's actual target-specific range.
+- [x] Track visible moving contacts; cancel pursuit on manual movement, lost contact, death or invalid state.
+- [x] Preserve existing movement for targets already in range; retain save/reload and longitude wrapping.
+- [x] Complete water waypoints without cutting island clearance; retain the reachable start node when replanning.
+- [x] Restrict submerged targets to fighter/carrier ASW; passive firing cap 1.5°, detection 8° versus active detection 12°.
+- [x] Carrier ASW depth charges: 3° active/surfaced targets, 8-second reload; independent from deck cooldown.
+- [x] Ordinary projectiles lose submerged targets; old sonar memory cannot track live positions beyond coverage.
+- [x] Fleet vs fleet preset with six configurable ships per side and one/two formations per side.
+- [x] AI vs AI and Manual vs AI, persistent through save/reload; finite launch decks and ASW support.
+- [x] 260 tests, real UI attack-to-move/fire, AI Lab combat, manual mode persistence and mobile overflow checks.

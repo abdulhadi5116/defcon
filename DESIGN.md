@@ -132,3 +132,9 @@ Every city receives a bounded local catchment (maximum 8 map degrees) clipped ag
 ## Conventional bomb identity
 
 Conventional bombs have a solid finned capsule, subtle tumbling, and a short visual drop toward the impact plane. They do not use a missile exhaust streak or guidance trail. Their impact has a larger warm flash and nine outward fragments, below the unit drawing layer. A bomber carries six conventional bombs and releases one per completed moving pass. Each successful hit deals three damage; missile, gun and torpedo hits retain one damage.
+
+## Fleet engagement and laboratory controls
+
+An attack on a visible contact outside the selected naval unit's effective weapon range commands the entire formation to a safe standoff position. The selected unit retains its individual target; other ships keep their own modes. Pursuit follows only current sensor contacts, preserves coastal clearance, and stops after entering range. A movement order cancels pursuit. An individual attack on an already reachable target preserves existing fleet movement.
+
+Battle Lab has a Fleet vs Fleet preset with six ship selectors per side, reusable across one or two formations. AI vs AI is the default; Manual vs AI leaves the allied side stationary until commanded. A mixed fleet normally starts with two battleships, two carriers and two submarines; every second carrier starts in ASW duty while the other operates its finite aircraft deck. All combat, pursuit, sensors and damage use the existing shared engine. Control mode and composition persist with the session. Composition fieldsets stack on narrow screens.
