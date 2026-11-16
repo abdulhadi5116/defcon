@@ -143,3 +143,10 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Faster staging/reassessment, 6%/2% reserves with pending-ammo accounting, local air response and active submarine torpedo combat.
 - [x] Near-shore launch stations and physical fleet rotation keep short-range submarines useful without breaking formation/coast margins.
 - [x] 192 engine/save tests, active-wave counterstrike and coastal movement regressions; stronger prepared-SAM simulation outcomes; browser reload, mode and concurrent-package checks.
+
+## Substantially reduced bomber fuel
+
+- [x] Carrier bomber fuel 210 → 40 and airbase 300 → 60; return rings 20° / 30°; fighter budgets unchanged.
+- [x] Revision-4 bomber migration retains spent fuel, aborts unrecoverable nuclear ingress and cancels invalid old queued missions without spending inventory.
+- [x] AI planning respects shorter reach; warned manual one-way flights can still exhaust fuel.
+- [x] Fuel/range/recovery/migration regressions and real-browser host ring, launch and reload checks.

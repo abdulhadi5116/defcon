@@ -38,3 +38,7 @@ This is a display setting: it does not change AI information, radar/sonar acquis
 - Browser checks cover close ASW engagement, placement, scopes, mobile HUD, actual server-backed Radar/Full selection, reload, independent browser restoration, enemy inspection and returning to radar fog. Safari has not been tested.
 
 AI update: research/STRATEGY.md documents the unified coordinated-strike controller, replacing all previous personality and difficulty variants.
+
+## Short bomber fuel update
+
+Bomber total travel fuel is now carrier 40° / airbase 60°, down from 210° / 300° (81% / 80% reductions). Host return-fuel radii are 20° / 30°. Fighter fuel remains 30° / 44°. New bomber flights use fuel revision 4. Existing flights retain distance already consumed; migrated fuel is max(0, new budget minus spent fuel), never a refill. Nuclear ingress that no longer permits recovery aborts and attempts return; already stranded aircraft may still exhaust fuel. Invalid old queued missions cancel before spending aircraft/payload stock. AI nuclear plans read the new shared host budgets, and naval bomber sorties avoid missions that cannot return within the smaller tank. Explicit manual one-way flights remain possible and are warned.
