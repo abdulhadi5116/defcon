@@ -96,3 +96,9 @@ Current fleet/air rules and persistent Radar/Full map intelligence follow resear
 All AI factions and player handover now use the unified controller in research/STRATEGY.md. Battleship range is 3°. The old personality/difficulty variants are disabled, with legacy-save migration retaining accepted manual orders.
 
 Current pressure policy: research/STRATEGY.md now documents independent overlapping packages and counterattacks during existing strikes. Submarine torpedo and nuclear reach is 3°. Missile fleets may physically rotate their compact circle to place submarines toward the coast while retaining navigation margins.
+
+## Zoom and airborne fuel update
+
+City symbols and labels progressively reveal lower population cities as the player zooms in. Population layer follows the same filtering. Larger cities and the selected city take priority; measured label rectangles choose a free side of the marker and omit labels that still collide. Unit glyphs scale linearly with map scale, including fleet members and selection rings. Fleet formation remains at its existing world spacing, so zoom cannot make fixed screen glyphs overlap the fleet.
+
+Airborne fuel uses a circular remaining-distance envelope centered on the moving aircraft, replacing the earlier two-focus return ellipse. Host launch rings still show nominal round-trip reach. Fuel zero collapses the circle and destroys the aircraft. Return-to-host status remains a separate explicit inspection value.

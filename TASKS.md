@@ -150,3 +150,13 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Revision-4 bomber migration retains spent fuel, aborts unrecoverable nuclear ingress and cancels invalid old queued missions without spending inventory.
 - [x] AI planning respects shorter reach; warned manual one-way flights can still exhaust fuel.
 - [x] Fuel/range/recovery/migration regressions and real-browser host ring, launch and reload checks.
+
+## Zoom and combat durability follow-up
+- [x] Population-ranked city detail by zoom and collision-free names.
+- [x] World-scaled unit/fleet glyphs and selection rings.
+- [x] Ships 0.10°, fighter 0.50°, bomber 0.25° per simulation second.
+- [x] Tight fighter turns and shortened firing/evasive passes.
+- [x] Aircraft-centered shrinking fuel circles and exact exhaustion crash.
+- [x] Higher HP for every unit, reduced hit probabilities, proportional legacy-save migration.
+- [x] Separate submarine 20° nuclear and 3° torpedo range, including AI planner.
+- [x] 207 tests, seeded AI exercise, browser rendering/session migration checks, syntax and deployment build.

@@ -1,4 +1,4 @@
-import {DEFENSE,WARHEAD_SPEED,SUBMARINE_WEAPON_RANGE,FLEET_RADIUS} from './balance.js';
+import {DEFENSE,WARHEAD_SPEED,SUBMARINE_NUCLEAR_RANGE,FLEET_RADIUS} from './balance.js';
 export const DOCTRINES={strategic:{name:'Strategic command'}};
 export const LEGACY_DOCTRINES=['hawk','sentinel','retaliator','opportunist','volatile'];
 export const STRATEGY_VERSION=3;
@@ -31,7 +31,7 @@ export function strikeTargets(sim,u,plan,range=360){
  const friendly=[...sim.units.filter(v=>live(v)&&sim.allied(u.team,v.team)),...sim.cities.filter(c=>!c.dead&&sim.allied(u.team,c.team))];
  let targets=[...known,...sim.cities.filter(c=>!c.dead&&c.pop>.1&&sim.hostile(u.team,c.team))];if((plan.retaliating||plan.pressure||plan.incoming)&&targets.some(t=>t.team===plan.rival))targets=targets.filter(t=>t.team===plan.rival);
  return targets.filter(t=>distance(u,t)<=range&&!friendly.some(f=>distance(f,t)<2)).map(t=>{
-  const city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:25,airbase:15,radar:1}[t.type]),needed=city?Math.min(4,Math.max(2,Math.ceil(t.pop/5))):Math.ceil(hp/10);
+  const city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:40,airbase:30,radar:6}[t.type]),needed=city?Math.min(4,Math.max(2,Math.ceil(t.pop/5))):Math.ceil(hp/10);
   const committed=sim.missiles.filter(n=>!n.dead&&sim.allied(n.team,u.team)&&distance({x:n.tx,y:n.ty},t)<2).length+sim.units.filter(v=>live(v)&&v.strike&&sim.allied(v.team,u.team)&&distance(v.strike,t)<2).length;
   const defenses=known.filter(v=>v.type==='silo'&&sim.visibleTo(v,u.team)&&v.mode==='defense'&&v.stateTimer<=0&&distance(v,t)<=DEFENSE.range).length;
   const value=city?Math.log2(1+t.pop)*.7:t.type==='silo'?7:t.type==='airbase'?4:2;
@@ -46,14 +46,14 @@ export function deployReserves(sim,team,territories){
  const fleetCenters=sim.fleets.filter(f=>f.team===team).map(f=>sim.units.filter(u=>live(u)&&u.fleetId===f.id)).filter(units=>units.length).map(units=>({x:wrap(units[0].x+units.reduce((n,u)=>n+delta(units[0].x,u.x),0)/units.length),y:units.reduce((n,u)=>n+u.y,0)/units.length}));
  for(const [x,y] of region.naval)for(const radius of [0,2.5,5,7.5,10,12.5])for(let i=0;i<(radius?12:1);i++){const a=i*Math.PI/6,p={x:wrap(x+Math.cos(a)*radius),y:y+Math.sin(a)*radius};if(fleetCenters.some(c=>distance(c,p)<2.5))continue;if(sim.deploy(types[0],p.x,p.y,types,team).ok)return;}
 }
-export function coordinateStrike(sim,team,plan,{nuclearRange,aircraftFuel,modes}){
+export function coordinateStrike(sim,team,plan,{nuclearRange,aircraftFuel,modes,bomberSpeed}){
  const m=sim.strategists[team];m.waves??=m.wave?[m.wave]:[];m.waves=m.waves.filter(w=>sim.time<w.finishAt&&(sim.units.some(u=>live(u)&&((u.launchQueue||[]).some(q=>q.waveId===w.id)||u.strike&&u.aiWave===w.id))||sim.missiles.some(n=>!n.dead&&n.waveId===w.id)));m.wave=m.waves.at(-1)??null;
  if(!plan.nuclear)return;const own=sim.units.filter(u=>live(u)&&u.team===team&&!u.manualControl&&!u.launchQueue?.length&&!u.strike&&!u.returning&&u.mission!=='defend'&&u.mission!=='naval'),reference=own.find(u=>u.type==='silo')||own[0];if(!reference)return;
  const candidates=strikeTargets(sim,reference,plan);let selection=null;
  for(const entry of candidates){const target=entry.target,sources=[];
   for(const u of own){const d=distance(u,target);let kind,capacity,travel;
    if(['silo','submarine'].includes(u.type)&&u.ammo>0&&d<=nuclearRange(u)){if(u.type==='submarine'&&sim.units.some(e=>live(e)&&sim.hostile(team,e.team)&&['carrier','battleship','submarine'].includes(e.type)&&sim.visibleTo(e,team)&&distance(e,u)<5))continue;kind='nuclear';capacity=Math.min(3,u.ammo);travel=d/WARHEAD_SPEED.ballistic;}
-   else if(['airbase','carrier'].includes(u.type)&&u.bombers>0&&u.stockNukes>0&&Math.max(0,d-1.5)*2+18<aircraftFuel('bomber',u.type)){kind='aircraft';capacity=Math.min(3,u.bombers,u.stockNukes);travel=Math.max(0,d-1.7)/.05+Math.min(d,1.7)/WARHEAD_SPEED.direct;}
+   else if(['airbase','carrier'].includes(u.type)&&u.bombers>0&&u.stockNukes>0&&Math.max(0,d-1.5)*2+18<aircraftFuel('bomber',u.type)){kind='aircraft';capacity=Math.min(3,u.bombers,u.stockNukes);travel=Math.max(0,d-1.7)/bomberSpeed+Math.min(d,1.7)/WARHEAD_SPEED.direct;}
    else continue;sources.push({u,kind,capacity,travel});
   }
   // Keep some silos defending when real incoming traffic is detected, rather than opening every site.
@@ -83,7 +83,7 @@ export function navalObjective(sim,u,plan,territories){
  if(sim.navigation&&subs.length&&sim.phase===1){
   if(sim.coastalNavigation!==sim.navigation){sim.coastalNavigation=sim.navigation;sim.coastalStations=new Map();}
   const center={x:wrap(members[0].x+members.reduce((n,v)=>n+delta(members[0].x,v.x),0)/members.length),y:members.reduce((n,v)=>n+v.y,0)/members.length},offset=(u.fleetId??u.id)%Math.min(3,cities.length||1);
-  for(const city of [...cities.slice(offset),...cities.slice(0,offset)]){const key=`${city.team}:${city.name}:${city.x}:${city.y}`;let points=sim.coastalStations.get(key);if(!points){points=[];for(const radius of [3.4,3.6,3.8])for(let i=0;i<16;i++){const a=i*Math.PI/8,p={x:wrap(city.x+Math.cos(a)*radius),y:city.y+Math.sin(a)*radius};if(sim.navigation.navigable(p.x,p.y,2))points.push(p);}sim.coastalStations.set(key,points);}const usable=points.map(p=>{const slot=subs[0].formationSlot??0,formationAngle=Math.atan2(city.y-p.y,delta(p.x,city.x))-(-Math.PI/2+slot*Math.PI/3);return {...p,formationAngle};}).filter(p=>subs.some(sub=>{const a=-Math.PI/2+(sub.formationSlot??0)*Math.PI/3+p.formationAngle;return distance({x:wrap(p.x+Math.cos(a)*FLEET_RADIUS),y:p.y+Math.sin(a)*FLEET_RADIUS},city)<=SUBMARINE_WEAPON_RANGE-.05;}));if(usable.length)return usable.sort((a,b)=>distance(u,a)-distance(u,b))[0];}
+  for(const city of [...cities.slice(offset),...cities.slice(0,offset)]){const key=`${city.team}:${city.name}:${city.x}:${city.y}`;let points=sim.coastalStations.get(key);if(!points){points=[];for(const radius of [SUBMARINE_NUCLEAR_RANGE*.75,SUBMARINE_NUCLEAR_RANGE*.85,SUBMARINE_NUCLEAR_RANGE*.95])for(let i=0;i<16;i++){const a=i*Math.PI/8,p={x:wrap(city.x+Math.cos(a)*radius),y:city.y+Math.sin(a)*radius};if(sim.navigation.navigable(p.x,p.y,2))points.push(p);}sim.coastalStations.set(key,points);}const usable=points.map(p=>{const slot=subs[0].formationSlot??0,formationAngle=Math.atan2(city.y-p.y,delta(p.x,city.x))-(-Math.PI/2+slot*Math.PI/3);return {...p,formationAngle};}).filter(p=>subs.some(sub=>{const a=-Math.PI/2+(sub.formationSlot??0)*Math.PI/3+p.formationAngle;return distance({x:wrap(p.x+Math.cos(a)*FLEET_RADIUS),y:p.y+Math.sin(a)*FLEET_RADIUS},city)<=SUBMARINE_NUCLEAR_RANGE-.05;}));if(usable.length)return usable.sort((a,b)=>distance(u,a)-distance(u,b))[0];}
  }
  const target=cities[(u.fleetId??u.id)%3]||null;
  if(target&&sim.navigation){const points=[];for(const radius of [4,8,12])for(let i=0;i<12;i++){const a=i*Math.PI/6,p={x:wrap(target.x+Math.cos(a)*radius),y:target.y+Math.sin(a)*radius};if(sim.navigation.navigable(p.x,p.y,2))points.push(p);}if(points.length)return points.sort((a,b)=>distance(u,a)-distance(u,b))[0];}

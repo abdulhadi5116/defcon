@@ -3,7 +3,27 @@ import assert from 'node:assert/strict';
 import {Simulation,TYPES,WARHEAD_SPEED,selectionRanges,distance,nuclearRange} from '../public/engine.js';
 import {Renderer,displayVisible} from '../public/renderer.js';
 import {validatePreferences,snapshotSimulation,restoreSimulation} from '../public/save-state.js';
+import {mapCommand} from '../public/commands.js';
 const arena=()=>{const s=new Simulation({mode:'lab',left:'radar',right:'radar',count:1});s.units=[];s.fleets=[];s.cities=[];s.ai=()=>{};s.running=s.started=true;return s;};
+test('fighter ship attacks accept map commands and deal real projectile damage within 2 degrees',()=>{
+ for(const type of ['battleship','carrier','submarine']){
+  const s=arena(),fighter=s.add('fighter',0,0,30),ship=s.add(type,1,1.5,30);
+  if(type==='submarine')ship.mode='launch';
+  s.random=()=>0;fighter.heading=0;
+  assert.equal(mapCommand(s,{selectedId:fighter.id,unit:ship}).result.ok,true);
+  s.combat(fighter);
+  assert.equal(s.shots.length,1);assert.equal(s.shots[0].targetId,ship.id);
+  const hp=ship.hp;s.advanceShots(4);assert.equal(ship.hp,hp-1);
+ }
+});
+test('fighter naval attacks retain short range, radar requirements and anti-sub specialization',()=>{
+ const s=arena(),fighter=s.add('fighter',0,0,30),ship=s.add('battleship',1,2.1,30);
+ fighter.heading=0;s.combat(fighter);assert.equal(s.shots.length,0);
+ ship.x=20;assert.equal(mapCommand(s,{selectedId:fighter.id,unit:ship}).result.ok,false);
+ ship.x=1;fighter.mode='antisub';assert.equal(s.canTarget(fighter,ship),false);
+ const sub=s.add('submarine',1,1,30);sub.mode='passive';assert.equal(s.canTarget(fighter,sub),true);
+ s.combat(fighter);assert.equal(s.shots[0].kind,'depthcharge');
+});
 test('carrier only fires short-range AA guns, independently of deck cooldown and mode preparation',()=>{for(const mode of ['fighter','bomber','antisub']){const s=arena(),c=s.add('carrier',0,0,30),plane=s.add('bomber',1,1.6,30),ship=s.add('battleship',1,.5,30),sub=s.add('submarine',1,.5,30);c.mode=mode;c.cooldown=120;c.stateTimer=20;sub.mode='launch';assert.equal(s.canTarget(c,ship),false);assert.equal(s.canTarget(c,sub),false);s.combat(c);assert.equal(s.shots.length,0);plane.x=1.4;s.combat(c);assert.equal(s.shots.length,1);assert.equal(s.shots[0].kind,'gun');assert.ok(s.shots[0].gunBurst);assert.equal(c.cooldown,120);assert.equal(c.airDefenseCooldown,4);assert.equal(s.shots[0].targetId,plane.id);assert.equal(s.canTarget(c,{type:'missile',team:1,p:.8,x:.5,y:30}),false);}});
 test('battleships and fighters require close contact before firing',()=>{for(const [type,range] of [['battleship',3],['fighter',2]]){const s=arena(),u=s.add(type,0,0,30),enemy=s.add('bomber',1,range+.1,30);u.heading=0;s.combat(u);assert.equal(s.shots.length,0);enemy.x=range-.1;s.combat(u);assert.equal(s.shots.length,1);assert.equal(TYPES[type].range,range);}});
 test('silo SAMs are fast against aircraft and warheads and reload in eight game seconds',()=>{for(const targetType of ['bomber','missile']){const s=arena(),u=s.add('silo',0,0,30),target=targetType==='missile'?{id:999,type:'missile',team:1,p:.8,x:8,y:30,hp:1}:s.add('bomber',1,8,30);if(targetType==='missile')s.missiles.push(target);s.combat(u);assert.equal(s.shots[0].speed,1.2);assert.equal(u.cooldown,8);assert.equal(TYPES.silo.range,10);}});

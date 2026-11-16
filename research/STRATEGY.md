@@ -40,3 +40,7 @@ Submarine torpedo and nuclear weapon radii are both 3 degrees; passive/active/AS
 Under local air/naval pressure, hosts deploy up to five real aircraft instead of limiting combat to two or three. Nearby detected warheads take interception priority; a missile attacking another region does not automatically turn every remote carrier away from offense. Fleets replan every 90 game seconds, engage through moderate numerical disadvantage, and use a short local withdrawal when heavily outmatched rather than immediately returning all the way home.
 
 Revision-2 AI saves preserve their existing accepted wave schedules when upgraded. Multiple active packages, aggressor memory, rotated fleet orientation and manual controls all persist. No personality/difficulty variants were reintroduced.
+
+### Movement/durability revision 6
+
+Bomber arrival estimates now receive `TYPES.bomber.speed` (0.25) instead of a hard-coded 0.05. Hidden known-installation estimates use revised HP (silo 40, airbase 30, radar 6). Nuclear submarine firing stations use the separate 20° nuclear range; torpedo engagement remains 3°. The real forward-airbase benchmark still passes: seed 42 produces 58 launches, 10 detonations, one defender lost and three overlapping packages; seed 91 produces 56 launches, 18 detonations, three defenders lost and five overlapping packages. These results reflect the new HP, hit chances and movement, so should not be compared directly with earlier balance revisions. Automated suite: 207 passing tests.
