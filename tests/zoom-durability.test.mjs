@@ -5,8 +5,8 @@ import {Renderer,cityLabelVisible,cityMarkerSize} from '../public/renderer.js';
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
 const arena=()=>{const s=new Simulation({mode:'lab',left:'radar',right:'radar',count:1});s.units=[];s.fleets=[];s.cities=[];s.ai=()=>{};s.started=s.running=true;s.add('radar',1,150,0);return s;};
 const save=s=>({version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}});
-test('all ships share actual 0.10 movement while aircraft use the requested speeds',()=>{
- for(const [type,speed] of [['battleship',.1],['carrier',.1],['submarine',.1],['fighter',.5],['bomber',.25]]){
+test('all ships share actual 0.05 movement while aircraft use the requested speeds',()=>{
+ for(const [type,speed] of [['battleship',.05],['carrier',.05],['submarine',.05],['fighter',.25],['bomber',.1]]){
   const s=arena(),u=s.add(type,0,0,30);u.heading=0;u.manualControl=true;assert.ok(s.order(u.id,50,30));
   s.movement(u,1);assert.equal(TYPES[type].speed,speed);assert.ok(Math.abs(distance(u,{x:0,y:30})-speed)<1e-9);
  }
@@ -21,18 +21,12 @@ test('fighter turns back tightly rather than making a full wide orbit',()=>{
 test('fuel remains a distance budget and zero fuel crashes both aircraft at the last reachable point',()=>{
  for(const type of ['fighter','bomber']){const s=arena(),u=s.add(type,0,0,30);u.manualControl=true;u.heading=0;u.fuel=.01;s.order(u.id,10,30);const r=selectionRanges(u,s).find(r=>r.kind==='fuel');assert.equal(r.radius,.01);assert.equal(r.ellipse,undefined);s.movement(u,1);assert.ok(Math.abs(u.x-.01)<1e-8);assert.equal(u.fuel,0);assert.equal(u.dead,true);}
 });
-test('every unit has more HP and all conventional matchup probabilities are halved',()=>{
- const oldHp={battleship:3,carrier:3,submarine:1,fighter:1,bomber:1,silo:25,airbase:15,radar:1};
- const old={battleship:{submarine:.3,battleship:.1,carrier:.2,fighter:.12,bomber:.1},carrier:{fighter:.03,bomber:.06},submarine:{submarine:.1,battleship:.2,carrier:.2},fighter:{submarine:.03,battleship:.1,carrier:.1,fighter:.1,bomber:.3},bomber:{submarine:.25,battleship:.25,carrier:.25},silo:{fighter:.1,bomber:.1}};
- for(const [type,hp] of Object.entries(oldHp))assert.ok(TYPES[type].hp>hp);
- for(const [attacker,row] of Object.entries(old))for(const [target,chance] of Object.entries(row))assert.equal(COMBAT_CHANCES[attacker][target],chance/2);
- assert.ok(COMBAT_CHANCES.silo.missile<.4);assert.ok(COMBAT_CHANCES.fighter.missile<.25);
-});
+test('revised building durability and weapon matchups keep valid probabilities',()=>{assert.equal(TYPES.silo.hp,30);assert.equal(TYPES.airbase.hp,20);assert.equal(COMBAT_CHANCES.fighter.fighter,.2);assert.equal(COMBAT_CHANCES.bomber.silo,.65);for(const row of Object.values(COMBAT_CHANCES))for(const p of Object.values(row))assert.ok(p>0&&p<=1);});
 test('legacy durability and in-flight odds migrate once without healing damage ratios or resurrecting units',()=>{
  const s=arena(),ship=s.add('battleship',0,0,30),plane=s.add('bomber',1,1,30),dead=s.add('fighter',1,20,30);s.balanceRevision=5;ship.maxHp=3;ship.hp=1;plane.maxHp=1;plane.hp=1;dead.maxHp=1;dead.hp=0;dead.dead=true;
  s.shots.push({id:999,sourceId:ship.id,targetId:plane.id,targetMissile:false,kind:'sam',probability:.1});
- const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,6);assert.equal(u.hp,2);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,.05);assert.equal(r.balanceRevision,6);assert.equal(u.ammo,ship.ammo);
- const again=restoreSimulation(save(r));assert.equal(again.units.find(v=>v.id===ship.id).hp,2);assert.equal(again.shots[0].probability,.05);
+ const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,6);assert.equal(u.hp,2);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,.1);assert.equal(r.balanceRevision,7);assert.equal(u.ammo,ship.ammo);
+ const again=restoreSimulation(save(r));assert.equal(again.units.find(v=>v.id===ship.id).hp,2);assert.equal(again.shots[0].probability,.1);
 });
 test('city label detail increases monotonically with zoom while selected small cities remain visible',()=>{
  const cities=[.1,1,3,6,12,30].map((pop,i)=>({name:'City '+i,pop}));let previous=0;
@@ -41,8 +35,8 @@ test('city label detail increases monotonically with zoom while selected small c
 });
 test('unit and population marker sizes stay readable and consistent on screen at every zoom',()=>{
  const r=Object.create(Renderer.prototype);r.width=1440;r.height=950;r.pan={x:0,y:0};r.iconBounds={};
- for(const zoom of [1,2,4,6]){r.zoom=zoom;assert.equal(r.iconSize(),18);assert.equal(cityMarkerSize(30),Math.sqrt(30)*2.7);assert.ok(cityMarkerSize(.1)>=5);assert.ok(cityMarkerSize(100)<=18);}
- r.iconBounds.silo={width:.4,height:.6};const box=r.unitBox({type:'silo',mode:'launch'});assert.equal(box.halfHeight,11);assert.ok(box.halfWidth>=6);
+ for(const zoom of [1,2,4,6]){r.zoom=zoom;assert.ok(r.iconSize()>=18&&r.iconSize()<23);assert.equal(cityMarkerSize(30),Math.min(25,6+4.5*Math.log2(31)));assert.ok(cityMarkerSize(.1)>=5);assert.ok(cityMarkerSize(100)<=25);}
+ r.iconBounds.silo={width:.4,height:.6};const box=r.unitBox({type:'silo',mode:'launch'});assert.equal(box.halfHeight,r.iconSize()/2+2);assert.ok(box.halfWidth>=6);
 });
 test('fleet glyphs remain separated and individually pickable at low zoom without moving simulated ships',()=>{
  const s=arena(),f=s.fleet(['carrier','battleship','submarine','carrier','battleship','submarine'],0,0,30),members=s.units.filter(u=>u.fleetId===f.id),before=members.map(u=>[u.x,u.y]);

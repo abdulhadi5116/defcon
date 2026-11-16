@@ -116,3 +116,9 @@ Small cities have a minimum 5-pixel marker and 10-pixel picking radius; large ci
 Fleet members follow the center route immediately, including waypoint direction changes, without first turning through their old heading. Island avoidance and physical formation offsets remain authoritative. Airfield fighter/bomber launch intervals are 5/10 simulation seconds; carrier deck intervals are 8/15. State preparation, finite inventory and FIFO orders still apply.
 
 Periodic save work is based on real time, independent of playback: 8 seconds normally and 15 at 10×/20×. Input-triggered saves debounce 1.5 seconds with minimum 3/5-second spacing. Manual saves remain immediate and show SAVING before encoding. Snapshot encoding, gzip and IndexedDB recovery writes run in a Worker, while the simulation/render loop captures only a shallow descriptor and posts an immutable structured copy. Autosave skips pending work rather than accumulating more captures behind a slow request.
+
+## Combat revision 7 visual follow-up
+
+City marker sizes now use a continuous logarithmic 6–25px scale, giving medium populations a distinct intermediate size. Population influence extends farther and renders through cached irregular multi-lobed textures instead of circular radial halos. Selected-city life light uses the same organic footprint. Population casualties still dim and contract it. Unit symbols use gentle optical compensation from 18px at zoom-out to about 22.65px at maximum zoom, without altering unit geography.
+
+Aircraft inspection shows conventional bomber bombs remaining independently of nuclear stock. Fighter weapon scopes label missiles (5°) and guns (2°) separately; battleship scopes label anti-ship (9°) and anti-air (7°). Passive submarine torpedoes use 5° on confirmed contacts; active sonar and torpedoes use 9°. Carrier AA gun reach is 3°. Aircraft engagement paths move continuously around the enemy rather than pausing at short steering waypoints.

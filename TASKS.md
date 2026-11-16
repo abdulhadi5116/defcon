@@ -181,3 +181,16 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Worker JSON/gzip and IndexedDB recovery; shallow snapshot capture; immediate manual save feedback.
 - [x] Real-server interrupted-save recovery, captured-state isolation, browser interaction and before/after frame-gap checks.
 - [x] 217 automated tests, syntax checks and production build.
+
+## Combat and flight revision 7
+- [x] Battleship 7° AA / 9° ship, submarine 5° normal / 9° active, carrier 3° AA.
+- [x] Independent fighter 5° missiles / 2° guns, missile reload 10s.
+- [x] Nuclear warheads 10 HP with incremental interception damage.
+- [x] Eight conventional bomber bombs, one per moving pass; conventional ground-target support.
+- [x] Silo HP 30 / airfield HP 20; proportional save migration.
+- [x] Launch on enemy binds the target immediately; continuous interception/orbit movement.
+- [x] Original-base RTB, full-base holding and no silent diversion.
+- [x] Fighter/bomber return radius 25°/30°; fighter speed 0.25, bomber 0.10, fleet 0.05.
+- [x] All AI deployment stock placed within first 30s, with validated spread across naval fronts.
+- [x] Medium city markers, wider organic population influence and optical unit scaling.
+- [x] Automated/browsed combat, reload and rendering verification; shared Lab/campaign rules.
