@@ -128,3 +128,7 @@ Aircraft inspection shows conventional bomber bombs remaining independently of n
 Selecting a city no longer triggers country/faction fill or a faction border stroke. Territory and maritime overlays are controlled only by their own layer/deployment state. City life color applies to that city's local light patch.
 
 Every city receives a bounded local catchment (maximum 8 map degrees) clipped against nearby cities using wrapped-longitude perpendicular bisectors. The catchment shapes the cached irregular light texture, then a second blur softens its edges. No district border is stroked. The footprint follows map scale, while city marker pixel sizes retain their existing population scale. Surviving population dims and shrinks only that city's light; destroyed neighboring catchments remain dark rather than being absorbed into a faction-wide glow.
+
+## Conventional bomb identity
+
+Conventional bombs have a solid finned capsule, subtle tumbling, and a short visual drop toward the impact plane. They do not use a missile exhaust streak or guidance trail. Their impact has a larger warm flash and nine outward fragments, below the unit drawing layer. A bomber carries six conventional bombs and releases one per completed moving pass. Each successful hit deals three damage; missile, gun and torpedo hits retain one damage.

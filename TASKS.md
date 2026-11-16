@@ -201,3 +201,10 @@ Verification: 172 tests and syntax/build/diff checks passed. Real-browser 2.89 M
 - [x] Apply organic texture and soft fade without drawing district lines.
 - [x] Keep the selected city's light and casualties local; preserve explicit territory layer control.
 - [x] 237 tests, browser pixel/stroke checks, actual city-click verification, syntax/build checks.
+
+## Bomb identity and durability revision 8
+- [x] Conventional bombs use a finned body with falling/tumbling animation and a larger fragment impact; missile streaks remain distinct.
+- [x] Six conventional bombs per sortie, three damage per successful impact; one release per moving pass.
+- [x] Battleship 15 HP, carrier 20 HP, submarine 5 HP, fighter 5 HP.
+- [x] Save migration preserves damage ratio and spent payload; no resurrection or repeated replenishment.
+- [x] 240 automated tests and local browser projectile/damage checks.
