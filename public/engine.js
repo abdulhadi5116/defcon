@@ -1,4 +1,3 @@
-import {fleetAvoidance} from './fleet-avoidance.js';
 import {COAST_MARGIN,PASSAGE_MARGIN} from './navigation.js';
 import {DEFENSE,FIGHTER_COMBAT,WARHEAD_SPEED,NAVAL_COMBAT,BOMBER_NUCLEAR_RANGE,PASSIVE_SUBMARINE_TARGET_RANGE,SUBMARINE_NUCLEAR_RANGE,FLEET_RADIUS,AIRCRAFT_LAUNCH_INTERVAL,SUBMARINE_ACTIVE_RANGE,WARHEAD_HP,WARHEAD_HEALTH,NUCLEAR_RELOAD,NUCLEAR_CORRECTION,ASW_COMBAT} from './balance.js';
 export {WARHEAD_SPEED,FLEET_RADIUS} from './balance.js';
@@ -157,10 +156,11 @@ export class Simulation {
   this.coastSteps=new Map();if(dt<=0){this.fleetSteps=new Map();return;}const groups=[];
   const desiredSteps=new Map();
   for(const fleet of this.fleets){
+   delete fleet.avoidance;delete fleet.avoidanceSides;
    const members=this.units.filter(u=>u.fleetId===fleet.id&&!u.dead&&!u.landed);if(!members.length)continue;
    // A recovery replan can enqueue a worker before any new waypoint exists.
    if(this.navigation?.escape){const margin=fleet.navigationClearance??COAST_MARGIN,unsafe=members.some(u=>!this.navigation.navigable(u.x,u.y,margin));if(unsafe&&!fleet.routePlanning){fleet.coastRecovering=true;for(const u of members){const goal=u.path[0]||u.order||fleet.order||u,allowed=(x,y)=>this.seaPointAllowed(u.team,x,y),next=!this.navigation.navigable(u.x,u.y,margin)?this.navigation.escape(u,goal,TYPES[u.type].speed*dt,allowed,margin):null;this.coastSteps.set(u.id,next?{x:longitudeDelta(u.x,next.x),y:next.y-u.y}:{x:0,y:0});}continue;}if(!fleet.routePlanning&&(fleet.coastRecovering||(fleet.coastBlocked??0)>2)){const goal=fleet.order;fleet.coastBlocked=0;fleet.coastRecovering=false;if(goal&&this.commandFleet(members[0],goal,{pursuit:!!fleet.pursuitUnitId})){const p=members[0].path[0];if(p&&!fleet.routePlanning)fleet.motion={heading:Math.atan2(p.y-members[0].y,longitudeDelta(members[0].x,p.x)),speed:0};}}}
-   const ref=members[0],x=wrapLongitude(ref.x+members.reduce((n,u)=>n+longitudeDelta(ref.x,u.x),0)/members.length),y=members.reduce((n,u)=>n+u.y,0)/members.length,speed=Math.min(...members.map(u=>TYPES[u.type].speed));
+   const ref=members[0],speed=Math.min(...members.map(u=>TYPES[u.type].speed));
    let target=fleet.routePlanning&&(!fleet.pendingRoute?.pursuit||!ref.path.length||fleet.coastRecovering)?null:ref.path[0]||ref.order,d=target?distance(ref,target):0;
    const coherent=(fleet.formationRadius??FLEET_RADIUS)===FLEET_RADIUS&&target&&members.every(u=>{const p=u.path[0]||u.order;return p&&Math.abs(longitudeDelta(u.x,p.x)-longitudeDelta(ref.x,target.x))<1e-5&&Math.abs((p.y-u.y)-(target.y-ref.y))<1e-5;});
    if(coherent&&d<.03){for(const u of members){if(u.path.length>1)u.path.shift();else{u.path=[];u.order=null;}}target=ref.path[0]||ref.order;d=target?distance(ref,target):0;}
@@ -171,10 +171,11 @@ export class Simulation {
     const turn=Math.min(...members.map(u=>TYPES[u.type].turn));motion.heading=wrapAngle(motion.heading+clamp(error,-turn*dt,turn*dt));
     const step=Math.min(d,motion.speed*dt);velocity={x:Math.cos(motion.heading)*step/dt,y:Math.sin(motion.heading)*step/dt};
    }else if(fleet.motion){fleet.motion.speed=0;if(v>0)fleet.motion.heading=Math.atan2(direct.y,direct.x);}
-   desiredSteps.set(fleet.id,{direct,velocity});groups.push({fleet,members,x,y,restricted:this.mode==='war'&&this.phase===5,radius:Math.max(...members.map(u=>distance(u,{x,y}))),speed,velocity});
+   desiredSteps.set(fleet.id,{direct,velocity});groups.push({fleet,members,coherent});
   }
-  this.fleetSteps=fleetAvoidance(groups,dt,(a,b)=>this.allied(a,b),(g,dx,dy)=>g.members.every(u=>u.y+dy>=-79&&u.y+dy<=80&&this.seaSegmentAllowed(u.team,u,{x:wrapLongitude(u.x+dx),y:u.y+dy})&&(!this.navigation||this.navigation.clear(u,{x:wrapLongitude(u.x+dx),y:u.y+dy},g.fleet.navigationClearance??COAST_MARGIN))));
-  for(const g of groups){const {direct,velocity}=desiredSteps.get(g.fleet.id);if(!this.fleetSteps.has(g.fleet.id)&&(Math.abs(direct.x-velocity.x)>1e-10||Math.abs(direct.y-velocity.y)>1e-10)){const step={x:velocity.x*dt,y:velocity.y*dt},legal=g.members.every(u=>this.seaSegmentAllowed(u.team,u,{x:wrapLongitude(u.x+step.x),y:u.y+step.y})&&u.y+step.y>=-79&&u.y+step.y<=80&&(!this.navigation||this.navigation.clear(u,{x:wrapLongitude(u.x+step.x),y:u.y+step.y},g.fleet.navigationClearance??COAST_MARGIN)));this.fleetSteps.set(g.fleet.id,legal?step:{x:0,y:0});}const actual=this.fleetSteps.get(g.fleet.id);g.fleet.coastBlocked=actual&&Math.hypot(actual.x,actual.y)<1e-8&&Math.hypot(direct.x,direct.y)>1e-8?(g.fleet.coastBlocked??0)+dt:0;}
+  // Fleets can overlap; retain only course inertia, permissions and coastline protection.
+  this.fleetSteps=new Map();
+  for(const g of groups){const {direct,velocity}=desiredSteps.get(g.fleet.id);if(g.coherent||Math.abs(direct.x-velocity.x)>1e-10||Math.abs(direct.y-velocity.y)>1e-10){const step={x:velocity.x*dt,y:velocity.y*dt},legal=g.members.every(u=>this.seaSegmentAllowed(u.team,u,{x:wrapLongitude(u.x+step.x),y:u.y+step.y})&&u.y+step.y>=-79&&u.y+step.y<=80&&(!this.navigation||this.navigation.clear(u,{x:wrapLongitude(u.x+step.x),y:u.y+step.y},g.fleet.navigationClearance??COAST_MARGIN)));this.fleetSteps.set(g.fleet.id,legal?step:{x:0,y:0});}const actual=this.fleetSteps.get(g.fleet.id);g.fleet.coastBlocked=actual&&Math.hypot(actual.x,actual.y)<1e-8&&Math.hypot(direct.x,direct.y)>1e-8?(g.fleet.coastBlocked??0)+dt:0;}
 
  }
  recordTrail(u){const t=TYPES[u.type];u.trail=u.trail.filter(p=>Number.isFinite(p.at)&&this.time-p.at<TRAIL_SECONDS);if(!u.trail.length||distance(u,u.trail.at(-1))>(t.domain==='air'?.06:.15)){u.trail.push({x:u.x,y:u.y,at:this.time});if(u.trail.length>64)u.trail.shift();}}

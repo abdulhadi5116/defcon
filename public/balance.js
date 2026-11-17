@@ -16,7 +16,6 @@ export const WARHEAD_HEALTH={ballistic:WARHEAD_HP,submarine:6,direct:10};
 
 export const ASW_COMBAT={passiveDetection:8,activeDetection:12,carrierRange:1,fighterRange:2,fighterReload:10,carrierReload:8};
 
-export const FLEET_AVOIDANCE={gap:1,lookahead:60,response:8};
 
 export const NUCLEAR_CORRECTION={interval:30,maxStep:.05};
 
