@@ -1,5 +1,5 @@
 // Strategic map degrees, not real-world battery kilometers. See research/BALANCE.md.
-export const DEFENSE={range:10,radar:20,reload:10,airChance:.1,warheadChance:.25,interceptorSpeed:1.2,maxAssigned:2};
+export const DEFENSE={range:10,radar:20,reload:8,airChance:.1,warheadChance:.25,interceptorSpeed:1.2,maxAssigned:2};
 export const FIGHTER_COMBAT={range:4,gunRange:1.5,gunReload:10,reload:15,radar:7,warheadChance:.25};
 export const WARHEAD_SPEED={ballistic:.08,submarine:.12,direct:.06};
 export const NAVAL_COMBAT={radarRange:12,battleshipRange:9,battleshipAirRange:5,battleshipAirReload:10,carrierGunRange:5,carrierGunReload:10};
@@ -20,4 +20,4 @@ export const FLEET_AVOIDANCE={gap:1,lookahead:60,response:8};
 
 export const NUCLEAR_CORRECTION={interval:30,maxStep:.05};
 
-export const NUCLEAR_RELOAD={silo:8,submarine:120,bomber:120};
+export const NUCLEAR_RELOAD={silo:30,submarine:120,bomber:120};
