@@ -131,3 +131,13 @@ Conventional bombs now deal 4 HP per successful impact; saved in-flight bombs mi
 A full silo retains 30 HP and takes 10 HP per nuclear impact, surviving two direct detonations and dying on the third. Fallout processing iterates cities only, never buildings or ships. Legacy silo maximum HP is normalized to 30 on restore while preserving its damaged fraction; an already-damaged silo can legitimately require fewer further hits. A resolved/intercepted warhead cannot detonate again.
 
 Explicit nuclear ship targets retain their target ID through FIFO launch commands. Every 30 game seconds after launch, a missile may shift its impact point by at most 0.05 map degrees toward its currently detected hostile ship target. Hidden, dead, allied and coordinate-only targets receive no correction. Lost-contact checkpoints do not accumulate extra correction credit. Flight duration and impact schedule remain fixed, and the guidance renderer reads the corrected trajectory from the shared calculation. Correction target/checkpoint state persists on reload. A full-speed fleet travels up to 1.5° in the same interval, so this is a small correction rather than continuous homing.
+
+
+## Guaranteed projectile impacts (2026-11-17)
+
+All projectiles reaching a still-valid target now apply their full weapon damage without an RNG hit roll. This also covers legacy saved shots with low or zero probability metadata. New shots record probability 1 for compatibility. Existing matchup weights remain target eligibility/prioritization only; they no longer determine impact success. Projectile travel time, finite distance, target death, ceasefire and submarine target-class rules remain active. A full ICBM requires exactly five arriving one-damage interceptors and a submarine warhead three.
+
+
+## Warhead durability revision 13 (2026-11-17)
+
+ICBM health is now 8 HP, submarine nuclear health 5 HP. Interceptors deal 1 HP and never roll random misses, requiring exactly eight/five arriving hits respectively. Existing warheads preserve their remaining health fraction when maximum HP changes. Saved probability metadata is normalized to 1. Bomber nuclear health remains 10 HP.
