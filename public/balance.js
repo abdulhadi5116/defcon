@@ -11,7 +11,7 @@ export const FLEET_RADIUS=1;
 export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:5,bomber:10},carrier:{fighter:8,bomber:15}};
 
 export const SUBMARINE_ACTIVE_RANGE=9;
-export const WARHEAD_HP=8;
+export const WARHEAD_HP=7;
 export const WARHEAD_HEALTH={ballistic:WARHEAD_HP,submarine:5,direct:10};
 
 export const ASW_COMBAT={passiveDetection:8,activeDetection:12,carrierRange:1,fighterRange:2,fighterReload:10,carrierReload:8};
@@ -20,4 +20,4 @@ export const FLEET_AVOIDANCE={gap:1,lookahead:60,response:8};
 
 export const NUCLEAR_CORRECTION={interval:30,maxStep:.05};
 
-export const NUCLEAR_RELOAD={silo:30,submarine:120,bomber:120};
+export const NUCLEAR_RELOAD={silo:8,submarine:120,bomber:120};
