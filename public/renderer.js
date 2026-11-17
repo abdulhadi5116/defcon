@@ -143,7 +143,7 @@ export class Renderer {
    const clusters=members.map(u=>[u]);
    for(let pass=1;pass<members.length;pass++){
     let pair=null;for(let i=0;i<clusters.length&&!pair;i++)for(let j=i+1;j<clusters.length;j++)if(clusters[i].some(a=>clusters[j].some(b=>distance(this.unitDisplayPoint(a),this.unitDisplayPoint(b))*this.scale<gap-1e-6))){pair=[i,j];break;}if(!pair)break;
-    const [i,j]=pair,cluster=clusters[i];cluster.push(...clusters.splice(j,1)[0]);cluster.sort((a,b)=>(a.formationSlot??a.id)-(b.formationSlot??b.id));const selected=cluster.find(u=>u.id===this.selected),reference=selected||cluster[0],cx=selected?selected.x:reference.x+cluster.reduce((n,u)=>n+longitudeDelta(reference.x,u.x),0)/cluster.length,cy=selected?selected.y:cluster.reduce((n,u)=>n+u.y,0)/cluster.length,outer=cluster.filter(u=>u!==selected),radius=Math.max(selected?gap:0,gap/(2*Math.sin(Math.PI/Math.max(2,outer.length))));
+    const [i,j]=pair,cluster=clusters[i];cluster.push(...clusters.splice(j,1)[0]);cluster.sort((a,b)=>(a.formationSlot??a.id)-(b.formationSlot??b.id));const reference=cluster[0],cx=reference.x+cluster.reduce((n,u)=>n+longitudeDelta(reference.x,u.x),0)/cluster.length,cy=cluster.reduce((n,u)=>n+u.y,0)/cluster.length,outer=cluster,radius=gap/(2*Math.sin(Math.PI/Math.max(2,outer.length)));
     outer.forEach((u,index)=>{const angle=-Math.PI/2+index*Math.PI*2/outer.length,dx=longitudeDelta(cx,u.x)*this.scale,dy=-(u.y-cy)*this.scale;this.unitOffsets.set(u.id,{x:Math.cos(angle)*radius-dx,y:Math.sin(angle)*radius-dy});});
    }
   }
