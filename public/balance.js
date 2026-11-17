@@ -20,4 +20,4 @@ export const FLEET_AVOIDANCE={gap:1,lookahead:60,response:8};
 
 export const NUCLEAR_CORRECTION={interval:30,maxStep:.05};
 
-export const NUCLEAR_RELOAD={silo:10,submarine:120,bomber:120};
+export const NUCLEAR_RELOAD={silo:30,submarine:120,bomber:120};
