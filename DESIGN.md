@@ -152,3 +152,8 @@ Every avoidance translation respects each hull's coastal clearance. Closing velo
 Fighter missiles and ASW depth charges use 3° reach; fighter guns retain 2°. Carrier AA guns and ASW depth charges use 5° reach. The 1.5° firing limit against passive submarines remains the tighter cap.
 
 At DEFCON 5 in Global Conflict, naval movement is restricted to the union of active own/allied maritime zones. Navigation checks the full route against this live permission predicate, including every hull's formation offset. It can route around unauthorized corridors rather than merely checking endpoints. Permission checks are independent from cached coast geometry, so alliance changes take effect immediately. Per-tick movement and collision-avoidance checks prevent old paths or avoidance steering from crossing a newly forbidden sea boundary. At DEFCON 4 the maritime permission restriction is removed; ordinary water routing and coastal clearance remain. Lab scenarios keep their normal unrestricted exercise routing.
+
+
+## Nuclear launch warnings
+
+Launch warnings use a bold, three-blade radiation trefoil, 64–70 screen pixels across, in warm warning yellow for hostile launches and muted green for own/allied launches. The large symbol replaces the old thin expanding ring. Uppercase bold launch text stays on screen beside or below it. Offscreen launch origins get a filled directional arrow and a smaller radiation badge inside the HUD/dock safe area. Nearby edge markers are consolidated. Projection uses the nearest wrapped globe copy. Alerts fade after eight real seconds and do not restart while paused; reduced-motion mode keeps a static symbol radius. Combat visibility and launch-detection mechanics are unchanged.
