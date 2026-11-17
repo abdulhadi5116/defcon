@@ -61,3 +61,7 @@ Defense stays at the original 10-degree web baseline. Ballistic speed changes fr
 Bomber HP 8, airfield HP 20, nuclear silo HP 30. Silo defense missiles reload every 12 game seconds; silo nuclear launch reload remains 30. Carrier launch intervals: fighter 25 seconds, bomber 45. Airfield launch intervals: fighter 30 seconds, bomber 45. Existing saves adopt the new HP maxima while preserving the fraction of HP already lost and keeping destroyed units destroyed.
 
 Population district light crossfades from faction color to red as survivors decline, then extinguishes at zero survivors. Core and outskirts retain separate impact/radiation survival ratios. Nuclear-damaged ground installations also receive a subtle land-clipped damage field using remaining HP; hidden enemy installations never reveal a field. Original/red textures are cached separately, avoiding new procedural textures for every changing population value.
+
+### Revision 18
+
+ICBM speed is 0.12 degrees per game second; submarine nuclear warhead speed is 0.15. Bomber direct nuclear payload remains 0.06. Existing in-flight strategic warheads retain normalized trajectory progress and current HP while their duration adopts the new speed. Active submarine torpedo reach is six degrees, damage remains six HP, and passive targeting restrictions remain in force.

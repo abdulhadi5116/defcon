@@ -9,7 +9,7 @@ test('all gun hits deal half HP, depth charges deal two, and all conventional mi
  for(const [source,target,kind,damage] of [['fighter','bomber','gun',.5],['carrier','fighter','gun',.5],['battleship','bomber','gun',.5],['carrier','submarine','depthcharge',2],['fighter','submarine','depthcharge',2],...['carrier','battleship','submarine'].map(t=>['battleship',t,'sam',1]),['battleship','fighter','sam',1],['fighter','carrier','sam',1],['submarine','carrier','torpedo',6],['bomber','silo','bomb',4]]){
   const s=arena(),u=s.add(source,0,0,30),e=s.add(target,1,1,30);if(target==='submarine')e.mode='launch';s.random=()=>0;assert.equal(weaponDamage(u,e,kind),damage);s.fireShot(u,e,{kind,range:9,probability:1});assert.equal(s.shots[0].damage,damage);const hp=e.hp;s.advanceShots(2);assert.equal(e.hp,hp-damage);
  }
- assert.equal(TYPES.battleship.hp,24);assert.equal(TYPES.carrier.hp,20);assert.equal(NUCLEAR.coreRadius,1.2);assert.equal(NUCLEAR.visualRadius,5);assert.equal(WARHEAD_SPEED.ballistic,.08);assert.equal(WARHEAD_SPEED.direct,.06);
+ assert.equal(TYPES.battleship.hp,24);assert.equal(TYPES.carrier.hp,20);assert.equal(NUCLEAR.coreRadius,1.2);assert.equal(NUCLEAR.visualRadius,5);assert.equal(WARHEAD_SPEED.ballistic,.12);assert.equal(WARHEAD_SPEED.direct,.06);
 });
 test('old saves adopt new ship HP proportionally and update in-flight weapon damage only once',()=>{
  const s=arena();s.balanceRevision=9;const b=s.add('battleship',0,0,30),c=s.add('carrier',1,1,30);b.maxHp=15;b.hp=7.5;c.maxHp=18;c.hp=9;s.fireShot(b,c,{kind:'sam'});s.shots[0].damage=1;s.fireShot(c,b,{kind:'gun'});s.shots[1].damage=1;s.fireShot(c,b,{kind:'depthcharge'});s.shots[2].damage=1;

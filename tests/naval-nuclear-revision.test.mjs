@@ -26,5 +26,5 @@ test('one blast applies splash to a circular six-ship formation in lab and gamep
 });
 
 test('active sonar submarine torpedoes engage active and passive submerged opponents without ordinary weapons bypassing stealth',()=>{
- for(const mode of ['passive','active']){const s=arena(),u=s.add('submarine',0,0,30),enemy=s.add('submarine',1,mode==='passive'?1.4:3.9,30);u.mode='active';enemy.mode=mode;s.random=()=>0;assert.equal(s.canTarget(u,enemy),true);s.combat(u);assert.equal(s.shots[0].kind,'torpedo');for(let i=0;i<31;i++)s.advanceShots(1);assert.equal(enemy.hp,4);enemy.x=mode==='passive'?1.51:4.01;u.cooldown=0;assert.equal(s.acquireTarget(u),undefined);u.mode='passive';assert.equal(s.canTarget(u,enemy),false);}
+ for(const mode of ['passive','active']){const s=arena(),u=s.add('submarine',0,0,30),enemy=s.add('submarine',1,mode==='passive'?1.4:3.9,30);u.mode='active';enemy.mode=mode;s.random=()=>0;assert.equal(s.canTarget(u,enemy),true);s.combat(u);assert.equal(s.shots[0].kind,'torpedo');for(let i=0;i<31;i++)s.advanceShots(1);assert.equal(enemy.hp,4);enemy.x=mode==='passive'?1.51:6.01;u.cooldown=0;assert.equal(s.acquireTarget(u),undefined);u.mode='passive';assert.equal(s.canTarget(u,enemy),false);}
 });
