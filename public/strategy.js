@@ -34,7 +34,7 @@ export function strikeTargets(sim,u,plan,range=360){
  const friendly=[...sim.units.filter(v=>live(v)&&sim.allied(u.team,v.team)),...sim.cities.filter(c=>!c.dead&&sim.allied(u.team,c.team))];
  let targets=[...known,...sim.cities.filter(c=>!c.dead&&c.pop>.1&&sim.hostile(u.team,c.team))];if((plan.retaliating||plan.pressure||plan.incoming)&&targets.some(t=>t.team===plan.rival))targets=targets.filter(t=>t.team===plan.rival);
  return targets.filter(t=>distance(u,t)<=range&&!friendly.some(f=>distance(f,t)<2)).map(t=>{
-  const city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:40,airbase:30,radar:6}[t.type]),needed=city?Math.min(4,Math.max(2,Math.ceil(t.pop/5))):Math.ceil(hp/10);
+  const city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:30,airbase:20,radar:6}[t.type]),needed=city?Math.min(4,Math.max(2,Math.ceil(t.pop/5))):Math.ceil(hp/10);
   const committed=sim.missiles.filter(n=>!n.dead&&sim.allied(n.team,u.team)&&distance({x:n.tx,y:n.ty},t)<2).length+sim.units.filter(v=>live(v)&&v.strike&&sim.allied(v.team,u.team)&&distance(v.strike,t)<2).length;
   const defenses=known.filter(v=>v.type==='silo'&&sim.visibleTo(v,u.team)&&v.mode==='defense'&&v.stateTimer<=0&&distance(v,t)<=DEFENSE.range).length;
   const value=city?Math.log2(1+t.pop)*.7:t.type==='silo'?7:t.type==='airbase'?4:2;
@@ -56,7 +56,7 @@ export function deployReserves(sim,team,territories){
 }
 export function coordinateStrike(sim,team,plan,{nuclearRange,aircraftFuel,modes,bomberSpeed}){
  const m=sim.strategists[team];m.waves??=m.wave?[m.wave]:[];m.waves=m.waves.filter(w=>sim.time<w.finishAt&&(sim.units.some(u=>live(u)&&((u.launchQueue||[]).some(q=>q.waveId===w.id)||u.strike&&u.aiWave===w.id))||sim.missiles.some(n=>!n.dead&&n.waveId===w.id)));m.wave=m.waves.at(-1)??null;
- if(!plan.nuclear)return;const own=sim.units.filter(u=>live(u)&&u.team===team&&!u.manualControl&&!u.launchQueue?.length&&!u.strike&&!u.returning&&u.mission!=='defend'&&u.mission!=='naval'),reference=own.find(u=>u.type==='silo')||own[0];if(!reference)return;
+ if(!plan.nuclear)return;const own=sim.units.filter(u=>live(u)&&u.team===team&&!u.manualControl&&!u.launchQueue?.length&&!u.strike&&!u.returning&&u.mission!=='defend'&&u.mission!=='naval'&&(!['carrier','airbase'].includes(u.type)||(u.aiDefenseUntil??0)<=sim.time)),reference=own.find(u=>u.type==='silo')||own[0];if(!reference)return;
  const candidates=strikeTargets(sim,reference,plan);let selection=null;
  for(const entry of candidates){const target=entry.target,sources=[];
   for(const u of own){const d=distance(u,target);let kind,capacity,travel;
@@ -96,8 +96,8 @@ function navalStation(sim,u,plan,territories,preferredCity=null){
 
 export function navalObjective(sim,u,plan,territories){
  const fleet=sim.fleets.find(f=>f.id===u.fleetId),scope=fleet||u,m=sim.strategists[u.team],members=fleet?sim.units.filter(v=>live(v)&&v.fleetId===fleet.id):[u],ships=sim.units.filter(v=>live(v)&&['battleship','carrier','submarine'].includes(v.type));
- const power=v=>(v.type==='battleship'?3:v.type==='submarine'?2:1)*(.3+.7*Math.max(0,v.hp)/(v.maxHp||v.hp||1)),ownPower=ships.filter(v=>sim.allied(u.team,v.team)&&distance(u,v)<9).reduce((n,v)=>n+power(v)*(members.includes(v)?1:.35),0),contacts=ships.filter(v=>sim.hostile(u.team,v.team)&&sim.visibleTo(v,u.team)),near=contacts.filter(v=>distance(u,v)<12),enemyPower=near.reduce((n,v)=>n+power(v),0),protectedSites=[...sim.cities.filter(c=>c.team===u.team&&!c.dead),...sim.units.filter(v=>live(v)&&v.team===u.team&&ground(v))];
- const homeThreat=contacts.find(v=>protectedSites.some(p=>distance(p,v)<10)),responders=sim.fleets.filter(f=>f.team===u.team).map(f=>({f,leader:ships.find(v=>v.fleetId===f.id)})).filter(r=>r.leader).sort((a,b)=>homeThreat?distance(a.leader,homeThreat)-distance(b.leader,homeThreat):0),homeResponse=homeThreat&&(!fleet||responders[0]?.f===fleet),emergency=near.some(v=>distance(u,v)<(v.type==='battleship'?9:5)||members.some(own=>v.target===own.id))||homeResponse;
+ const power=v=>(v.type==='battleship'?3:v.type==='submarine'?2:1)*(.3+.7*Math.max(0,v.hp)/(v.maxHp||v.hp||1)),ownPower=ships.filter(v=>sim.allied(u.team,v.team)&&distance(u,v)<9).reduce((n,v)=>n+power(v)*(members.includes(v)?1:.35),0),contacts=ships.filter(v=>sim.hostile(u.team,v.team)&&sim.visibleTo(v,u.team)),near=contacts.filter(v=>distance(u,v)<12),enemyPower=near.reduce((n,v)=>n+power(v),0),protectedSites=[...sim.cities.filter(c=>c.team===u.team),...sim.units.filter(v=>live(v)&&v.team===u.team&&ground(v))];
+ const homeThreat=contacts.find(v=>protectedSites.some(p=>distance(p,v)<(p.type?10:20))),responders=sim.fleets.filter(f=>f.team===u.team).map(f=>({f,leader:ships.find(v=>v.fleetId===f.id)})).filter(r=>r.leader).sort((a,b)=>homeThreat?distance(a.leader,homeThreat)-distance(b.leader,homeThreat):0),homeResponse=homeThreat&&(!fleet||responders[0]?.f===fleet),emergency=near.some(v=>distance(u,v)<(v.type==='battleship'?9:5)||members.some(own=>v.target===own.id))||homeResponse;
  const mission=scope.aiMission,commit=(kind,objective,targetId=null)=>{scope.aiMission={kind,objective:{...objective},targetId,phase:sim.phase,until:sim.time+120+strategicRandom(m)*120};return objective;};
  if(near.length&&enemyPower>ownPower*1.35){
   const threat=near.slice().sort((a,b)=>distance(u,a)-distance(u,b))[0],support=sim.fleets.filter(f=>f.team===u.team&&f!==fleet).map(f=>ships.filter(v=>v.fleetId===f.id)).filter(a=>a.length).map(a=>({x:wrap(a[0].x+a.reduce((n,v)=>n+delta(a[0].x,v.x),0)/a.length),y:a.reduce((n,v)=>n+v.y,0)/a.length})).filter(p=>distance(p,threat)>distance(u,threat)+2).sort((a,b)=>distance(u,a)-distance(u,b));
@@ -117,4 +117,39 @@ export function airPatrolObjective(sim,host,fuel=50){
  const saved=host.aiPatrol;if(saved&&saved.until>sim.time&&distance(host,saved)<fuel*.35)return {x:saved.x,y:saved.y};const m=sim.strategists[host.team],fighters=sim.units.filter(u=>live(u)&&u.type==='fighter'&&sim.allied(host.team,u.team)),cities=sim.cities.filter(c=>c.team===host.team&&!c.dead&&distance(host,c)<fuel*.28),score=c=>Math.log1p(c.pop)/(1+distance(host,c)/8)-fighters.filter(f=>distance(f,c)<6).length*.6;
  const ranked=cities.sort((a,b)=>score(b)-score(a)),city=ranked[Math.floor(strategicRandom(m)*Math.min(3,ranked.length))],a=strategicRandom(m)*Math.PI*2,r=city?1.5:6+strategicRandom(m)*4,anchor=city||host;
  const point={x:wrap(anchor.x+Math.cos(a)*r),y:Math.max(-75,Math.min(80,anchor.y+Math.sin(a)*r))};host.aiPatrol={...point,until:sim.time+120+strategicRandom(m)*120};return point;
+}
+
+// Shared radar contacts direct patrols; local auto-acquisition alone cannot respond to distant raids.
+export function airResponseTarget(sim,aircraft,home=null){
+ const sites=[...sim.cities.filter(c=>c.team===aircraft.team),...sim.units.filter(u=>live(u)&&u.team===aircraft.team&&ground(u))];
+ const assignments=new Map();for(const v of sim.units)if(v!==aircraft&&live(v)&&v.team===aircraft.team&&v.engageTargetId!=null)assignments.set(v.engageTargetId,(assignments.get(v.engageTargetId)||0)+1);
+ const candidates=[...sim.missiles,...sim.units].filter(e=>live(e)&&sim.hostile(aircraft.team,e.team)&&sim.canTarget(aircraft,e)).map(e=>{
+  const missile=e.type==='missile',air=['fighter','bomber'].includes(e.type),sea=['carrier','battleship','submarine'].includes(e.type);
+  if(!missile&&!air&&!sea)return null;
+  const d=distance(aircraft,e),homeThreat=sites.some(p=>distance(p,missile?{x:e.tx,y:e.ty}:e)<(missile?6:20));
+  if(!homeThreat&&d>12)return null;
+  if(home&&d+distance(e,home)+4>(aircraft.fuel??Infinity))return null;
+  const assigned=assignments.get(e.id)||0;
+  const priority=missile?30:air?20:e.type==='submarine'&&e.mode==='launch'?17:12;
+  return {target:e,score:priority+(homeThreat?4:0)-d*.3-assigned*2+(aircraft.engageTargetId===e.id?2:0)};
+ }).filter(Boolean).sort((a,b)=>b.score-a.score);
+ return candidates[0]?.target??null;
+}
+export function coordinateAirResponse(sim,team,modes,aircraftFuel){
+ if(sim.phase>3)return;
+ for(const u of sim.units.filter(v=>live(v)&&v.team===team&&!v.manualControl)){
+  if(['airbase','carrier'].includes(u.type)){
+   const probe={...u,type:'fighter',mode:'combat',stateTimer:0,fuel:aircraftFuel('fighter',u.type)},threat=airResponseTarget(sim,probe,u);
+   if(!threat)continue;u.aiDefenseUntil=sim.time+30;
+   if(threat.type==='missile'||['fighter','bomber'].includes(threat.type)){
+    // Cancel only the AI's scheduled offensive sorties, never a player's commands.
+    u.launchQueue=(u.launchQueue||[]).filter(q=>!q.ai);u.aiStrike=false;
+    if(u.fighters>0&&u.mode!=='fighter'){u.mode='fighter';u.stateTimer=modes[u.type].find(m=>m.id==='fighter').prepare;}
+   }
+  }else if(['fighter','bomber'].includes(u.type)&&!u.returning&&!u.waitingForHome&&!u.strike&&u.mode!=='nuclear'&&u.stateTimer<=0){
+   if(u.type==='bomber'&&(u.bombs??0)<=0)continue;
+   const home=sim.units.find(v=>v.id===u.homeId&&!v.dead),target=airResponseTarget(sim,u,home);
+   if(target){u.target=u.engageTargetId=target.id;u.aiOrderUntil=sim.time+30;}
+  }
+ }
 }

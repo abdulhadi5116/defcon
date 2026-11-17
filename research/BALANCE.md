@@ -55,3 +55,9 @@ Limits: the model is DEFCON-style strategy, not real Patriot/Iron Dome/ICBM phys
 ### Final requested range/speed adjustment
 
 Defense stays at the original 10-degree web baseline. Ballistic speed changes from 0.16 to 0.10 degrees/game-second, direct nuclear payload speed from 0.25 to 0.18. A nominal 10-degree straight defensive approach now takes 100 game seconds rather than 75 for the preceding 12-degree/0.16 profile; actual curved trajectories vary. Interceptor speed/probability/reload and radar are unchanged. Balance revision 4 updates existing missile durations once while preserving progress and inventory.
+
+### Current adjustment — 2026-11-17, revision 17
+
+Bomber HP 8, airfield HP 20, nuclear silo HP 30. Silo defense missiles reload every 12 game seconds; silo nuclear launch reload remains 30. Carrier launch intervals: fighter 25 seconds, bomber 45. Airfield launch intervals: fighter 30 seconds, bomber 45. Existing saves adopt the new HP maxima while preserving the fraction of HP already lost and keeping destroyed units destroyed.
+
+Population district light crossfades from faction color to red as survivors decline, then extinguishes at zero survivors. Core and outskirts retain separate impact/radiation survival ratios. Nuclear-damaged ground installations also receive a subtle land-clipped damage field using remaining HP; hidden enemy installations never reveal a field. Original/red textures are cached separately, avoiding new procedural textures for every changing population value.

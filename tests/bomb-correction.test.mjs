@@ -5,16 +5,16 @@ import {NUCLEAR_CORRECTION} from '../public/balance.js';
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
 const arena=()=>{const s=new Simulation({mode:'lab',left:'radar',right:'radar',count:1});s.units=[];s.fleets=[];s.cities=[];s.ai=()=>{};s.running=s.started=true;s.add('radar',1,150,-50);return s;};
 const save=s=>({version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}});
-test('a fresh silo survives three nukes and all subsequent radiation, and the fourth nuke destroys it',()=>{
- const s=arena(),site=s.add('silo',1,0,30);s.cities=[{name:'Test city',team:1,x:0,y:30,pop:20,initial:20,dead:false}];assert.equal(site.hp,40);
- for(let i=1;i<=4;i++){const m={team:0,tx:0,ty:30};s.detonate(m);assert.equal(site.hp,Math.max(0,40-i*10));const hp=site.hp;s.detonate(m);assert.equal(site.hp,hp,'a resolved warhead cannot detonate twice');for(let j=0;j<400;j++){s.time++;s.advanceRadiation(1);}assert.equal(site.hp,hp);assert.equal(site.dead,i===4);}
+test('a fresh silo survives two nukes and all subsequent radiation, and the third nuke destroys it',()=>{
+ const s=arena(),site=s.add('silo',1,0,30);s.cities=[{name:'Test city',team:1,x:0,y:30,pop:20,initial:20,dead:false}];assert.equal(site.hp,30);
+ for(let i=1;i<=3;i++){const m={team:0,tx:0,ty:30};s.detonate(m);assert.equal(site.hp,Math.max(0,30-i*10));const hp=site.hp;s.detonate(m);assert.equal(site.hp,hp,'a resolved warhead cannot detonate twice');for(let j=0;j<400;j++){s.time++;s.advanceRadiation(1);}assert.equal(site.hp,hp);assert.equal(site.dead,i===3);}
  assert.ok(s.cities[0].radiationLoss>0);
 });
 test('old silo maximum HP is repaired proportionally even in a current save, while existing damage is preserved',()=>{
- for(const [hp,expected] of [[20,40],[10,20],[0,0]]){const s=arena(),u=s.add('silo',0,0,30);u.maxHp=20;u.hp=hp;u.dead=hp===0;const r=restoreSimulation(save(s)),copy=r.units.find(v=>v.id===u.id);assert.equal(copy.maxHp,40);assert.equal(copy.hp,expected);assert.equal(copy.dead,u.dead);assert.equal(restoreSimulation(save(r)).units.find(v=>v.id===u.id).hp,expected);}
+ for(const [hp,expected] of [[20,30],[10,15],[0,0]]){const s=arena(),u=s.add('silo',0,0,30);u.maxHp=20;u.hp=hp;u.dead=hp===0;const r=restoreSimulation(save(s)),copy=r.units.find(v=>v.id===u.id);assert.equal(copy.maxHp,30);assert.equal(copy.hp,expected);assert.equal(copy.dead,u.dead);assert.equal(restoreSimulation(save(r)).units.find(v=>v.id===u.id).hp,expected);}
 });
 test('bombs deal four HP and existing in-flight bombs adopt the same damage',()=>{
- const s=arena(),u=s.add('bomber',0,0,30),target=s.add('silo',1,1,30);s.random=()=>0;s.fireShot(u,target,{kind:'bomb',probability:1});assert.equal(s.shots[0].damage,4);s.advanceShots(2);assert.equal(target.hp,36);s.fireShot(u,target,{kind:'bomb',probability:1});s.shots[0].damage=3;s.balanceRevision=11;const r=restoreSimulation(save(s));assert.equal(r.shots[0].damage,4);
+ const s=arena(),u=s.add('bomber',0,0,30),target=s.add('silo',1,1,30);s.random=()=>0;s.fireShot(u,target,{kind:'bomb',probability:1});assert.equal(s.shots[0].damage,4);s.advanceShots(2);assert.equal(target.hp,26);s.fireShot(u,target,{kind:'bomb',probability:1});s.shots[0].damage=3;s.balanceRevision=11;const r=restoreSimulation(save(s));assert.equal(r.shots[0].damage,4);
 });
 const launch=()=>{const s=arena(),u=s.add('silo',0,-10,30),ship=s.add('carrier',1,0,30);u.mode='launch';s.add('radar',0,0,30);assert.ok(s.launch(u.id,ship.x,ship.y,ship.id).ok);return {s,u,ship,m:s.missiles[0]};};
 test('ship nuclear correction waits 30 game seconds and caps total endpoint displacement to 0.05 degrees per update',()=>{
