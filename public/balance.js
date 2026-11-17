@@ -3,16 +3,16 @@ export const DEFENSE={range:10,radar:20,reload:8,airChance:.1,warheadChance:.25,
 export const FIGHTER_COMBAT={range:4,gunRange:1.5,gunReload:10,reload:15,radar:7,warheadChance:.25};
 export const WARHEAD_SPEED={ballistic:.08,submarine:.12,direct:.06};
 export const NAVAL_COMBAT={radarRange:12,battleshipRange:9,battleshipAirRange:5,battleshipAirReload:10,carrierGunRange:5,carrierGunReload:10};
-export const BOMBER_NUCLEAR_RANGE=2;
+export const BOMBER_NUCLEAR_RANGE=5;
 export const PASSIVE_SUBMARINE_TARGET_RANGE=1.5;
 export const SUBMARINE_NUCLEAR_RANGE=25;
 export const FLEET_RADIUS=1;
 
-export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:5,bomber:10},carrier:{fighter:8,bomber:15}};
+export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:20,bomber:20},carrier:{fighter:10,bomber:20}};
 
 export const SUBMARINE_ACTIVE_RANGE=9;
-export const WARHEAD_HP=7;
-export const WARHEAD_HEALTH={ballistic:WARHEAD_HP,submarine:5,direct:10};
+export const WARHEAD_HP=10;
+export const WARHEAD_HEALTH={ballistic:WARHEAD_HP,submarine:6,direct:10};
 
 export const ASW_COMBAT={passiveDetection:8,activeDetection:12,carrierRange:1,fighterRange:2,fighterReload:10,carrierReload:8};
 

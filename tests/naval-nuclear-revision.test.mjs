@@ -6,8 +6,8 @@ import {mapCommand} from '../public/commands.js';
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
 const arena=()=>{const s=new Simulation({mode:'lab',left:'radar',right:'radar',count:1});s.units=[];s.fleets=[];s.cities=[];s.ai=()=>{};s.started=s.running=true;s.add('radar',1,150,0);return s;};
 const save=s=>({version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}});
-test('fighter hosts use twenty-degree return radius, retaining consumed fuel when an old session loads',()=>{
- for(const type of ['carrier','airbase']){const s=arena(),h=s.add(type,0,0,30);assert.equal(aircraftFuel('fighter',type),40);assert.equal(operationRanges(h).find(r=>r.kind==='fuel').radius,20);const f=s.launchAircraft(h.id,5,30).unit;f.fuel=43;f.maxFuel=50;f.fuelRevision=5;const r=restoreSimulation(save(s)),copy=r.units.find(u=>u.id===f.id);assert.equal(copy.maxFuel,40);assert.equal(copy.fuel,33);assert.equal(restoreSimulation(save(r)).units.find(u=>u.id===f.id).fuel,33);}
+test('fighter hosts use twenty-five-degree return radius, retaining consumed fuel when an old session loads',()=>{
+ for(const type of ['carrier','airbase']){const s=arena(),h=s.add(type,0,0,30);assert.equal(aircraftFuel('fighter',type),50);assert.equal(operationRanges(h).find(r=>r.kind==='fuel').radius,25);const f=s.launchAircraft(h.id,5,30).unit;f.fuel=43;f.maxFuel=50;f.fuelRevision=5;const r=restoreSimulation(save(s)),copy=r.units.find(u=>u.id===f.id);assert.equal(copy.maxFuel,50);assert.equal(copy.fuel,43);assert.equal(restoreSimulation(save(r)).units.find(u=>u.id===f.id).fuel,43);}
  assert.equal(ASW_COMBAT.carrierRange,1);
 });
 test('nuclear launch preparation takes 120 game seconds for silos and submarines',()=>{
