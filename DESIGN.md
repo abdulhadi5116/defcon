@@ -157,3 +157,10 @@ At DEFCON 5 in Global Conflict, naval movement is restricted to the union of act
 ## Nuclear launch warnings
 
 Launch warnings use a bold, three-blade radiation trefoil, 64–70 screen pixels across, in warm warning yellow for hostile launches and muted green for own/allied launches. The large symbol replaces the old thin expanding ring. Uppercase bold launch text stays on screen beside or below it. Offscreen launch origins get a filled directional arrow and a smaller radiation badge inside the HUD/dock safe area. Nearby edge markers are consolidated. Projection uses the nearest wrapped globe copy. Alerts fade after eight real seconds and do not restart while paused; reduced-motion mode keeps a static symbol radius. Combat visibility and launch-detection mechanics are unchanged.
+
+
+## Narrow sea passages and local population light
+
+Fleet routes retain their normal circle and coastal margin in open water. Malacca, Taiwan, and Korea–Japan passages use a local 0.1-degree navigation grid when the coarse route misses a channel or makes an avoidable detour. A fleet contracts only as far as required, validates every hull segment, and follows those waypoints independently through narrow water. At a roomy destination the circle spreads out again. Route planning, per-frame coast checks, recovery, and checkpoints share the same clearance. Land and unauthorized DEFCON 5 sea remain forbidden. An embedded formation can accept a new sea destination and resume after escaping.
+
+City lighting spreads over larger local catchments with soft overlap between neighboring cities and an irregular diffuse field. A cached coastline clip applies after light blending, keeping all population illumination on land. Centers use surviving population divided by initial population; surrounding light uses survivors divided by the population remaining after direct impact. Impact therefore dims the center immediately, while subsequent radiation progressively darkens the local outskirts. The footprint stays fixed while fading, so light does not collapse into a shrinking circle or paint an entire faction. City icons and hitboxes are unchanged.
