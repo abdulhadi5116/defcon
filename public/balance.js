@@ -2,10 +2,10 @@
 export const DEFENSE={range:10,radar:20,reload:10,airChance:.1,warheadChance:.25,interceptorSpeed:1.2,maxAssigned:2};
 export const FIGHTER_COMBAT={range:4,gunRange:1.5,gunReload:10,reload:15,radar:7,warheadChance:.25};
 export const WARHEAD_SPEED={ballistic:.08,submarine:.12,direct:.06};
-export const NAVAL_COMBAT={radarRange:12,battleshipRange:9,battleshipAirRange:6,carrierGunRange:5,carrierGunReload:10};
+export const NAVAL_COMBAT={radarRange:12,battleshipRange:9,battleshipAirRange:5,battleshipAirReload:10,carrierGunRange:5,carrierGunReload:10};
 export const BOMBER_NUCLEAR_RANGE=2;
 export const PASSIVE_SUBMARINE_TARGET_RANGE=1.5;
-export const SUBMARINE_NUCLEAR_RANGE=20;
+export const SUBMARINE_NUCLEAR_RANGE=25;
 export const FLEET_RADIUS=1;
 
 export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:5,bomber:10},carrier:{fighter:8,bomber:15}};

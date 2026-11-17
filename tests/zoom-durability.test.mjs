@@ -21,11 +21,11 @@ test('fighter turns back tightly rather than making a full wide orbit',()=>{
 test('fuel remains a distance budget and zero fuel crashes both aircraft at the last reachable point',()=>{
  for(const type of ['fighter','bomber']){const s=arena(),u=s.add(type,0,0,30);u.manualControl=true;u.heading=0;u.fuel=.01;s.order(u.id,10,30);const r=selectionRanges(u,s).find(r=>r.kind==='fuel');assert.equal(r.radius,.01);assert.equal(r.ellipse,undefined);s.movement(u,1);assert.ok(Math.abs(u.x-.01)<1e-8);assert.equal(u.fuel,0);assert.equal(u.dead,true);}
 });
-test('revised building durability and weapon matchups keep valid probabilities',()=>{assert.equal(TYPES.silo.hp,30);assert.equal(TYPES.airbase.hp,20);assert.equal(COMBAT_CHANCES.fighter.fighter,.2);assert.equal(COMBAT_CHANCES.bomber.silo,.65);for(const row of Object.values(COMBAT_CHANCES))for(const p of Object.values(row))assert.ok(p>0&&p<=1);});
+test('revised building durability and weapon matchups keep valid probabilities',()=>{assert.equal(TYPES.silo.hp,40);assert.equal(TYPES.airbase.hp,30);assert.equal(COMBAT_CHANCES.fighter.fighter,.2);assert.equal(COMBAT_CHANCES.bomber.silo,.65);for(const row of Object.values(COMBAT_CHANCES))for(const p of Object.values(row))assert.ok(p>0&&p<=1);});
 test('legacy durability and guaranteed hit metadata migrates once without healing damage ratios or resurrecting units',()=>{
  const s=arena(),ship=s.add('battleship',0,0,30),plane=s.add('bomber',1,1,30),dead=s.add('fighter',1,20,30);s.balanceRevision=5;ship.maxHp=3;ship.hp=1;plane.maxHp=1;plane.hp=1;dead.maxHp=1;dead.hp=0;dead.dead=true;
  s.shots.push({id:999,sourceId:ship.id,targetId:plane.id,targetMissile:false,kind:'sam',probability:.1});
- const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,24);assert.equal(u.hp,8);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,1);assert.equal(r.balanceRevision,14);assert.equal(u.ammo,ship.ammo);
+ const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,24);assert.equal(u.hp,8);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,1);assert.equal(r.balanceRevision,16);assert.equal(u.ammo,ship.ammo);
  const again=restoreSimulation(save(r));assert.equal(again.units.find(v=>v.id===ship.id).hp,8);assert.equal(again.shots[0].probability,1);
 });
 test('city label detail increases monotonically with zoom while selected small cities remain visible',()=>{

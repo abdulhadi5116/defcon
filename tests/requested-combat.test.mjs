@@ -15,15 +15,15 @@ test('host fighter payload is captured per queued launch and cannot change in fl
   assert.equal(r.units.at(-1).mode,'combat');assert.equal(copy.fighterPayload,'combat');
  }
 });
-test('battleship AA guns work inside two degrees while the six-degree missile reloads',()=>{
+test('battleship AA guns work inside two degrees while the five-degree missile reloads',()=>{
  const s=arena(),ship=s.add('battleship',0,0,30),e=s.add('bomber',1,6.01,30);
- s.combat(ship);assert.equal(s.shots.length,0);e.x=5.99;s.combat(ship);assert.deepEqual(s.shots.map(p=>p.kind),['sam']);
+ s.combat(ship);assert.equal(s.shots.length,0);e.x=4.99;s.combat(ship);assert.deepEqual(s.shots.map(p=>p.kind),['sam']);
  e.x=2.01;s.combat(ship);assert.equal(s.shots.length,1);e.x=1.99;s.combat(ship);assert.equal(s.shots.at(-1).kind,'gun');
- assert.equal(ship.cooldown,20);assert.equal(s.shots.at(-1).maxDistance,2.5);
+ assert.equal(ship.aaMissileCooldown,10);assert.equal(ship.cooldown,0);assert.equal(s.shots.at(-1).maxDistance,2.5);
 });
-test('active submarine torpedoes have six-degree reach and inflict three damage on arrival',()=>{
- const s=arena(),sub=s.add('submarine',0,0,30),e=s.add('carrier',1,6.01,30);sub.mode='active';s.random=()=>0;
- s.combat(sub);assert.equal(s.shots.length,0);e.x=5.99;s.combat(sub);assert.equal(s.shots[0].damage,3);s.advanceShots(31);assert.equal(e.hp,17);
+test('active submarine torpedoes have four-degree reach and inflict six damage on arrival',()=>{
+ const s=arena(),sub=s.add('submarine',0,0,30),e=s.add('carrier',1,4.01,30);sub.mode='active';s.random=()=>0;
+ s.combat(sub);assert.equal(s.shots.length,0);e.x=3.99;s.combat(sub);assert.equal(s.shots[0].damage,6);s.advanceShots(31);assert.equal(e.hp,14);
 });
 test('each selected unit shows at most one weapon ring and carrier Anti Submarine is named clearly',()=>{
  const s=arena();for(const type of ['battleship','carrier','fighter','submarine','bomber','silo'])for(const mode of (MODES[type]||[{id:'combat'}])){const u=s.add(type,0,0,30);u.mode=mode.id;assert.ok(operationRanges(u).filter(r=>r.kind==='weapon').length<=1);}

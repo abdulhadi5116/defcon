@@ -159,3 +159,13 @@ Fighter conventional missile/interceptor reload is now 15 game seconds. Fighter 
 
 
 All AA guns (fighter, battleship and carrier) now reload in 10 game seconds. Damage remains 0.5 HP. Missile reloads remain fighter 15 seconds and battleship 20 seconds; active submarine torpedoes 20 seconds, submarine nuclear missiles 120 seconds. Carrier AA range remains 5°, battleship AA missile 6° / anti-ship 9°, active submarine torpedo 6° / nuclear 20°.
+
+
+## Naval weapons revision 15 (2026-11-17)
+
+Battleship AA missile range is 5° with an independent 10-game-second cooldown. Anti-ship missiles retain 9° range and 20-second cooldown; AA guns retain 2° and 10 seconds. The inspector shows the relevant missile cooldown for the current target class. Submarine torpedoes deal 6 HP at 4° range, with 20-second reload; passive-target stealth cap remains 1.5°. Submarine nuclear launch range is 25°, with speed 0.12°/second, 5 HP and 120-second reload. Existing in-flight torpedoes adopt the new damage; old battleship AA cooldowns migrate separately from anti-ship cooldowns where the previous target is known.
+
+
+## Installation and submarine durability revision 16 (2026-11-17)
+
+Silo HP is 40, airfield HP 30 and submarine HP 10. Existing saves retain each unit's damaged fraction; destroyed units remain destroyed. Nuclear ground damage stays 10 HP, so full silos require four direct nuclear impacts and full airfields three. Fallout still affects city population only. Battle Lab's nuclear-hit description is calculated from the current HP/damage values rather than fixed text. Torpedo damage remains 6 HP, depth charge damage 2 HP, with deterministic impacts.
