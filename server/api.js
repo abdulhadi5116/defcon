@@ -6,9 +6,10 @@ async function body(request){let stream=request.body;if(!stream)throw Error('Mis
 export async function sessionApi(request,db){
  try{const url=new URL(request.url);if(!url.pathname.startsWith('/api/'))return null;if(!db)return json({error:'Session database unavailable.'},503);const store=new SessionStore(db);if(url.pathname==='/api/preferences'&&request.method==='PUT'){const origin=request.headers.get('Origin');if(origin&&origin!==url.origin)return json({error:'Cross-origin writes rejected.'},403);const data=await body(request);validatePreferences(data);await store.preferences({preferences:data.preferences,view:data.view}).run();return json({saved:true});}const match=url.pathname.match(/^\/api\/sessions(?:\/([a-f0-9-]{36})(\/claim)?)?$/);if(!match)return json({error:'Not found.'},404);
   if(request.method==='GET'){if(!match[1])return json(await store.list());const saved=await store.get(match[1]);return saved?json(saved):json({error:'Session not found.'},404);}
-  if(!['POST','PUT'].includes(request.method))return json({error:'Method not allowed.'},405);
+  if(!['POST','PUT','DELETE'].includes(request.method))return json({error:'Method not allowed.'},405);
   const origin=request.headers.get('Origin');if(origin&&origin!==url.origin)return json({error:'Cross-origin writes rejected.'},403);
   const data=await body(request);if(typeof data.writer!=='string'||!data.writer.match(/^[a-f0-9-]{36}$/))return json({error:'Invalid browser controller.'},400);
+  if(request.method==='DELETE'){if(match[1]||data.confirm!=='DELETE_ALL_SESSIONS')return json({error:'Explicit session reset confirmation required.'},400);return json(await store.clear());}
   if(request.method==='POST'&&match[2]){const saved=await store.claim(match[1],data.writer);return saved?json(saved):json({error:'Session not found.'},404);}
   validateSnapshot(data.snapshot);
   if(request.method==='POST'&&!match[1]){const name=typeof data.name==='string'?data.name.trim():'';if(!name||name.length>64)return json({error:'Session name must contain 1–64 characters.'},400);return json(await store.create(name,data.snapshot,data.writer),201);}

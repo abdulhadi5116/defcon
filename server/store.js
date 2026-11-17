@@ -2,6 +2,7 @@ import {encodeSnapshot,decodeSnapshot} from './snapshot-codec.js';
 export class SessionStore {
  constructor(db){this.db=db;}
  async list(){const rows=await this.db.prepare('SELECT id,name,revision,summary,created_at,updated_at FROM game_sessions ORDER BY updated_at DESC LIMIT 100').all();const active=await this.db.prepare("SELECT value FROM app_state WHERE key='active_session'").first();const prefs=await this.db.prepare("SELECT value FROM app_state WHERE key='preferences'").first();const sessions=rows.results.map(row=>({...row,summary:JSON.parse(row.summary)})),activeId=sessions.find(row=>row.id===active?.value&&!row.summary.ended)?.id||sessions.find(row=>!row.summary.ended)?.id||null;return {preferences:prefs?JSON.parse(prefs.value):null,activeId,sessions};}
+ async clear(){await this.db.batch([this.db.prepare('DELETE FROM game_sessions'),this.db.prepare('DELETE FROM app_state')]);return {cleared:true};}
  async get(id){const row=await this.db.prepare('SELECT * FROM game_sessions WHERE id=?').bind(id).first();return row?this.decode(row):null;}
  async decode(row){return {id:row.id,name:row.name,revision:row.revision,snapshot:await decodeSnapshot(row.snapshot),updatedAt:row.updated_at};}
  summary(snapshot){const s=snapshot.sim;return JSON.stringify({mode:s.mode,time:s.time,phase:s.phase,ended:s.ended,started:s.started,territory:s.factions[s.playerTeam].name});}
