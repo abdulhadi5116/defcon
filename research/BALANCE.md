@@ -65,3 +65,5 @@ Population district light crossfades from faction color to red as survivors decl
 ### Revision 18
 
 ICBM speed is 0.12 degrees per game second; submarine nuclear warhead speed is 0.15. Bomber direct nuclear payload remains 0.06. Existing in-flight strategic warheads retain normalized trajectory progress and current HP while their duration adopts the new speed. Active submarine torpedo reach is six degrees, damage remains six HP, and passive targeting restrictions remain in force.
+
+Bomber conventional bomb and nuclear payload release ranges are now both three degrees. Weapon scopes, ingress validation and actual release use this same limit.

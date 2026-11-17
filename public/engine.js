@@ -10,7 +10,7 @@ export const TYPES={
  carrier:{name:'Carrier',hp:20,speed:.05,turn:.04,radar:NAVAL_COMBAT.radarRange,range:NAVAL_COMBAT.carrierGunRange,reload:NAVAL_COMBAT.carrierGunReload,domain:'sea',targets:['air'],icon:'carrier'},
  submarine:{name:'Submarine',hp:10,speed:.05,turn:.04,radar:0,range:6,reload:20,domain:'sea',targets:['sea'],icon:'sub'},
  fighter:{name:'Fighter',hp:4,speed:.25,turn:.8,radar:FIGHTER_COMBAT.radar,range:FIGHTER_COMBAT.range,reload:FIGHTER_COMBAT.reload,fuel:50,domain:'air',targets:['air','sea','missile'],icon:'fighter'},
- bomber:{name:'Bomber',hp:8,speed:.1,turn:.08,radar:7,range:5,reload:4,fuel:80,domain:'air',targets:['sea','ground'],icon:'bomber'},
+ bomber:{name:'Bomber',hp:8,speed:.1,turn:.08,radar:7,range:3,reload:4,fuel:80,domain:'air',targets:['sea','ground'],icon:'bomber'},
  silo:{name:'Missile silo',hp:30,speed:0,turn:0,radar:DEFENSE.radar,range:DEFENSE.range,reload:DEFENSE.reload,domain:'ground',targets:['air'],icon:'silo'},
  airbase:{name:'Airbase',hp:20,speed:0,turn:0,radar:20,range:0,reload:120,domain:'ground',targets:[],icon:'airbase'},
  radar:{name:'Radar station',hp:6,speed:0,turn:0,radar:30,range:0,reload:0,domain:'ground',targets:[],icon:'radarstation'}
