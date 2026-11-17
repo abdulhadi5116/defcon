@@ -8,7 +8,7 @@ export const PASSIVE_SUBMARINE_TARGET_RANGE=1.5;
 export const SUBMARINE_NUCLEAR_RANGE=25;
 export const FLEET_RADIUS=1;
 
-export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:20,bomber:20},carrier:{fighter:10,bomber:20}};
+export const AIRCRAFT_LAUNCH_INTERVAL={airbase:{fighter:25,bomber:30},carrier:{fighter:20,bomber:30}};
 
 export const SUBMARINE_ACTIVE_RANGE=9;
 export const WARHEAD_HP=10;
