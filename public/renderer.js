@@ -3,7 +3,7 @@ import {territoryMap} from './territories.js';
 import {precisionForZoom,gridZones,mgrsAxisLabels} from './grid.js';
 export function populationLight(pop){pop=Math.max(0,pop);return {radius:14*Math.sqrt(pop)+10*Math.sqrt(Math.min(pop,1)),alpha:.65*(1-Math.exp(-pop/6))};}
 export const cityLabelVisible=(city,zoom,selected=null)=>city.name===selected||city.pop>=8*Math.max(0,1-(zoom-1)/4)**2;
-export const cityMarkerSize=pop=>Math.max(6,Math.min(25,6+4.5*Math.log2(1+Math.max(0,pop))));
+export const cityMarkerSize=pop=>Math.max(3,Math.min(12,3+2.2*Math.log2(1+Math.max(0,pop))));
 // Local catchments are clipped at neighboring city bisectors; only their soft light is drawn.
 export function cityDistrict(city,cities){const radius=Math.min(8,2+Math.sqrt(Math.max(0,city.initial??city.pop))),neighbors=cities.filter(c=>c!==city).map(c=>({x:longitudeDelta(city.x,c.x),y:c.y-city.y})).map(p=>({...p,d:p.x*p.x+p.y*p.y})).filter(p=>p.d>1e-8&&p.d<radius*radius*8).sort((a,b)=>a.d-b.d).slice(0,12);let polygon=[{x:-radius,y:-radius},{x:radius,y:-radius},{x:radius,y:radius},{x:-radius,y:radius}];for(const n of neighbors){const clipped=[],limit=n.d/2,side=p=>limit-p.x*n.x-p.y*n.y;for(let i=0;i<polygon.length;i++){const a=polygon[i],b=polygon[(i+1)%polygon.length],fa=side(a),fb=side(b);if(fa>=0)clipped.push(a);if((fa>=0)!==(fb>=0)){const t=fa/(fa-fb);clipped.push({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});}}polygon=clipped;if(!polygon.length)break;}return {radius,polygon};}
 export const SCOPE_SWEEP_SPEED=.075;
