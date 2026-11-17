@@ -1,0 +1,1 @@
+const {parentPort,workerData}=require('node:worker_threads');const queue=[];globalThis.self={postMessage:data=>parentPort.postMessage(data)};parentPort.on('message',data=>{if(self.onmessage)self.onmessage({data});else queue.push(data);});import(workerData.url).then(()=>{for(const data of queue)self.onmessage({data});});
