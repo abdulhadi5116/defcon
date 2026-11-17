@@ -146,3 +146,16 @@ ICBM health is now 8 HP, submarine nuclear health 5 HP. Interceptors deal 1 HP a
 ## Silo reload override (2026-11-17)
 
 Silo ICBM reload and SAM reload are both 10 game seconds. Nuclear mode preparation remains 120 seconds; submarine and bomber nuclear cooldowns remain 120 seconds. FIFO launch execution and AI salvo spacing read the shared nuclear reload values, so all-silo waves can launch successive rounds ten seconds apart while mixed-platform waves retain coordinated arrivals. Existing silo cooldowns are capped to ten on restore. ICBM speed remains 0.06°/game second; submarine nuclear speed remains 0.12°/game second.
+
+
+## ICBM, ship durability and ASW revision 14 (2026-11-17)
+
+ICBM speed is 0.08°/game second; submarine nuclear speed remains 0.12°. Battleship HP is 24; carrier HP remains 20. Existing in-flight ICBMs preserve progress while their duration adopts the new speed, and damaged battleships retain their health fraction when their maximum HP changes.
+
+Fighter Anti Submarine depth-charge range is 2°; carrier depth-charge range is 1°. The passive submarine target cap of 1.5° still applies, yielding fighter 1.5° and carrier 1° against passive subs. ASW sensor detection remains 8° passive / 12° active contacts, and depth charge damage remains 2 HP. Carrier AA gun range remains 5°, fighter conventional missile range 4°. A short-range ASW ship may now be destroyed by longer-range torpedoes before reaching firing range; mixed-fleet simulations do not assume every weapon class survives long enough to fire.
+
+
+Fighter conventional missile/interceptor reload is now 15 game seconds. Fighter gun reload remains 3 seconds and ASW depth-charge reload 10 seconds. Bomber conventional bomb damage remains 4 HP as reconfirmed by the user. Carrier depth-charge reload remains 8 seconds.
+
+
+All AA guns (fighter, battleship and carrier) now reload in 10 game seconds. Damage remains 0.5 HP. Missile reloads remain fighter 15 seconds and battleship 20 seconds; active submarine torpedoes 20 seconds, submarine nuclear missiles 120 seconds. Carrier AA range remains 5°, battleship AA missile 6° / anti-ship 9°, active submarine torpedo 6° / nuclear 20°.
