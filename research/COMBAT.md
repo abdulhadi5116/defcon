@@ -141,3 +141,8 @@ All projectiles reaching a still-valid target now apply their full weapon damage
 ## Warhead durability revision 13 (2026-11-17)
 
 ICBM health is now 8 HP, submarine nuclear health 5 HP. Interceptors deal 1 HP and never roll random misses, requiring exactly eight/five arriving hits respectively. Existing warheads preserve their remaining health fraction when maximum HP changes. Saved probability metadata is normalized to 1. Bomber nuclear health remains 10 HP.
+
+
+## Silo reload override (2026-11-17)
+
+Silo ICBM reload and SAM reload are both 10 game seconds. Nuclear mode preparation remains 120 seconds; submarine and bomber nuclear cooldowns remain 120 seconds. FIFO launch execution and AI salvo spacing read the shared nuclear reload values, so all-silo waves can launch successive rounds ten seconds apart while mixed-platform waves retain coordinated arrivals. Existing silo cooldowns are capped to ten on restore. ICBM speed remains 0.06°/game second; submarine nuclear speed remains 0.12°/game second.
