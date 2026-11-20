@@ -78,4 +78,6 @@ Airfields never regenerate fighters; each host starts with five. Returned airfra
 
 ## Bomber single-release sorties
 
-Bomber HP is 6. Conventional payload is 2 bombs, each inflicting 6 HP on arrival. After releasing the first bomb of a sortie, the bomber immediately returns to its original launch host; it does not make another attack pass with its remaining bomb. Nuclear sortie return behavior is unchanged. Revision 20 migrates existing bomber HP proportionally, preserves spent conventional payload against the smaller capacity, sends already-spent conventional sorties home, and updates in-flight conventional bomb damage.
+Bomber HP is 6. Conventional payload is 2 bombs, each inflicting 4 HP on arrival. After releasing the first bomb of a sortie, the bomber immediately returns to its original launch host; it does not make another attack pass with its remaining bomb. Nuclear sortie return behavior is unchanged. Revision 20 migrates existing bomber HP proportionally, preserves spent conventional payload against the smaller capacity, sends already-spent conventional sorties home, and updates in-flight conventional bomb damage.
+
+Revision 21 restores conventional bomb damage to 4 HP, including bombs already in flight in existing saves. Bomber HP remains 6; the two-bomb capacity and one-release RTB rule remain unchanged.
