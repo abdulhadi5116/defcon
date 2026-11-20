@@ -62,7 +62,7 @@ export const MODES={
 export const INITIAL_STOCK={battleship:12,carrier:12,submarine:12,silo:6,airbase:4,radar:7};
 export const PHASE_DURATIONS={5:120,4:480,3:1200,2:900};
 export const PHASE_ENDS={5:120,4:600,3:1800,2:2700};
-export const GAME_END_AT=3600;
+export const GAME_END_AT=7200;
 export const CITIES=TERRITORIES.flatMap((t,team)=>t.cities.map(c=>[...c,team]));
 export const wrapLongitude=x=>((x+180)%360+360)%360-180;
 export const longitudeDelta=(from,to)=>wrapLongitude(to-from);
