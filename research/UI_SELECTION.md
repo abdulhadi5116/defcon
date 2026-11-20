@@ -13,3 +13,7 @@ Selecting a unit leaves the map unobstructed; Info opens explicitly. Right-click
 Discovered buildings remain displayed and targetable after sensor coverage leaves, including after save/load. Actual radar visibility remains separate from remembered building locations.
 
 Fleet layout is visual only. Projectile paths interpolate source/target visual offsets; impact flashes and destruction markers use the ship icon's displayed position, retaining its last position after death. Picking uses the same icon layout. Combat ranges and simulation coordinates are unchanged.
+
+## Mobile pinch zoom
+
+Two map touch pointers zoom about their midpoint and pan with that midpoint. Starting a pinch cancels unit hold, selection and movement clicks; releasing only one finger keeps those actions suppressed until all fingers lift. Existing zoom bounds (1–6), single-finger drag, wheel and buttons remain shared through Renderer.changeZoom. Verified with two-finger browser touch input for zoom in/out and staggered release, plus fighter/bomber hold and drag regression checks.
