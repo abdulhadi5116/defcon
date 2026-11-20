@@ -29,12 +29,12 @@ test('each selected unit shows at most one weapon ring and carrier Anti Submarin
  const s=arena();for(const type of ['battleship','carrier','fighter','submarine','bomber','silo'])for(const mode of (MODES[type]||[{id:'combat'}])){const u=s.add(type,0,0,30);u.mode=mode.id;assert.ok(operationRanges(u).filter(r=>r.kind==='weapon').length<=1);}
  assert.equal(MODES.carrier.find(m=>m.id==='antisub').name,'Anti Submarine');
 });
-test('bomber releases from its center overhead, flies beyond the target and lines up another pass before returning on fuel',()=>{
+test('bomber releases from its center and immediately returns after one bomb',()=>{
  const s=arena(),h=s.add('airbase',0,-6,30),target=s.add('silo',1,0,30);h.mode='bomber';target.cooldown=1e6;s.random=()=>0;s.add('radar',0,0,30);
  const b=s.launchAircraft(h.id,0,30,{targetId:target.id}).unit,fire=s.fireShot.bind(s);let drops=0,egress=false,goaround=false,previous=-100;
  s.fireShot=(u,e,opts)=>{if(u===b){assert.equal(opts.kind,'bomb');assert.ok(distance(u,e)<=5);assert.ok(s.time-previous>20);previous=s.time;const angle=Math.atan2(e.y-u.y,e.x-u.x);assert.ok(Math.abs(Math.atan2(Math.sin(angle-u.heading),Math.cos(angle-u.heading)))<=Math.PI/6);drops++;}fire(u,e,opts);if(u===b){assert.equal(s.shots.at(-1).sx,b.x);assert.equal(s.shots.at(-1).sy,b.y);}};
  for(let i=0;i<4000&&!b.landed&&!b.dead;i++){s.tick(.25);egress ||= b.bombRunStage==='egress'&&distance(b,target)>4;goaround ||= b.bombRunStage==='goaround';}
- assert.ok(drops>=2);assert.ok(egress);assert.ok(goaround);assert.equal(b.landed,true);assert.ok(b.fuel>0);assert.equal(b.homeId,h.id);
+ assert.equal(drops,1);assert.equal(b.bombs,1);assert.equal(goaround,false);assert.equal(b.landed,true);assert.ok(b.fuel>0);assert.equal(b.homeId,h.id);
 });
 test('old airborne bomber pass state recovers into the new approach without a permanent firing lock',()=>{
  const s=arena(),b=s.add('bomber',0,-1,30),target=s.add('silo',1,0,30);b.passReady=false;b.target=b.engageTargetId=target.id;

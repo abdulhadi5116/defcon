@@ -75,3 +75,7 @@ Absolute war-clock milestones: DEFCON 4 at 00:02:00, 3 at 00:10:00, 2 at 00:30:0
 Speeds in degrees per game second: fleet 0.10, fighter 0.50, bomber 0.25, silo ICBM 0.15, submarine nuclear 0.20, bomber nuclear payload 0.60. Fuel remains distance-based. Bombers use wider go-arounds and an outward ingress leg when turning too close to the target at their new speed.
 
 Airfields never regenerate fighters; each host starts with five. Returned airframes can be reused. Individual aircraft mode survives landing, save/load, and redeployment; preparation time and real nuclear stock still apply.
+
+## Bomber single-release sorties
+
+Bomber HP is 6. Conventional payload is 2 bombs, each inflicting 6 HP on arrival. After releasing the first bomb of a sortie, the bomber immediately returns to its original launch host; it does not make another attack pass with its remaining bomb. Nuclear sortie return behavior is unchanged. Revision 20 migrates existing bomber HP proportionally, preserves spent conventional payload against the smaller capacity, sends already-spent conventional sorties home, and updates in-flight conventional bomb damage.

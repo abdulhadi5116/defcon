@@ -14,7 +14,7 @@ test('old silo maximum HP is repaired proportionally even in a current save, whi
  for(const [hp,expected] of [[20,30],[10,15],[0,0]]){const s=arena(),u=s.add('silo',0,0,30);u.maxHp=20;u.hp=hp;u.dead=hp===0;const r=restoreSimulation(save(s)),copy=r.units.find(v=>v.id===u.id);assert.equal(copy.maxHp,30);assert.equal(copy.hp,expected);assert.equal(copy.dead,u.dead);assert.equal(restoreSimulation(save(r)).units.find(v=>v.id===u.id).hp,expected);}
 });
 test('bombs deal four HP and existing in-flight bombs adopt the same damage',()=>{
- const s=arena(),u=s.add('bomber',0,0,30),target=s.add('silo',1,1,30);s.random=()=>0;s.fireShot(u,target,{kind:'bomb',probability:1});assert.equal(s.shots[0].damage,4);s.advanceShots(2);assert.equal(target.hp,26);s.fireShot(u,target,{kind:'bomb',probability:1});s.shots[0].damage=3;s.balanceRevision=11;const r=restoreSimulation(save(s));assert.equal(r.shots[0].damage,4);
+ const s=arena(),u=s.add('bomber',0,0,30),target=s.add('silo',1,1,30);s.random=()=>0;s.fireShot(u,target,{kind:'bomb',probability:1});assert.equal(s.shots[0].damage,6);s.advanceShots(2);assert.equal(target.hp,24);s.fireShot(u,target,{kind:'bomb',probability:1});s.shots[0].damage=3;s.balanceRevision=11;const r=restoreSimulation(save(s));assert.equal(r.shots[0].damage,6);
 });
 const launch=()=>{const s=arena(),u=s.add('silo',0,-10,30),ship=s.add('carrier',1,0,30);u.mode='launch';s.add('radar',0,0,30);assert.ok(s.launch(u.id,ship.x,ship.y,ship.id).ok);return {s,u,ship,m:s.missiles[0]};};
 test('ship nuclear correction waits 30 game seconds and caps total endpoint displacement to 0.05 degrees per update',()=>{
