@@ -60,8 +60,8 @@ export function coordinateStrike(sim,team,plan,{nuclearRange,aircraftFuel,modes,
  const candidates=strikeTargets(sim,reference,plan);let selection=null;
  for(const entry of candidates){const target=entry.target,sources=[];
   for(const u of own){const d=distance(u,target);let kind,capacity,travel;
-   if(['silo','submarine'].includes(u.type)&&u.ammo>0&&d<=nuclearRange(u)){if(u.type==='submarine'&&sim.units.some(e=>live(e)&&sim.hostile(team,e.team)&&['carrier','battleship','submarine'].includes(e.type)&&sim.visibleTo(e,team)&&distance(e,u)<SUBMARINE_ACTIVE_RANGE))continue;kind='nuclear';capacity=Math.min(3,u.ammo);travel=Math.max(12,d/WARHEAD_SPEED[u.type==='submarine'?'submarine':'ballistic']);}
-   else if(['airbase','carrier'].includes(u.type)&&u.bombers>0&&u.stockNukes>0&&Math.max(0,d-1.5)*2+18<aircraftFuel('bomber',u.type)){kind='aircraft';capacity=Math.min(3,u.bombers,u.stockNukes);travel=Math.max(0,d-1.7)/bomberSpeed+Math.min(d,1.7)/WARHEAD_SPEED.direct;}
+   if(['silo','submarine'].includes(u.type)&&u.ammo>0&&d<=nuclearRange(u)){if(u.type==='submarine'&&sim.units.some(e=>live(e)&&sim.hostile(team,e.team)&&['carrier','battleship','submarine'].includes(e.type)&&sim.visibleTo(e,team)&&distance(e,u)<SUBMARINE_ACTIVE_RANGE))continue;kind='nuclear';capacity=Math.min(3,u.ammo);travel=Math.max(.1,d/WARHEAD_SPEED[u.type==='submarine'?'submarine':'ballistic']);}
+   else if(['airbase','carrier'].includes(u.type)&&u.bombers>0&&u.stockNukes>0&&Math.max(0,d-1.5)*2+18<aircraftFuel('bomber',u.type)){kind='aircraft';capacity=Math.min(3,u.bombers,u.stockNukes);travel=Math.max(0,d-nuclearRange({type:'bomber'}))/bomberSpeed+Math.min(d,nuclearRange({type:'bomber'}))/WARHEAD_SPEED.direct;}
    else continue;sources.push({u,kind,capacity,travel});
   }
   // Keep some silos defending when real incoming traffic is detected, rather than opening every site.

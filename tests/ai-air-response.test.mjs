@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Simulation,distance} from '../public/engine.js';
-function arena(){const s=new Simulation({seed:42});s.units=[];s.fleets=[];s.cities=[{name:'Home',team:1,x:0,y:30,pop:10,initial:10,dead:false}];for(const stock of s.stock)for(const k of Object.keys(stock))stock[k]=0;s.phase=1;s.time=6000;s.started=s.running=true;s.add('radar',1,0,30);s.strategists.forEach(m=>{m.phaseOneAt=0;m.nextLaunch=1e9;});return s;}
+function arena(){const s=new Simulation({seed:42});s.units=[];s.fleets=[];s.cities=[{name:'Home',team:1,x:0,y:30,pop:10,initial:10,dead:false}];for(const stock of s.stock)for(const k of Object.keys(stock))stock[k]=0;s.phase=1;s.time=2800;s.started=s.running=true;s.add('radar',1,0,30);s.strategists.forEach(m=>{m.phaseOneAt=0;m.nextLaunch=1e9;});return s;}
 function review(s){s.aiClock=10;s.ai();}
 test('airborne patrols intercept a visible fleet threatening home beyond their local acquisition radius',()=>{const s=arena(),h=s.add('airbase',1,0,30),f=s.add('fighter',1,-2,30,{homeId:h.id}),enemy=s.add('carrier',0,12,30);f.patrolCenter={x:-2,y:30};review(s);assert.equal(f.engageTargetId,enemy.id);const before=distance(f,enemy);for(let i=0;i<20;i++)s.movement(f,1);assert.ok(distance(f,enemy)<before-2);});
 test('a detected incoming warhead takes priority over a naval raid and guides the fighter beyond local radar',()=>{const s=arena(),h=s.add('airbase',1,0,30),f=s.add('fighter',1,0,30,{homeId:h.id});s.add('carrier',0,10,30);const n={id:s.nextId++,type:'missile',team:0,x:13,y:30,tx:0,ty:30,p:.7,hp:10,dead:false};s.missiles.push(n);review(s);assert.equal(f.engageTargetId,n.id);s.movement(f,1);assert.equal(f.flightPhase,'WARHEAD INTERCEPT');});

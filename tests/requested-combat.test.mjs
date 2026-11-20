@@ -4,13 +4,13 @@ import {Simulation,operationRanges,distance,MODES} from '../public/engine.js';
 import {snapshotSimulation,restoreSimulation} from '../public/save-state.js';
 const arena=()=>{const s=new Simulation({mode:'lab',left:'radar',right:'radar',count:1});s.units=[];s.fleets=[];s.cities=[];s.ai=()=>{};s.started=s.running=true;return s;};
 const save=s=>({version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}});
-test('host fighter payload is captured per queued launch and cannot change in flight',()=>{
+test('fighter payload can change individually in flight and survives a checkpoint',()=>{
  for(const type of ['carrier','airbase']){
   const s=arena(),h=s.add(type,0,0,30);h.cooldown=20;
   assert.ok(s.setFighterPayload(h.id,'antisub').ok);assert.ok(s.queueAction(h.id,'aircraft',2,30).ok);
   assert.ok(s.setFighterPayload(h.id,'combat').ok);assert.ok(s.queueAction(h.id,'aircraft',3,30).ok);
-  h.cooldown=0;s.processLaunchQueue(h);const first=s.units.at(-1);assert.equal(first.mode,'antisub');
-  assert.equal(s.setMode(first.id,'combat').ok,false);assert.equal(first.mode,'antisub');
+  h.cooldown=0;s.processLaunchQueue(h);const first=s.units.at(-1);assert.equal(first.mode,'combat');
+  assert.ok(s.setMode(first.id,'antisub').ok);assert.equal(first.mode,'antisub');assert.equal(first.stateTimer,15);
   const r=restoreSimulation(save(s)),copy=r.units.find(u=>u.id===h.id);copy.cooldown=0;r.processLaunchQueue(copy);
   assert.equal(r.units.at(-1).mode,'combat');assert.equal(copy.fighterPayload,'combat');
  }

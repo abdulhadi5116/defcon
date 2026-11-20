@@ -9,7 +9,7 @@ test('one distant fleet command exits Hudson Bay through Hudson Strait',()=>{
  const f=s.fleet(Array(6).fill('carrier'),0,-85.25,58.84),ships=s.units.filter(u=>u.fleetId===f.id);
  assert.ok(s.commandFleet(ships[0],{x:-40,y:45}),'a distant open-water order must find the bay exit');
  for(const u of ships){let a=u;for(const b of u.path){assert.ok(s.navigation.clear(a,b,f.navigationClearance),'every hull leg stays in water');a=b;}}
- for(let tick=0;tick<7000&&ships.some(u=>u.order);tick++){s.prepareFleetAvoidance(1);for(const u of ships){const before={x:u.x,y:u.y};s.movement(u,1);assert.ok(distance(before,u)<=.050001);assert.equal(s.navigation.land(u.x,u.y),false);}s.time++;}
+ for(let tick=0;tick<7000&&ships.some(u=>u.order);tick++){s.prepareFleetAvoidance(1);for(const u of ships){const before={x:u.x,y:u.y};s.movement(u,1);assert.ok(distance(before,u)<=.100001);assert.equal(s.navigation.land(u.x,u.y),false);}s.time++;}
  assert.ok(ships.every(u=>!u.order),'all hulls must finish without a second order');
 });
 test('the hidden passage is bidirectional, respects permissions, and cannot cut through shore',()=>{

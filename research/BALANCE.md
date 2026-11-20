@@ -67,3 +67,11 @@ Population district light crossfades from faction color to red as survivors decl
 ICBM speed is 0.12 degrees per game second; submarine nuclear warhead speed is 0.15. Bomber direct nuclear payload remains 0.06. Existing in-flight strategic warheads retain normalized trajectory progress and current HP while their duration adopts the new speed. Active submarine torpedo reach is six degrees, damage remains six HP, and passive targeting restrictions remain in force.
 
 Bomber conventional bomb and nuclear payload release ranges are now both three degrees. Weapon scopes, ingress validation and actual release use this same limit.
+
+## 2026-11-20 current rules
+
+Absolute war-clock milestones: DEFCON 4 at 00:02:00, 3 at 00:10:00, 2 at 00:30:00, 1 at 00:45:00; score ends the match at 01:00:00. Old saves migrate to these deadlines without rewinding their clock.
+
+Speeds in degrees per game second: fleet 0.10, fighter 0.50, bomber 0.25, silo ICBM 0.15, submarine nuclear 0.20, bomber nuclear payload 0.60. Fuel remains distance-based. Bombers use wider go-arounds and an outward ingress leg when turning too close to the target at their new speed.
+
+Airfields never regenerate fighters; each host starts with five. Returned airframes can be reused. Individual aircraft mode survives landing, save/load, and redeployment; preparation time and real nuclear stock still apply.
