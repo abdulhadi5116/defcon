@@ -1,7 +1,7 @@
 import {COAST_MARGIN,PASSAGE_MARGIN} from './navigation.js';
 import {DEFENSE,FIGHTER_COMBAT,WARHEAD_SPEED,NAVAL_COMBAT,BOMBER_NUCLEAR_RANGE,PASSIVE_SUBMARINE_TARGET_RANGE,SUBMARINE_NUCLEAR_RANGE,FLEET_RADIUS,AIRCRAFT_LAUNCH_INTERVAL,SUBMARINE_ACTIVE_RANGE,WARHEAD_HP,WARHEAD_HEALTH,NUCLEAR_RELOAD,NUCLEAR_CORRECTION,ASW_COMBAT} from './balance.js';
 export {WARHEAD_SPEED,FLEET_RADIUS} from './balance.js';
-import {createStrategists,factionPlan,navalObjective,recordAggression,deployReserves,coordinateStrike,airPatrolObjective,coordinateAirResponse,airResponseTarget} from './strategy.js';
+import {createStrategists,factionPlan,navalObjective,navalRecoveryObjective,recordAggression,deployReserves,coordinateStrike,airPatrolObjective,coordinateAirResponse,airResponseTarget} from './strategy.js';
 import {TERRITORIES,defaultFactions,validateSetup,territoryMap} from './territories.js';
 // Native provenance is recorded in research/BASELINE.md; current user-requested balance is documented in research/COMBAT.md.
 export const TYPES={
@@ -298,9 +298,14 @@ export class Simulation {
       if(type==='fighter'&&!exercise){const limit=aircraftFuel('fighter',u.type)*.35,d=distance(u,objective);if(d>limit)objective={x:wrapLongitude(u.x+longitudeDelta(u.x,objective.x)*limit/d),y:u.y+(objective.y-u.y)*limit/d};}const sortieFuel=type==='bomber'?Math.max(0,distance(u,objective)-TYPES.bomber.range*.65)*2+TYPES.bomber.speed*Math.PI/(TYPES.bomber.turn*2.5)+2:0,result=sortieFuel>aircraftFuel(type,u.type)?{ok:false}:this.launchAircraft(u.id,objective.x,objective.y,{payload:type==='fighter'?u.fighterPayload:u.bomberPayload,targetId:objective.id??null});
      }
     }
-    if(TYPES[u.type].domain==='sea'&&this.phase<=3&&!this.fleets.find(f=>f.id===u.fleetId)?.pursuitUnitId&&!this.units.some(v=>v.fleetId&&v.fleetId===u.fleetId&&v.aiStrike&&v.launchQueue?.length)&&(exercise? !u.order:this.time>=((this.fleets.find(f=>f.id===u.fleetId)||u).aiRouteRetryAt??0))){
+    if(TYPES[u.type].domain==='sea'&&this.phase<=3&&(!this.fleets.find(f=>f.id===u.fleetId)?.pursuitUnitId||this.fleets.find(f=>f.id===u.fleetId)?.aiPursuit)&&!this.units.some(v=>v.fleetId&&v.fleetId===u.fleetId&&v.aiStrike&&v.launchQueue?.length)&&(exercise? !u.order:this.time>=((this.fleets.find(f=>f.id===u.fleetId)||u).aiRouteRetryAt??0))){
      const leader=u.fleetId?this.fleets.find(f=>f.id===u.fleetId)?.members.find(id=>this.units.some(v=>v.id===id&&!v.dead)):u.id;if(leader!==u.id)continue;
-     const scope=this.fleets.find(f=>f.id===u.fleetId)||u;if(scope.routePlanning)continue;const target=navalObjective(this,u,plan,TERRITORIES);if(u.order&&scope.order&&distance(scope.order,target)<.4)continue;const moved=u.fleetId?this.commandFleet(u,target):this.moveUnit(u,target);if(!moved){scope.aiRouteRetryAt=this.time+30;scope.aiMission=null;}
+     const scope=this.fleets.find(f=>f.id===u.fleetId)||u;if(scope.routePlanning)continue;
+     let recovery=null;if(!u.order||!scope.aiProgress||distance(u,scope.aiProgress)>.25)scope.aiProgress={x:u.x,y:u.y,at:this.time};else if(u.order&&this.time-scope.aiProgress.at>=45){recovery=navalRecoveryObjective(this,u);scope.aiProgress={x:u.x,y:u.y,at:this.time};if(recovery)scope.aiMission={kind:'RECOVER',objective:recovery,phase:this.phase,until:this.time+120};}
+     const target=recovery||navalObjective(this,u,plan,TERRITORIES),mission=scope.aiMission,contact=['ENGAGE','REINFORCE'].includes(mission?.kind)?this.units.find(v=>v.id===mission.targetId&&!v.dead&&this.visibleTo(v,team)):null,attacker=contact&&this.units.find(v=>(u.fleetId?v.fleetId===u.fleetId:v.id===u.id)&&!v.dead&&this.canTarget(v,contact)&&weaponRange(v,contact)>0);
+     if(attacker&&u.fleetId){scope.aiPursuit=true;scope.pursuitUnitId=attacker.id;attacker.target=attacker.engageTargetId=contact.id;this.navalPursuit(attacker);continue;}
+     if(scope.aiPursuit){scope.aiPursuit=false;scope.pursuitUnitId=null;for(const member of this.units.filter(v=>v.fleetId===u.fleetId)){member.target=null;member.engageTargetId=null;}}
+     if(u.order&&scope.order&&distance(scope.order,target)<.4&&!recovery)continue;const moved=u.fleetId?this.commandFleet(u,target):this.moveUnit(u,target);if(!moved){scope.aiRouteRetryAt=this.time+30;scope.aiMission=null;}
      if(moved)for(const member of this.units.filter(v=>u.fleetId?v.fleetId===u.fleetId:v.id===u.id))member.aiOrderUntil=this.time+90;
     }
 
