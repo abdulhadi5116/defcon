@@ -70,7 +70,7 @@ Bomber conventional bomb and nuclear payload release ranges are now both three d
 
 ## 2026-11-20 current rules
 
-Absolute war-clock milestones: DEFCON 4 at 00:02:00, 3 at 00:10:00, 2 at 00:30:00, 1 at 00:45:00; score ends the match at 02:00:00. Old saves migrate to these deadlines without rewinding their clock.
+Absolute war-clock milestones: DEFCON 4 at 00:02:00, 3 at 00:10:00, 2 at 00:30:00, 1 at 00:45:00; score ends the match at 01:30:00. Old saves migrate to these deadlines without rewinding their clock.
 
 Speeds in degrees per game second: fleet 0.10, fighter 0.50, bomber 0.25, silo ICBM 0.15, submarine nuclear 0.20, bomber nuclear payload 0.60. Fuel remains distance-based. Bombers use wider go-arounds and an outward ingress leg when turning too close to the target at their new speed.
 
@@ -82,4 +82,4 @@ Bomber HP is 6. Conventional payload is 2 bombs, each inflicting 4 HP on arrival
 
 Revision 21 restores conventional bomb damage to 4 HP, including bombs already in flight in existing saves. Bomber HP remains 6; the two-bomb capacity and one-release RTB rule remain unchanged.
 
-The Global Conflict end time is now 120 game minutes (02:00:00); ongoing saved matches adopt the new deadline on reload. DEFCON milestones remain unchanged. Finished results remain finished.
+The Global Conflict end time is now 90 game minutes (01:30:00); ongoing saved matches adopt the new deadline on reload. DEFCON milestones remain unchanged. Finished results remain finished.
