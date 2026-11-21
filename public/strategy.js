@@ -30,14 +30,14 @@ export function factionPlan(sim,team){
  m.nextReview=sim.time+10;m.plan={posture:m.posture,rival:m.rival,aggression:1,reserve,waveCap:72,incoming,pressure,retaliating,nuclear,launcherId:null};return m.plan;
 }
 export function strikeTargets(sim,u,plan,range=360){
- const known=sim.units.filter(e=>live(e)&&ground(e)&&sim.hostile(u.team,e.team)&&(sim.visibleTo(e,u.team)||e.knownTo?.[u.team]));
+ const known=sim.units.filter(e=>live(e)&&sim.hostile(u.team,e.team)&&(ground(e)&&(sim.visibleTo(e,u.team)||e.knownTo?.[u.team])||['carrier','battleship','submarine'].includes(e.type)&&sim.visibleTo(e,u.team)));
  const friendly=[...sim.units.filter(v=>live(v)&&sim.allied(u.team,v.team)),...sim.cities.filter(c=>!c.dead&&sim.allied(u.team,c.team))];
  let targets=[...known,...sim.cities.filter(c=>!c.dead&&c.pop>.1&&sim.hostile(u.team,c.team))];if((plan.retaliating||plan.pressure||plan.incoming)&&targets.some(t=>t.team===plan.rival))targets=targets.filter(t=>t.team===plan.rival);
- return targets.filter(t=>distance(u,t)<=range&&!friendly.some(f=>distance(f,t)<2)).map(t=>{
-  const city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:30,airbase:20,radar:6}[t.type]),needed=city?Math.min(4,Math.max(2,Math.ceil(t.pop/5))):Math.ceil(hp/10);
+ return targets.filter(t=>distance(u,t)<=range&&(!['carrier','battleship','submarine'].includes(t.type)||!t.order||distance(u,t)<=45)&&!friendly.some(f=>distance(f,t)<2)).map(t=>{
+  const sea=['carrier','battleship','submarine'].includes(t.type),cluster=sea?known.filter(v=>['carrier','battleship','submarine'].includes(v.type)&&sim.hostile(u.team,v.team)&&distance(v,t)<1.8):[],city=!t.type,observed=city||sim.visibleTo(t,u.team),hp=observed?t.hp:({silo:30,airbase:20,radar:6}[t.type]),needed=city?Math.min(4,Math.max(2,Math.ceil(t.pop/5))):Math.ceil(hp/(sea?20:10));
   const committed=sim.missiles.filter(n=>!n.dead&&sim.allied(n.team,u.team)&&distance({x:n.tx,y:n.ty},t)<2).length+sim.units.filter(v=>live(v)&&v.strike&&sim.allied(v.team,u.team)&&distance(v.strike,t)<2).length;
   const defenses=known.filter(v=>v.type==='silo'&&sim.visibleTo(v,u.team)&&v.mode==='defense'&&v.stateTimer<=0&&distance(v,t)<=DEFENSE.range).length;
-  const value=city?Math.log2(1+t.pop)*.7:t.type==='silo'?7:t.type==='airbase'?4:2;
+  const value=city?Math.log2(1+t.pop)*.7:t.type==='silo'?7:t.type==='airbase'?4:sea?(cluster.length>=3?6+cluster.length*1.5:t.type==='carrier'||t.type==='submarine'&&t.mode==='launch'?5:1):2;
   return {target:t,needed,defenses,utility:committed>=needed?-Infinity:value+(t.team===plan.rival?2:0)-committed*1.4-defenses*.25-distance(u,t)/360};
  }).filter(t=>Number.isFinite(t.utility)).sort((a,b)=>b.utility-a.utility);
 }
@@ -70,7 +70,7 @@ export function coordinateStrike(sim,team,plan,{nuclearRange,aircraftFuel,modes,
   // Keep some silos defending when real incoming traffic is detected, rather than opening every site.
   if(plan.incoming){const silos=sources.filter(s=>s.u.type==='silo');for(const s of silos.slice(-Math.max(1,Math.ceil(silos.length/3))))sources.splice(sources.indexOf(s),1);}
   if(m.waves.length&&sources.length<Math.min(plan.pressure||plan.retaliating?2:3,m.wave?.launcherIds.length||1))continue;
-  const reserved=sim.units.filter(u=>live(u)&&u.team===team).reduce((n,u)=>n+(u.launchQueue||[]).filter(q=>q.kind==='nuclear'||q.kind==='aircraft'&&q.payload==='nuclear').length+(u.type==='bomber'&&u.homeId?u.ammo:0),0),capacity=sources.reduce((n,s)=>n+s.capacity,0),defenses=entry.defenses||2,budget=Math.min(plan.waveCap??72,sim.remaining[team]-plan.reserve-reserved,capacity),desired=Math.min(budget,Math.max(plan.pressure||plan.retaliating?18:12,entry.needed+defenses*(plan.retaliating?12:8)));
+  const reserved=sim.units.filter(u=>live(u)&&u.team===team).reduce((n,u)=>n+(u.launchQueue||[]).filter(q=>q.kind==='nuclear'||q.kind==='aircraft'&&q.payload==='nuclear').length+(u.type==='bomber'&&u.homeId?u.ammo:0),0),capacity=sources.reduce((n,s)=>n+s.capacity,0),defenses=entry.defenses||2,budget=Math.min(plan.waveCap??72,sim.remaining[team]-plan.reserve-reserved,capacity),desired=Math.min(budget,['carrier','battleship','submarine'].includes(target.type)?Math.max(2,entry.needed+entry.defenses*2):Math.max(plan.pressure||plan.retaliating?18:12,entry.needed+defenses*(plan.retaliating?12:8)));
   if(!sources.length||desired<Math.min(6,entry.needed,capacity))continue;selection={entry,sources,desired};break;
  }
  if(!selection){m.nextLaunch=sim.time+20;m.nextReview=0;return;}

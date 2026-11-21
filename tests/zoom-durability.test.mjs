@@ -25,7 +25,7 @@ test('revised building durability and weapon matchups keep valid probabilities',
 test('legacy durability and guaranteed hit metadata migrates once without healing damage ratios or resurrecting units',()=>{
  const s=arena(),ship=s.add('battleship',0,0,30),plane=s.add('bomber',1,1,30),dead=s.add('fighter',1,20,30);s.balanceRevision=5;ship.maxHp=3;ship.hp=1;plane.maxHp=1;plane.hp=1;dead.maxHp=1;dead.hp=0;dead.dead=true;
  s.shots.push({id:999,sourceId:ship.id,targetId:plane.id,targetMissile:false,kind:'sam',probability:.1});
- const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,24);assert.equal(u.hp,8);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,1);assert.equal(r.balanceRevision,22);assert.equal(u.ammo,ship.ammo);
+ const r=restoreSimulation(save(s)),u=r.units.find(u=>u.id===ship.id);assert.equal(u.maxHp,24);assert.equal(u.hp,8);assert.equal(r.units.find(u=>u.id===dead.id).dead,true);assert.equal(r.units.find(u=>u.id===dead.id).hp,0);assert.equal(r.shots[0].probability,1);assert.equal(r.balanceRevision,23);assert.equal(u.ammo,ship.ammo);
  const again=restoreSimulation(save(r));assert.equal(again.units.find(v=>v.id===ship.id).hp,8);assert.equal(again.shots[0].probability,1);
 });
 test('city label detail increases monotonically with zoom while selected small cities remain visible',()=>{

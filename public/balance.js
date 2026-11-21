@@ -20,3 +20,5 @@ export const ASW_COMBAT={passiveDetection:8,activeDetection:12,carrierRange:1,fi
 export const NUCLEAR_CORRECTION={interval:30,maxStep:.05};
 
 export const NUCLEAR_RELOAD={silo:30,submarine:120,bomber:120};
+
+export const BOMBER_NUCLEAR_SPEED=.15;
