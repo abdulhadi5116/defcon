@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';import WebSocket from 'ws';import {Simulation} from '../public/engine.js';import {snapshotSimulation} from '../public/save-state.js';import {applyDelta} from '../public/live-protocol.js';
 const base=process.env.REALTIME_TEST_URL||'http://127.0.0.1:8788',sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const auth=process.env.REALTIME_TEST_TOKEN?{Authorization:'Bearer '+process.env.REALTIME_TEST_TOKEN}:{};
+const auth=process.env.REALTIME_TEST_SITE_TOKEN?{'OAI-Sites-Authorization':'Bearer '+process.env.REALTIME_TEST_SITE_TOKEN}:process.env.REALTIME_TEST_TOKEN?{Authorization:'Bearer '+process.env.REALTIME_TEST_TOKEN}:{};
 const request=async(path,method='GET',data)=>{const r=await fetch(base+'/api/'+path,{method,headers:{...auth,...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined});return {status:r.status,body:await r.json()};};
 const s=new Simulation({seed:338}),snapshot={version:1,sim:snapshotSimulation(s),preferences:{volume:0,music:0,difficulty:'standard'},view:{speed:1,gridMode:'degree',zoom:1,focus:{x:0,y:0}}};snapshot.sim.started=snapshot.sim.running=true;
 const made=await request('sessions','POST',{name:'Realtime integration',snapshot});assert.equal(made.status,200,JSON.stringify(made));const id=made.body.id;

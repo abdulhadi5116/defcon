@@ -19,3 +19,7 @@ Bindings and SQLite migrations are declared in `wrangler.realtime.jsonc`. Separa
 - Set `REALTIME_TEST_FAST=1` to verify the 20x clock through initial fleet deployment. Tests use a new `Realtime integration` session; `REALTIME_TEST_CLEANUP=1` removes only that test session on a direct backend run.
 
 The backend exposes public `/health`; all session and maintenance endpoints require the server bearer secret. The frontend forwards only the public session protocol, never internal import/delete/metrics routes. Sites access controls continue protecting the frontend and WebSocket proxy.
+
+## Deployment verification (2026-11-23)
+
+418 unit/regression tests passed. The network integration passed against both the direct Cloudflare backend and the owner-private Sites URL, including an actual WebSocket upgrade through Sites. Two independent local browser profiles passed shared control, background progression, reload without takeover, lab creation, and a server-side unit mode command. The Cloudflare 20x smoke test passed initial deployment; a complete two-hour battle soak was not run.
