@@ -151,7 +151,7 @@ export class Renderer {
   this.unitDisplayHistory??=new Map();for(const members of groups.values())for(const u of members)this.unitDisplayHistory.set(u.id,{...this.unitDisplayPoint(u)});
  }
 
- unitDisplayPoint(u){const offset=this.unitOffsets?.get(u.id);return offset?{x:wrapLongitude(u.x+offset.x/this.scale),y:u.y-offset.y/this.scale}:u;}
+ unitDisplayPoint(u){const offset=this.unitOffsets?.get(u.id),point=this.networkPositions?.get(u.id)||u;return offset?{x:wrapLongitude(point.x+offset.x/this.scale),y:point.y-offset.y/this.scale}:point;}
  shotDisplayPoint(sim,shot,point=shot){
   const source=this.renderUnits?.get(shot.sourceId)||sim.units.find(u=>u.id===shot.sourceId),target=(shot.targetMissile?this.renderMissiles:this.renderUnits)?.get(shot.targetId)||(shot.targetMissile?sim.missiles:sim.units).find(u=>u.id===shot.targetId),origin={x:shot.sx??shot.x,y:shot.sy??shot.y},total=target?distance(origin,target):0,progress=target?Math.max(0,Math.min(1,1-distance(point,target)/Math.max(.001,total))):0;
   const a=source?this.unitOffsets?.get(source.id):null,b=!shot.targetMissile&&target?this.unitOffsets?.get(target.id):null,dx=(a?.x||0)*(1-progress)+(b?.x||0)*progress,dy=(a?.y||0)*(1-progress)+(b?.y||0)*progress;

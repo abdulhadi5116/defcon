@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "defcon-realtime",
+  "main": "worker/realtime.js",
+  "account_id": "f1cbae583445805e6fdb109a63b8a4b3",
+  "compatibility_date": "2026-11-23",
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "GAMES",
+        "class_name": "GameSession"
+      },
+      {
+        "name": "DIRECTORY",
+        "class_name": "GameDirectory"
+      },
+      {
+        "name": "ROUTES",
+        "class_name": "NavalRoutes"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "GameSession",
+        "GameDirectory"
+      ]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": [
+        "NavalRoutes"
+      ]
+    }
+  ]
+}

@@ -5,3 +5,7 @@ qa/*.png
 
 dist/
 data/
+
+.wrangler/
+.dev.vars*
+wrangler.frontend.local.jsonc

@@ -6,12 +6,17 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check public/balance.js && node --check public/app.js && node --check public/engine.js && node --check public/strategy.js && node --check public/deployment-plans.js && node --check public/renderer.js && node --check public/audio.js && node --check public/navigation.js && node --check public/naval-planner.js && node --check public/naval-planning.js && node --check public/naval-worker.js && node --check public/territories.js && node --check public/grid.js && node --check server/api.js && node --check server/snapshot-codec.js && node --check server/store.js && node --check public/sessions.js && node --check public/save-encoder.js && node --check public/save-worker.js && node --check public/ui.js && node --check public/commands.js",
-    "build": "node scripts/build.mjs"
+    "check": "node --check public/balance.js && node --check public/app.js && node --check public/engine.js && node --check public/strategy.js && node --check public/deployment-plans.js && node --check public/renderer.js && node --check public/audio.js && node --check public/navigation.js && node --check public/naval-planner.js && node --check public/naval-planning.js && node --check public/naval-worker.js && node --check public/territories.js && node --check public/grid.js && node --check server/api.js && node --check server/snapshot-codec.js && node --check server/store.js && node --check public/sessions.js && node --check public/save-encoder.js && node --check public/save-worker.js && node --check public/ui.js && node --check public/commands.js && node --check public/live-sessions.js && node --check public/live-protocol.js && node --check worker/realtime.js && node --check server/realtime/game.js && node --check server/realtime/proxy.js",
+    "build": "node scripts/build.mjs",
+    "dev:realtime": "wrangler dev --config wrangler.realtime.jsonc",
+    "deploy:realtime": "wrangler deploy --config wrangler.realtime.jsonc",
+    "test:realtime": "node tests/realtime-network.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
-    "playwright": "^1.65.0"
+    "playwright": "^1.65.0",
+    "wrangler": "4.166.0",
+    "ws": "8.23.0"
   },
   "dependencies": {
     "mgrs": "^2.2.0"
