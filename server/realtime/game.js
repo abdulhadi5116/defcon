@@ -5,7 +5,33 @@ export class ServerGame {
  constructor(record,now=Date.now()) {this.record=record;this.sim=restoreSimulation(record.snapshot);this.sim.navigation=new ServerNavigation(land);this.speed=record.speed||record.snapshot.view.speed;this.wallAt=record.wallAt??now;this.effects=[];this.sim.onEffect=(type,context)=>{if(this.effects.length<80)this.effects.push({type,context});};}
  static create(snapshot,name,now=Date.now()){validateSnapshot(snapshot);const old=snapshot.sim;if(old.time>1)throw Error('New sessions must start at game time zero');const sim=restoreSimulation(snapshot);sim.started=true;return new ServerGame({name,snapshot:{...snapshot,sim:snapshotSimulation(sim)},wallAt:now,speed:snapshot.view.speed},now);}
 
- advance(now=Date.now(),budget=150){if(!this.sim.running||this.sim.ended){this.wallAt=now;return;}const elapsed=Math.max(0,now-this.wallAt)/1000,amount=elapsed*this.speed,start=performance.now();let done=0;while(done+1e-8<amount&&this.sim.running&&!this.sim.ended){const dt=Math.min(.25,amount-done);this.sim.tick(dt);done+=dt;if(performance.now()-start>budget)break;}this.wallAt+=done/this.speed*1000;if(this.sim.ended)this.wallAt=now;}
+ // Keep fine timing when movement or combat is sensitive to the step size.
+ stepLimit() {
+  const sim=this.sim;
+  if(sim.shots.length||sim.missiles.length||
+     sim.fleets.some(fleet=>fleet.coastRecovering||fleet.pursuitUnitId)||
+     sim.units.some(unit=>!unit.dead&&!unit.landed&&(
+      unit.type==='fighter'||unit.type==='bomber'||unit.engageTargetId||unit.target||unit.pursuing
+     )))return .25;
+  return Math.min(1,this.speed*.25);
+ }
+
+ advance(now=Date.now(),budget=150) {
+  if(!this.sim.running||this.sim.ended){this.wallAt=now;return;}
+  const amount=Math.max(0,now-this.wallAt)/1000*this.speed;
+  const start=performance.now();
+  let done=0;
+  while(done+1e-8<amount&&this.sim.running&&!this.sim.ended){
+   const phaseEndsAt=this.sim.mode==='war'?this.sim.phaseEndsAt:null;
+   const phaseBoundary=phaseEndsAt>this.sim.time?phaseEndsAt-this.sim.time:Infinity;
+   const dt=Math.min(this.stepLimit(),phaseBoundary,amount-done);
+   this.sim.tick(dt);
+   done+=dt;
+   if(performance.now()-start>budget)break;
+  }
+  this.wallAt+=done/this.speed*1000;
+  if(this.sim.ended)this.wallAt=now;
+ }
  snapshot(clone=true){return {...this.record.snapshot,sim:snapshotSimulation(this.sim,{clone}),view:{...this.record.snapshot.view,speed:this.speed}};}
  save(){return {...this.record,snapshot:this.snapshot(false),speed:this.speed,wallAt:this.wallAt};}
  command(command){const {method,args=[]}=command||{},s=this.sim;if(!Array.isArray(args)||args.length>6)throw Error('Invalid command');if(method==='pause'){if(typeof args[0]!=='boolean')throw Error('Invalid pause');s.running=!args[0]&&!s.ended;return {ok:true};}if(method==='speed'){if(![1,5,10,20].includes(args[0]))throw Error('Invalid speed');this.speed=args[0];return {ok:true};}const allowed=['setAutopilot','setAlliance','setRadarSharing','setMode','deploy','order','queueAction','clearLaunchQueue','returnHome','setBomberPayload','setFighterPayload'];if(!allowed.includes(method))throw Error('Unknown command');if(method==='returnHome'){const u=s.units.find(u=>u.id===args[0]&&u.team===s.playerTeam&&!u.dead&&!u.landed);if(!u)return {ok:false,reason:'Unit unavailable'};s.markManualCommand(u,'return');return {ok:s.returnHome(u)};}if(['setMode','order','queueAction','setBomberPayload','setFighterPayload'].includes(method)){if(!Number.isInteger(args[0]))throw Error('Invalid unit');}if(method==='deploy'){if(!['battleship','carrier','submarine','silo','airbase','radar'].includes(args[0])||![args[1],args[2]].every(Number.isFinite)||Math.abs(args[1])>180||Math.abs(args[2])>80)throw Error('Invalid deployment');args.length=4;}if(method==='order'||method==='queueAction'){const offset=method==='queueAction'?2:1;if(![args[offset],args[offset+1]].every(Number.isFinite)||Math.abs(args[offset])>180||Math.abs(args[offset+1])>80)throw Error('Invalid coordinates');}if(method==='setAutopilot'||method==='setRadarSharing'){if(typeof args[0]!=='boolean')throw Error('Invalid setting');}const result=s[method](...args);return typeof result==='boolean'?{ok:result}:result?.unit?{ok:result.ok,reason:result.reason}:result;}
