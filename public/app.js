@@ -24,6 +24,14 @@ let settings={volume:40,music:55,voice:true,reduced:matchMedia('(prefers-reduced
 try{const saved=JSON.parse(localStorage.getItem('blackout-settings'));if(saved&&typeof saved==='object')settings={...settings,...saved};}catch{}
 settings.difficulty='standard';
 audio.volume=Math.max(0,Math.min(1,Number(settings.volume)/100||0));audio.musicVolume=settings.music/100;audio.voice=!!settings.voice;renderer.reduced=!!settings.reduced;renderer.visibilityMode=settings.visibilityMode==='full'?'full':'radar';
+function applyAppearance(mode){
+ const appearance=mode==='day'?'day':'night';
+ document.documentElement.dataset.appearance=appearance;
+ renderer.daylight=appearance==='day';
+ $('appearance').value=appearance;
+}
+try{applyAppearance(localStorage.getItem('blackout-appearance'));}catch{applyAppearance('night');}
+$('appearance').onchange=()=>{const mode=$('appearance').value;applyAppearance(mode);try{localStorage.setItem('blackout-appearance',mode);}catch{}};
 $('volume').value=settings.volume;$('volume-value').textContent=`${settings.volume}%`;$('music-volume').value=settings.music;$('music-volume-value').textContent=`${settings.music}%`;$('voice').checked=settings.voice;$('reduced').checked=settings.reduced;$('difficulty').value=settings.difficulty;$('visibility-mode').value=renderer.visibilityMode;
 const phaseNames={5:'PEACETIME',4:'RADAR ACTIVE',3:'WEAPONS FREE',2:'STRATEGIC ALERT',1:'NUCLEAR WAR'};
 const phaseCopy={5:'Place remaining forces.<br>Fleet movement: own / allied seas.<br>All weapons on hold.',4:'Radar coverage active.<br>Fleet staging and reconnaissance.<br>Weapons remain on hold.',3:'Naval and airborne combat.<br>Deployment is closed.',2:'Prepare nuclear launch states.<br>Firing locked until DEFCON 1.',1:'Nuclear launch states active.<br>Protect your cities.'};
