@@ -44,3 +44,17 @@ test('an incoming shot lands for the same damage at every speed',()=>{
   assert.equal(target.hp,hp-1);
  }
 });
+
+test('fictional landmark persists and rewards its living launch silo once per impact',async()=>{
+ const {ARUNIKA_COUNCIL}=await import('../public/engine.js');
+ const game=ServerGame.create(fixture(),'Arunika',0),sim=game.sim;
+ const silo=sim.add('silo',0,0,0),ammo=silo.ammo;
+ const fire=(x,y)=>sim.detonate({tx:x,ty:y,team:0,sourceId:silo.id,dead:false});
+ const {x,y}=ARUNIKA_COUNCIL;
+ fire(x+3,y);
+ assert.equal(sim.arunikaHp,30);
+ fire(x,y);fire(x,y);fire(x,y);fire(x,y);
+ assert.equal(sim.arunikaHp,0);
+ assert.equal(silo.ammo,ammo+3);
+ assert.equal(new ServerGame(game.save(),0).sim.arunikaHp,0);
+});

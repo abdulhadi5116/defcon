@@ -1,4 +1,4 @@
-import {TYPES,wrapLongitude,longitudeDelta,blastAppearance,selectionRanges,missileArc,missilePosition,distance,TRAIL_SECONDS,contactOpacity,DESTROYED_MARK_SECONDS,FLEET_RADIUS,NUCLEAR} from './engine.js';
+import {ARUNIKA_COUNCIL,TYPES,wrapLongitude,longitudeDelta,blastAppearance,selectionRanges,missileArc,missilePosition,distance,TRAIL_SECONDS,contactOpacity,DESTROYED_MARK_SECONDS,FLEET_RADIUS,NUCLEAR} from './engine.js';
 import {territoryMap} from './territories.js';
 import {precisionForZoom,gridZones,mgrsAxisLabels} from './grid.js';
 export function populationLight(pop){pop=Math.max(0,pop);return {radius:14*Math.sqrt(pop)+10*Math.sqrt(Math.min(pop,1)),alpha:.65*(1-Math.exp(-pop/6))};}
@@ -200,6 +200,16 @@ export class Renderer {
   this.populationCounters.set(city.name,counter);
   return `${sample().toFixed(3)}M / ${total.toFixed(3)}M`;
  }
+ drawArunika(sim){
+  if(sim.mode!=='war'||!sim.started)return;
+  const {x,y,name,maxHp}=ARUNIKA_COUNCIL,hp=sim.arunikaHp??maxHp;
+  const color=this.daylight?'#684735':'#e3bd72';
+  for(const p of this.copies(x,y,150)){
+   this.ring(p.x,p.y,7,color,1);
+   this.line(p.x-4,p.y,p.x+4,p.y,color,1);
+   this.text(`${name.toUpperCase()} · ${hp}/${maxHp} HP`,p.x+11,p.y+4,color,10);
+  }
+ }
  drawPopulationStatus(sim){
   const c=this.ctx;
   for(const city of this.mapCities(sim)){
@@ -242,7 +252,7 @@ export class Renderer {
  draw(sim,dt){if(!this.width||!this.height)return;this.constrain();this.layoutUnits(sim);this.elapsed+=dt;const c=this.ctx;c.clearRect(0,0,this.width,this.height);if(this.daylight){
    const sunlight=c.createLinearGradient(0,this.height,this.width*.8,0);
    sunlight.addColorStop(0,'#a9cdd8');sunlight.addColorStop(1,'#e5ece1');c.fillStyle=sunlight;
-  }else c.fillStyle='#080f14';c.fillRect(0,0,this.width,this.height);this.drawTerrain();this.drawTerritories(sim,dt);this.drawGrid();this.drawCoverage(sim);this.drawCities(sim);this.drawOperations(sim);this.drawMissiles(sim);this.drawExplosions(sim);this.drawBlastWaves();this.drawUnits(sim);this.drawCombatImpacts(sim);this.drawImpactStatus(sim);this.drawPopulationStatus(sim);this.drawLaunchDetected(sim);if(this.hover){for(const p of this.copies(this.hover.x,this.hover.y)){this.line(p.x-7,p.y,p.x-3,p.y,'#8ba8b455',.6);this.line(p.x+3,p.y,p.x+7,p.y,'#8ba8b455',.6);}}}
+  }else c.fillStyle='#080f14';c.fillRect(0,0,this.width,this.height);this.drawTerrain();this.drawTerritories(sim,dt);this.drawGrid();this.drawCoverage(sim);this.drawCities(sim);this.drawOperations(sim);this.drawMissiles(sim);this.drawExplosions(sim);this.drawBlastWaves();this.drawUnits(sim);this.drawCombatImpacts(sim);this.drawImpactStatus(sim);this.drawPopulationStatus(sim);this.drawArunika(sim);this.drawLaunchDetected(sim);if(this.hover){for(const p of this.copies(this.hover.x,this.hover.y)){this.line(p.x-7,p.y,p.x-3,p.y,'#8ba8b455',.6);this.line(p.x+3,p.y,p.x+7,p.y,'#8ba8b455',.6);}}}
  layoutUnits(sim){
   this.renderUnits=new Map(sim.units.map(u=>[u.id,u]));this.renderMissiles=new Map((sim.missiles||[]).map(m=>[m.id,m]));
   this.unitOffsets=new Map();const groups=new Map();for(const u of sim.units)if(u.fleetId&&!u.dead&&!u.landed&&this.unitVisible(sim,u)){if(!groups.has(u.fleetId))groups.set(u.fleetId,[]);groups.get(u.fleetId).push(u);}
