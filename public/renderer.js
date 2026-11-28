@@ -5,7 +5,7 @@ export function populationLight(pop){pop=Math.max(0,pop);return {radius:14*Math.
 export const cityLabelVisible=(city,zoom,selected=null)=>city.name===selected||city.pop>=8*Math.max(0,1-(zoom-1)/4)**2;
 export const cityMarkerSize=pop=>Math.max(3,Math.min(12,3+2.2*Math.log2(1+Math.max(0,pop))));
 // Local catchments are clipped at neighboring city bisectors; only their soft light is drawn.
-export function cityDistrict(city,cities){const radius=Math.min(14,4+1.45*Math.sqrt(Math.max(0,city.initial??city.pop))),neighbors=cities.filter(c=>c!==city).map(c=>({x:longitudeDelta(city.x,c.x),y:c.y-city.y})).map(p=>({...p,d:p.x*p.x+p.y*p.y})).filter(p=>p.d>1e-8&&p.d<radius*radius*8).sort((a,b)=>a.d-b.d).slice(0,12);let polygon=[{x:-radius,y:-radius},{x:radius,y:-radius},{x:radius,y:radius},{x:-radius,y:radius}];for(const n of neighbors){const clipped=[],limit=n.d/2,side=p=>limit-p.x*n.x-p.y*n.y;for(let i=0;i<polygon.length;i++){const a=polygon[i],b=polygon[(i+1)%polygon.length],fa=side(a),fb=side(b);if(fa>=0)clipped.push(a);if((fa>=0)!==(fb>=0)){const t=fa/(fa-fb);clipped.push({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});}}polygon=clipped;if(!polygon.length)break;}return {radius,polygon};}
+export function cityDistrict(city,cities){const radius=Math.min(17,5+1.75*Math.sqrt(Math.max(0,city.initial??city.pop))),neighbors=cities.filter(c=>c!==city).map(c=>({x:longitudeDelta(city.x,c.x),y:c.y-city.y})).map(p=>({...p,d:p.x*p.x+p.y*p.y})).filter(p=>p.d>1e-8&&p.d<radius*radius*8).sort((a,b)=>a.d-b.d).slice(0,12);let polygon=[{x:-radius,y:-radius},{x:radius,y:-radius},{x:radius,y:radius},{x:-radius,y:radius}];for(const n of neighbors){const clipped=[],limit=n.d/2,side=p=>limit-p.x*n.x-p.y*n.y;for(let i=0;i<polygon.length;i++){const a=polygon[i],b=polygon[(i+1)%polygon.length],fa=side(a),fb=side(b);if(fa>=0)clipped.push(a);if((fa>=0)!==(fb>=0)){const t=fa/(fa-fb);clipped.push({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});}}polygon=clipped;if(!polygon.length)break;}return {radius,polygon};}
 export function cityLightState(city){const initial=Math.max(.001,city.initial??city.pop),remaining=Math.max(0,city.pop),afterImpact=Math.max(0,initial-(city.impactLoss||0));return {core:Math.min(1,remaining/initial),outskirts:afterImpact>0?Math.min(1,remaining/afterImpact):0};}
 export function casualtyTint(survival){return Math.min(1,Math.max(0,(1-survival)/.7));}
 export function casualtyColor(color,survival){const red=[239,64,56],mix=casualtyTint(survival);return '#'+[1,3,5].map((offset,i)=>Math.round(parseInt(color.slice(offset,offset+2),16)*(1-mix)+red[i]*mix).toString(16).padStart(2,'0')).join('');}
@@ -45,7 +45,7 @@ export class Renderer {
  unproject(x,y){return {x:wrapLongitude((x-this.width/2-this.pan.x)/this.scale),y:(this.height/2+this.pan.y-y)/this.scale};}
  copies(x,y,pad=30){const p=this.project(x,y);return [-this.worldWidth,0,this.worldWidth].map(shift=>({x:p.x+shift,y:p.y})).filter(p=>p.x>=-pad&&p.x<=this.width+pad&&p.y>=-pad&&p.y<=this.height+pad);}
  focus(x,y,zoom=this.zoom){this.zoom=Math.max(1,Math.min(6,zoom));this.pan={x:-wrapLongitude(x)*this.scale,y:y*this.scale};this.constrain();}
- reset(lab=false){this.launchNotices.clear();this.focus(lab?-32.5:0,lab?30:0,lab?2.7:1);}
+ reset(lab=false){this.blastWaves=[];this.populationCounters=new Map();this.launchNotices.clear();this.focus(lab?-32.5:0,lab?30:0,lab?2.7:1);}
  changeZoom(factor,x=this.width/2,y=this.height/2){const geo=this.unproject(x,y);this.zoom=Math.max(1,Math.min(6,this.zoom*factor));const p=this.project(geo.x,geo.y);this.pan.x+=x-p.x;this.pan.y+=y-p.y;this.constrain();}
  setZoomPercent(percent){const center=this.unproject(this.width/2,this.height/2);this.focus(center.x,center.y,1+Math.max(0,Math.min(100,percent))/20);}
  setLayer(name,enabled){if(name in this.layers)this.layers[name]=!!enabled;this.coverage=this.layers.coverage;}
@@ -126,12 +126,39 @@ export class Renderer {
   const sites=sim.units.filter(u=>!u.landed&&u.nuclearDamage>0&&TYPES[u.type].domain==='ground'&&!u.dead&&this.unitVisible(sim,u));if(!sites.length)return;
   const c=this.ctx;c.save();if(this.clipCityLand())for(const u of sites){const life=Math.max(0,u.hp/u.maxHp),site={...u,name:'site-'+u.id,initial:3,pop:3},district=cityDistrict(site,[]),radius=district.radius*this.scale;for(const p of this.copies(u.x,u.y,radius))this.damagedCityGlow(site,p,this.factionInk(sim,u.team),radius,.16*life,district,'outskirts',life);}c.restore();
  }
+ mapCities(sim){
+  const key=JSON.stringify([sim.mode,this.scale,this.selectedCity,sim.cities.map(city=>[city.name,city.initial??city.pop,city.x,city.y])]);
+  if(this.mapCityKey===key)return this.mapCityList.map(i=>sim.cities[i]);
+  const spacing=26/Math.max(.1,this.scale);
+  const candidates=sim.cities.map((city,i)=>({city,i})).sort((a,b)=>
+   Number(b.city.name===this.selectedCity)-Number(a.city.name===this.selectedCity)||
+   (b.city.initial??b.city.pop)-(a.city.initial??a.city.pop));
+  const visible=[];
+  for(const entry of candidates){
+   const {city}=entry;
+   if(city.name!==this.selectedCity&&sim.mode!=='lab'&&((city.initial??city.pop)<1.5||visible.some(other=>distance(other.city,city)<spacing)))continue;
+   visible.push(entry);
+  }
+  this.mapCityKey=key;
+  this.mapCityList=visible.map(({i})=>i);
+  return visible.map(({city})=>city);
+ }
  drawCities(sim){
-  if(this.cityDistrictSource!==sim.cities){this.cityDistrictSource=sim.cities;this.cityDistricts=new Map();this.cityTextures?.clear();}
-  const c=this.ctx,labels=[],cities=[...sim.cities].sort((a,b)=>(b.name===this.selectedCity)-(a.name===this.selectedCity)||b.pop-a.pop),records=cities.map(city=>{if(!this.cityDistricts.has(city))this.cityDistricts.set(city,cityDistrict(city,sim.cities));const district=this.cityDistricts.get(city);return {city,district,color:this.factionInk(sim,city.team),life:cityLightState(city),radius:district.radius*this.scale};});
-  c.save();if(this.clipCityLand())for(const {city,district,color,life,radius} of records){const base=populationLight(city.initial??city.pop),alpha=base.alpha*(this.layers.population?1:.65);for(const p of this.copies(city.x,city.y,Math.max(80,radius))){this.damagedCityGlow(city,p,color,radius,alpha*life.outskirts,district,'outskirts',life.outskirts);this.damagedCityGlow(city,p,color,radius,alpha*life.core,district,'core',life.core);if(this.selectedCity===city.name){this.damagedCityGlow(city,p,'#74f1a3',radius,.3*life.outskirts,district,'outskirts',life.outskirts);this.damagedCityGlow(city,p,'#74f1a3',radius,.3*life.core,district,'core',life.core);}}}c.restore();
+  const cities=this.mapCities(sim);
+  if(this.cityDistrictSource!==this.mapCityKey){this.cityDistrictSource=this.mapCityKey;this.cityDistricts=new Map();this.cityTextures?.clear();}
+  const c=this.ctx,labels=[],records=cities.map(city=>{if(!this.cityDistricts.has(city))this.cityDistricts.set(city,cityDistrict(city,cities));const district=this.cityDistricts.get(city);return {city,district,color:this.factionInk(sim,city.team),life:cityLightState(city),radius:district.radius*this.scale};});
+  c.save();if(this.clipCityLand())for(const {city,district,color,life,radius} of records){const base=populationLight(city.initial??city.pop),alpha=base.alpha*(this.layers.population?1:.65);for(const p of this.copies(city.x,city.y,Math.max(80,radius))){const loss=1-life.core;
+   if(loss>0){
+    c.save();
+    c.globalAlpha=Math.min(.94,loss*1.2);
+    c.drawImage(this.cityLightTexture(city,'#651721',district,'outskirts'),p.x-radius,p.y-radius,radius*2,radius*2);
+    c.globalAlpha=Math.min(1,loss*1.65);
+    c.drawImage(this.cityLightTexture(city,'#080608',district,'core'),p.x-radius,p.y-radius,radius*2,radius*2);
+    c.restore();
+   }
+   this.damagedCityGlow(city,p,color,radius,alpha*life.outskirts,district,'outskirts',life.outskirts);this.damagedCityGlow(city,p,color,radius,alpha*life.core**2,district,'core',life.core);if(this.selectedCity===city.name){this.damagedCityGlow(city,p,'#74f1a3',radius,.3*life.outskirts,district,'outskirts',life.outskirts);this.damagedCityGlow(city,p,'#74f1a3',radius,.3*life.core,district,'core',life.core);}}}c.restore();
   for(const {city,color,life,radius} of records)for(const p of this.copies(city.x,city.y,Math.max(80,radius))){const size=cityMarkerSize(city.pop);c.save();c.globalAlpha=city.dead?.1:.3+.5*life.core;c.translate(p.x,p.y);c.rotate(Math.PI/4);c.fillStyle=casualtyColor(color,life.core);c.fillRect(-size/2,-size/2,size,size);c.restore();
-   if(!cityLabelVisible(city,this.zoom,this.selectedCity))continue;const name=city.name.toUpperCase(),pop=`${city.pop.toFixed(2)}M`,height=this.layers.population?27:15;c.font='8px Consolas,monospace';const width=Math.max(c.measureText(name).width,this.layers.population?c.measureText(pop).width:0)+8,gap=Math.max(6,size/2+3),anchors=[{x:p.x+gap,y:p.y-15},{x:p.x-width-gap,y:p.y-15},{x:p.x+gap,y:p.y+4},{x:p.x-width-gap,y:p.y+4}];const box=anchors.map(a=>({...a,width,height})).find(a=>a.x>=0&&a.y>=0&&a.x+width<=this.width&&a.y+height<=this.height&&!labels.some(b=>a.x<b.x+b.width&&a.x+width>b.x&&a.y<b.y+b.height&&a.y+height>b.y));if(box){labels.push(box);this.text(name,box.x+4,box.y+10,color+'bb',8);if(this.layers.population)this.text(pop,box.x+4,box.y+22,'#82959f',8);}
+   if(!cityLabelVisible(city,this.zoom,this.selectedCity))continue;const name=city.name.toUpperCase(),pop=`${city.pop.toFixed(2)}M`,showPop=this.layers.population&&city.name!==this.selectedCity&&city.pop>=(city.initial??city.pop),height=showPop?27:15;c.font='8px Consolas,monospace';const width=Math.max(c.measureText(name).width,showPop?c.measureText(pop).width:0)+8,gap=Math.max(6,size/2+3),anchors=[{x:p.x+gap,y:p.y-15},{x:p.x-width-gap,y:p.y-15},{x:p.x+gap,y:p.y+4},{x:p.x-width-gap,y:p.y+4}];const box=anchors.map(a=>({...a,width,height})).find(a=>a.x>=0&&a.y>=0&&a.x+width<=this.width&&a.y+height<=this.height&&!labels.some(b=>a.x<b.x+b.width&&a.x+width>b.x&&a.y<b.y+b.height&&a.y+height>b.y));if(box){labels.push(box);this.text(name,box.x+4,box.y+10,color+'bb',8);if(showPop)this.text(pop,box.x+4,box.y+22,'#82959f',8);}
   }}
 
  drawUnit(sim,u,p,ghost=false){const c=this.ctx,t=TYPES[u.type],color=this.factionInk(sim,u.team),selected=this.selected===u.id,lit=!ghost&&sim.blasts.some(b=>b.nuclear&&distance(u,b)<blastAppearance(b).radius);const sensor=sim.units.find(v=>v.id===this.selected&&!v.dead&&!v.landed),covered=sim.phase!==5&&(this.layers.coverage||sensor&&sim.allied(sensor.team,sim.playerTeam)&&distance(u,sensor)<TYPES[sensor.type].radar);c.globalAlpha=ghost?contactOpacity(u,sim.time):selected||lit?1:covered?.85:.52;if(selected&&!ghost){const r=Math.max(4,this.iconSize()*.8);this.ring(p.x,p.y,r,color+'b0');this.line(p.x-r-6,p.y,p.x-r-2,p.y,color);this.line(p.x+r+2,p.y,p.x+r+6,p.y,color);}
@@ -161,7 +188,53 @@ export class Renderer {
  }
 
  drawImpactStatus(sim){const seen=new Set(),c=this.ctx;for(const blast of [...sim.blasts].reverse()){if(!blast.nuclear||blast.age>=DESTROYED_MARK_SECONDS)continue;for(const hit of blast.impacts||[]){if(!hit.destroyed)continue;if(seen.has(hit.unitId)||!(hit.knownTeams||[]).includes(sim.playerTeam))continue;seen.add(hit.unitId);const u=sim.units.find(u=>u.id===hit.unitId);if(!u||!u.dead)continue;const destroyed=true,label='DESTROYED';for(const p of this.copies(this.unitDisplayHistory?.get(hit.unitId)?.x??hit.x,this.unitDisplayHistory?.get(hit.unitId)?.y??hit.y,150)){c.save();c.globalAlpha=1-blast.age/DESTROYED_MARK_SECONDS;if(destroyed){this.line(p.x-5,p.y-5,p.x+5,p.y+5,'#ed92a3',1.2);this.line(p.x+5,p.y-5,p.x-5,p.y+5,'#ed92a3',1.2);}const width=label.length*5.5+12;c.fillStyle='#061018ed';c.fillRect(p.x+13,p.y+10,width,18);this.text(label,p.x+19,p.y+22,destroyed?'#ed92a3':'#b6e4eb',9);c.restore();}}}}
- drawPopulationStatus(sim){const c=this.ctx;for(const city of sim.cities){if(!(city.impactLoss>0)||!sim.blasts.some(b=>b.nuclear&&distance(city,b)<blastAppearance(b).radius))continue;for(const p of this.copies(city.x,city.y,260)){const label=`${city.name.toUpperCase()} / ${city.pop.toFixed(3)}M SURVIVORS`,loss=`IMPACT -${(city.impactLoss||0).toFixed(3)}M / RADIATION -${(city.radiationLoss||0).toFixed(3)}M`;c.fillStyle='#061018ed';c.fillRect(p.x+13,p.y-43,Math.max(label.length,loss.length)*5.5+12,31);this.text(label,p.x+19,p.y-30,'#d9e9ee',9);this.text(loss,p.x+19,p.y-17,'#dca68d',8);}}}
+ populationCount(city,now=performance.now()){
+  this.populationCounters??=new Map();
+  const total=city.initial??city.pop;
+  let counter=this.populationCounters.get(city.name);
+  if(!counter)counter={from:total,to:total,start:now,impact:0,duration:300};
+  const sample=()=>counter.to+(counter.from-counter.to)*Math.max(0,1-(now-counter.start)/counter.duration)**2;
+  if(counter.to!==city.pop){
+   counter={from:sample(),to:city.pop,start:now,impact:city.impactLoss||0,duration:(city.impactLoss||0)>counter.impact?340:780};
+  }
+  this.populationCounters.set(city.name,counter);
+  return `${sample().toFixed(3)}M / ${total.toFixed(3)}M`;
+ }
+ drawPopulationStatus(sim){
+  const c=this.ctx;
+  for(const city of this.mapCities(sim)){
+   const damaged=city.pop<(city.initial??city.pop);
+   if(city.name!==this.selectedCity&&!damaged)continue;
+   const text=this.populationCount(city);
+   for(const p of this.copies(city.x,city.y,150)){
+    c.save();c.font='bold 12px Consolas,monospace';
+    c.strokeStyle=damaged?'#16070b':this.daylight?'#f7f5ed':'#080f14';c.lineWidth=3;
+    c.strokeText(text,p.x+9,p.y+17);
+    c.fillStyle=damaged?'#ffc5b0':this.factionInk(sim,city.team);c.fillText(text,p.x+9,p.y+17);c.restore();
+   }
+  }
+ }
+ addBlastWave(point){
+  if(this.reduced||!Number.isFinite(point?.x)||!Number.isFinite(point?.y))return;
+  this.blastWaves??=[];
+  this.blastWaves.push({x:point.x,y:point.y,start:performance.now()});
+ }
+ drawBlastWaves(){
+  if(this.reduced||!this.blastWaves?.length)return;
+  const now=performance.now(),c=this.ctx;
+  this.blastWaves=this.blastWaves.filter(wave=>now-wave.start<500);
+  for(const wave of this.blastWaves){
+   const t=(now-wave.start)/500,radius=NUCLEAR.visualRadius*this.scale*4*(1-(1-t)**3);
+   if(radius<1)continue;
+   for(const p of this.copies(wave.x,wave.y,radius)){
+    c.save();c.globalCompositeOperation='lighter';c.globalAlpha=(1-t)**1.25;
+    const g=c.createRadialGradient(p.x,p.y,0,p.x,p.y,radius);
+    g.addColorStop(0,'#fff7db48');g.addColorStop(.65,'#ffb77522');
+    g.addColorStop(.86,'#ffcf8670');g.addColorStop(.96,'#fffae8ef');g.addColorStop(1,'#fff5db00');
+    c.fillStyle=g;c.fillRect(p.x-radius,p.y-radius,radius*2,radius*2);c.restore();
+   }
+  }
+ }
  drawExplosions(sim){const c=this.ctx;for(const blast of sim.blasts){if(!blast.nuclear&&!sim.radarCovers(blast,sim.playerTeam)&&!sim.allied(blast.team,sim.playerTeam)&&!sim.allied(blast.targetTeam,sim.playerTeam))continue;const {alpha,radius:worldRadius}=blastAppearance(blast);if(!alpha)continue;const radius=Math.max(.5,worldRadius*this.scale)*(blast.kind==='bomb'?1.65:1);for(const p of this.copies((!blast.nuclear&&blast.targetId!==undefined?this.impactDisplayPoint(sim,blast):blast).x,(!blast.nuclear&&blast.targetId!==undefined?this.impactDisplayPoint(sim,blast):blast).y,radius)){c.save();c.globalAlpha=alpha*(blast.miss?.35:1);c.globalCompositeOperation='lighter';const g=c.createRadialGradient(p.x,p.y,0,p.x,p.y,radius);if(blast.nuclear){g.addColorStop(0,'#fffdf6ff');g.addColorStop(.035,'#fff7e6eb');g.addColorStop(.10,'#ffe0abc4');g.addColorStop(.24,'#e9ad6e91');g.addColorStop(.48,'#c8824c55');g.addColorStop(.75,'#9653281e');g.addColorStop(1,'#79421c00');}else{g.addColorStop(0,'#ffd4ac90');g.addColorStop(.3,'#f9d4ab65');g.addColorStop(1,'#df704000');}c.fillStyle=g;c.fillRect(p.x-radius,p.y-radius,radius*2,radius*2);if(blast.kind==='bomb'){for(let i=0;i<9;i++){const a=i*Math.PI*2/9+Math.sin(i*7)*.3,d=radius*(.25+Math.min(blast.age,1.5)*.4),length=Math.max(1,5*(1-blast.age/3));this.line(p.x+Math.cos(a)*d,p.y+Math.sin(a)*d,p.x+Math.cos(a)*(d+length),p.y+Math.sin(a)*(d+length),'#ffd5a5b0',1.2);}}if(blast.nuclear){const coreRadius=radius*NUCLEAR.coreRadius/NUCLEAR.visualRadius,core=c.createRadialGradient(p.x,p.y,0,p.x,p.y,coreRadius);core.addColorStop(0,'#fffffffa');core.addColorStop(.3,'#fffdf0c0');core.addColorStop(1,'#fff1ce00');c.fillStyle=core;c.fillRect(p.x-coreRadius,p.y-coreRadius,coreRadius*2,coreRadius*2);}c.restore();}}}
 
  drawCombatImpacts(sim){const c=this.ctx,active=new Set();for(const b of sim.blasts){if(!b.combat||b.id===undefined)continue;active.add(b.id);const visible=this.visibilityMode==='full'||sim.radarCovers(b,sim.playerTeam)||sim.allied(b.team,sim.playerTeam)||sim.allied(b.targetTeam,sim.playerTeam);if(visible&&!this.combatNotices.has(b.id))this.combatNotices.set(b.id,{...b,start:this.elapsed});}for(const [id,b] of this.combatNotices){const age=this.elapsed-b.start;if(age>1.25){if(!active.has(id))this.combatNotices.delete(id);continue;}if(this.visibilityMode!=='full'&&!sim.radarCovers(b,sim.playerTeam)&&!sim.allied(b.team,sim.playerTeam)&&!sim.allied(b.targetTeam,sim.playerTeam))continue;const fade=Math.max(0,1-age/1.25),color=b.miss?'#bda18a':'#fff1ce',radius=(b.destroyed?13:8)*(1+age*.8);for(const p of this.copies(this.impactDisplayPoint(sim,b).x,this.impactDisplayPoint(sim,b).y,24)){c.save();c.globalAlpha=fade;c.shadowColor=color;c.shadowBlur=b.miss?0:8;c.fillStyle=color;if(!b.miss){c.beginPath();c.arc(p.x,p.y,Math.max(.5,3*fade),0,Math.PI*2);c.fill();}for(let i=0;i<(b.miss?3:7);i++){const a=i*Math.PI*2/(b.miss?3:7)+id*.7,inner=radius*(.25+age*.45),outer=inner+4*fade;this.line(p.x+Math.cos(a)*inner,p.y+Math.sin(a)*inner,p.x+Math.cos(a)*outer,p.y+Math.sin(a)*outer,color,1);}c.restore();}}}
@@ -169,7 +242,7 @@ export class Renderer {
  draw(sim,dt){if(!this.width||!this.height)return;this.constrain();this.layoutUnits(sim);this.elapsed+=dt;const c=this.ctx;c.clearRect(0,0,this.width,this.height);if(this.daylight){
    const sunlight=c.createLinearGradient(0,this.height,this.width*.8,0);
    sunlight.addColorStop(0,'#a9cdd8');sunlight.addColorStop(1,'#e5ece1');c.fillStyle=sunlight;
-  }else c.fillStyle='#080f14';c.fillRect(0,0,this.width,this.height);this.drawTerrain();this.drawTerritories(sim,dt);this.drawGrid();this.drawCoverage(sim);this.drawCities(sim);this.drawOperations(sim);this.drawMissiles(sim);this.drawExplosions(sim);this.drawUnits(sim);this.drawCombatImpacts(sim);this.drawImpactStatus(sim);this.drawPopulationStatus(sim);this.drawLaunchDetected(sim);if(this.hover){for(const p of this.copies(this.hover.x,this.hover.y)){this.line(p.x-7,p.y,p.x-3,p.y,'#8ba8b455',.6);this.line(p.x+3,p.y,p.x+7,p.y,'#8ba8b455',.6);}}}
+  }else c.fillStyle='#080f14';c.fillRect(0,0,this.width,this.height);this.drawTerrain();this.drawTerritories(sim,dt);this.drawGrid();this.drawCoverage(sim);this.drawCities(sim);this.drawOperations(sim);this.drawMissiles(sim);this.drawExplosions(sim);this.drawBlastWaves();this.drawUnits(sim);this.drawCombatImpacts(sim);this.drawImpactStatus(sim);this.drawPopulationStatus(sim);this.drawLaunchDetected(sim);if(this.hover){for(const p of this.copies(this.hover.x,this.hover.y)){this.line(p.x-7,p.y,p.x-3,p.y,'#8ba8b455',.6);this.line(p.x+3,p.y,p.x+7,p.y,'#8ba8b455',.6);}}}
  layoutUnits(sim){
   this.renderUnits=new Map(sim.units.map(u=>[u.id,u]));this.renderMissiles=new Map((sim.missiles||[]).map(m=>[m.id,m]));
   this.unitOffsets=new Map();const groups=new Map();for(const u of sim.units)if(u.fleetId&&!u.dead&&!u.landed&&this.unitVisible(sim,u)){if(!groups.has(u.fleetId))groups.set(u.fleetId,[]);groups.get(u.fleetId).push(u);}
@@ -202,6 +275,6 @@ export class Renderer {
  unitIcon(u,x,y,color,scale=1){const c=this.ctx,name=this.iconName(u),image=this.textures[name];if(!image?.complete||!image.naturalWidth)return;const key=name+color;let tint=this.tintCache.get(key);if(!tint){tint=document.createElement('canvas');tint.width=image.naturalWidth;tint.height=image.naturalHeight;const tc=tint.getContext('2d');tc.drawImage(image,0,0);tc.globalCompositeOperation='source-in';tc.fillStyle=color;tc.fillRect(0,0,tint.width,tint.height);this.tintCache.set(key,tint);}const bounds=this.iconBounds[name]||{cx:.5,cy:.5,width:1,height:1},size=this.iconSize(scale)/Math.max(bounds.width,bounds.height);c.save();c.translate(x,y);if(TYPES[u.type]?.domain==='air'||u.type==='nuke'||u.type==='sam')c.rotate(Math.PI/2-u.heading);c.drawImage(tint,-bounds.cx*size,-bounds.cy*size,size,size);c.restore();}
 
  pickMissile(sim,x,y){const selected=sim.units.find(u=>u.id===this.selected&&u.team===sim.playerTeam&&u.type==='fighter'&&!u.dead&&!u.landed);if(!selected)return null;return sim.missiles.find(m=>!m.dead&&sim.hostile(selected.team,m.team)&&this.projectileVisible(sim,m)&&this.copies(m.x,m.y).some(p=>Math.hypot(p.x-x,p.y-y)<=10))||null;}
- pickCity(sim,x,y){let best=null,minimum=Infinity;for(const city of sim.cities){const radius=Math.max(10,cityMarkerSize(city.pop)/Math.sqrt(2)+3);for(const p of this.copies(city.x,city.y)){const d=Math.hypot(p.x-x,p.y-y);if(d<=radius&&d<minimum){best=city;minimum=d;}}}return best;}
+ pickCity(sim,x,y){let best=null,minimum=Infinity;for(const city of this.mapCities(sim)){const radius=Math.max(10,cityMarkerSize(city.pop)/Math.sqrt(2)+3);for(const p of this.copies(city.x,city.y)){const d=Math.hypot(p.x-x,p.y-y);if(d<=radius&&d<minimum){best=city;minimum=d;}}}return best;}
  pick(sim,x,y){this.layoutUnits(sim);if(sim.mode==='war'&&!sim.started)return null;let best=null,minimum=Infinity;for(const u of sim.units){if(u.dead||u.landed||!this.unitVisible(sim,u))continue;for(const p of this.unitCopies(u)){const box=this.unitBox(u),dx=p.x-x,dy=p.y-y,d=Math.hypot(dx,dy);if(Math.abs(dx)<=box.halfWidth&&Math.abs(dy)<=box.halfHeight&&d<minimum){best=u;minimum=d;}}}return best;}
 }
